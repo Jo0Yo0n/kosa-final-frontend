@@ -5,6 +5,7 @@ module.exports = defineConfig({
   ],
 
   devServer: {
-    proxy: 'https://hesil.site'
+    proxy: 'https://hesil.site',
+    port: 3000
   }
 })
