@@ -5,7 +5,7 @@ import PageNotFound from '@/components/PageNotFound.vue';
 
 Vue.use(VueRouter);
 
-const base_router = [{ path: '/path(.*)*', component: PageNotFound }];
+const base_router = [{ path: '/:path(.*)*', component: PageNotFound }];
 // 모든 경로 매칭(정규표현식) & params 는 넘겨서 오류 페이지에서 확인할 수 있도록 변경 - kyh
 const router = new VueRouter({
     mode: 'history',
