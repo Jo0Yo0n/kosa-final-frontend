@@ -1,0 +1,24 @@
+/*
+ * fileName       : varriables.scss
+ * author         : Yeong-Huns
+ * date           : 2024-08-29
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * description : class 이름 뒤에 rounded-{키} 사용시 border-radius 적용
+ * ex) rounded-pill
+ * -----------------------------------------------------------
+ * 2024-08-29        Yeong-Huns       최초 생성
+*/
+$border-radius-root: 4px;
+
+$rounded: (
+        0: 0,
+        'sm': $border-radius-root / 2,
+        null: $border-radius-root,
+        'lg': $border-radius-root * 2,
+        'xl': $border-radius-root * 4,
+        'xxl': $border-radius-root * 6,
+        'xxxl': $border-radius-root * 8,
+        'pill': 9999px,
+        'circle': 50%
+);

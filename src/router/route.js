@@ -1,5 +1,5 @@
 import TestCompo from '@/components/TestCompo.vue';
-import TipTap from '@/components/editor/TipTap.vue';
+import ProjectTest from '@/components/project/ProjectTest.vue';
 
 export default [
     {
@@ -8,8 +8,8 @@ export default [
         component: TestCompo,
     },
     {
-        path: '/editor-test',
-        name: 'EditorTest',
-        component: TipTap,
+        path: '/projectTest',
+        name: 'projectTest',
+        component: ProjectTest,
     },
 ];
