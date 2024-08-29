@@ -20,6 +20,7 @@
 
         <v-row v-if="project.status === 1">
             <v-col cols="12">
+                <p>프로젝트 진행도</p>
                 <v-progress-linear :value="getProgressValue()" height="25" striped></v-progress-linear>
             </v-col>
         </v-row>
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import ProjectInfo from '@/components/ProjectInfo.vue';
+import ProjectInfo from '@/components/project-detail/ProjectInfo.vue';
 import ProjectRetrospective from '@/components/ProjectRetrospective.vue';
 import ProjectManagement from '@/components/ProjectManagement.vue';
 

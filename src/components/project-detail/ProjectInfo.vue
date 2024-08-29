@@ -8,44 +8,14 @@
  * 2024-08-28        JooYoon       최초 생성
 -->
 <template>
-    <v-container>
-        <v-row>
-            <v-col cols="12">
-                <h2>리더 정보</h2>
-                <v-card flat>
-                    <v-card-text>
-                        <v-avatar>
-                            <v-img :src="project.leader.memberImg"></v-img>
-                        </v-avatar>
-                        <p>{{ project.leader.memberNickname }}</p>
-                        <v-chip v-for="tech in project.leader.techStack" :key="tech" class="ma-1">
-                            {{ tech }}
-                        </v-chip>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
+    <div>
+        <leader-info :leader="project.leader" />
 
-        <v-row>
-            <v-col cols="12">
-                <h2>모집 현황</h2>
-                <v-list>
-                    <v-list-item v-for="recruitment in project.recruitments" :key="recruitment.jobId">
-                        <v-list-item-content>
-                            <v-list-item-title>{{ recruitment.jobName }}</v-list-item-title>
-                            <v-list-item-subtitle> {{ recruitment.members.length }} / {{ recruitment.jobCount }} </v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
-            </v-col>
-        </v-row>
+        <v-divider />
 
-        <v-row>
-            <v-col cols="12">
-                <h2>프로젝트 소개</h2>
-                <p>{{ project.description }}</p>
-            </v-col>
-        </v-row>
+        <recruitment-status :recruitments="project.recruitments" />
+
+        <project-description :description="project.description" />
 
         <v-row>
             <v-col cols="12">
@@ -83,12 +53,17 @@
                 </v-list>
             </v-col>
         </v-row>
-    </v-container>
+    </div>
 </template>
 
 <script>
+import LeaderInfo from '@/components/project-detail/LeaderInfo.vue';
+import RecruitmentStatus from '@/components/project-detail/RecruitmentStatus.vue';
+import ProjectDescription from '@/components/project-detail/ProjectDescription.vue';
+
 export default {
     name: 'ProjectInfo',
+    components: { ProjectDescription, RecruitmentStatus, LeaderInfo },
     props: {
         project: {
             type: Object,
