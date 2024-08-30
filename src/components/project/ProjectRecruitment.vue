@@ -56,7 +56,7 @@ export default {
     <v-container>
         <v-row>
             <v-col>
-                <v-card-title class="mb-2 title-text">모집 인원</v-card-title>
+                <v-card-title class="mb-2 title-text">모집 포지션 및 인원</v-card-title>
                 <p class="mb-4">❗프로젝트에 참여할 인원수를 정해주세요. (최대 9명)</p>
 
                 <v-row v-for="(role, index) in roles" :key="index" align="center" class="mb-2">
