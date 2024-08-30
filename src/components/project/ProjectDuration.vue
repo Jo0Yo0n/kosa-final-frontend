@@ -12,7 +12,7 @@ export default {
     name: 'ProjectDuration',
     data() {
         return {
-            durationOptions: Array.from({ length: 100 }, (_, i) => i + 1), // 100주가 최대인데.. 조정필요?
+            durationOptions: Array.from({ length: 100 }, (_, i) => i + 1),
             selectedDuration: null, // 선택된 기간
         };
     },
