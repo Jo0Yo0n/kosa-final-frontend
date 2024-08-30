@@ -15,16 +15,15 @@
 
         <recruitment-status :recruitments="project.recruitments" />
 
+        <v-divider />
+
         <project-description :description="project.description" />
 
-        <v-row>
-            <v-col cols="12">
-                <h2>기술 스택</h2>
-                <v-chip v-for="tech in project.projectTechStack" :key="tech" class="ma-1">
-                    {{ tech }}
-                </v-chip>
-            </v-col>
-        </v-row>
+        <v-divider />
+
+        <tech-stack :projectTechStack="project.projectTechStack" />
+
+        <v-divider />
 
         <v-row>
             <v-col cols="12">
@@ -60,10 +59,11 @@
 import LeaderInfo from '@/components/project-detail/LeaderInfo.vue';
 import RecruitmentStatus from '@/components/project-detail/RecruitmentStatus.vue';
 import ProjectDescription from '@/components/project-detail/ProjectDescription.vue';
+import TechStack from '@/components/project-detail/TechStack.vue';
 
 export default {
     name: 'ProjectInfo',
-    components: { ProjectDescription, RecruitmentStatus, LeaderInfo },
+    components: { TechStack, ProjectDescription, RecruitmentStatus, LeaderInfo },
     props: {
         project: {
             type: Object,
