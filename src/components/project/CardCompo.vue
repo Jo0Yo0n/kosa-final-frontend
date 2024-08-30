@@ -15,7 +15,7 @@ export default {
 
 <template>
     <v-card class="my-card rounded-0">
-        <v-card-title class="white--text text-title">모임 생성</v-card-title>
+        <v-card-title class="white--text text-title">프로젝트 생성</v-card-title>
         <v-card-text class="white--text">만들고 싶은 프로젝트가 있다면 같이 정리해봐요</v-card-text>
     </v-card>
 </template>
