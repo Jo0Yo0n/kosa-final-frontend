@@ -13,7 +13,7 @@ import { mapActions } from 'vuex';
 export default {
     name: 'ProjectButtonGroup',
     methods: {
-        ...mapActions(['project/cancelAction', 'project/submitAction', 'project/tempAction']),
+        ...mapActions(['project/cancelAction', 'project/submitAction']),
     },
 };
 </script>
@@ -24,8 +24,6 @@ export default {
             <v-btn class="coffee-btn" color="#49454f" @click="cancelAction" outlined> 취소 </v-btn>
 
             <v-btn color="#49454f" @click="completeAction" outlined> 작성완료 </v-btn>
-
-            <v-btn class="coffee-btn" color="#49454f" @click="saveDraftAction" outlined> 임시저장 </v-btn>
         </v-row>
     </v-container>
 </template>
