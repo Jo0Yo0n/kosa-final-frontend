@@ -15,7 +15,7 @@ module.exports = defineConfig({
         proxy: {
             // '/api' 로 시작하는 모든 요청을 target url 로 프록시
             '^/api': {
-                target: 'https://hesil.site',
+                target: 'http://localhost:8080',
                 changeOrigin: true,
             },
         },
