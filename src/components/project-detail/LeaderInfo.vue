@@ -26,7 +26,7 @@
                         </v-btn>
                     </v-col>
                     <v-col cols="auto">
-                        <v-btn color="brown" dark>1:1 채팅</v-btn>
+                        <v-btn color="brown" dark class="font-weight-light">1:1 채팅</v-btn>
                     </v-col>
                 </v-row>
                 <v-row class="mt-2" align="center" no-gutters>
