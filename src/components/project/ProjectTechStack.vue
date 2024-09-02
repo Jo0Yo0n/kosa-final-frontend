@@ -11,53 +11,40 @@
  * 2024-08-29        Yeong-Huns       실시간으로 드롭다운으로 knowTech 보여줌
 -->
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
     name: 'ProjectTechStack',
     data() {
         return {
             newTech: '',
-            techStack: [],
             showDropdown: false,
-            knownTech: {
-                //s3 이미지 링크로 수정필요
-                java: 'https://blog.kakaocdn.net/dn/cbm6vp/btsCxbEaIT9/lXmy9TrYxBvBTn6WpWK8D1/img.png',
-                javascript: 'https://blog.kakaocdn.net/dn/1MiXF/btrorPnmFyK/S6JElp78z6bMNh3LBSd4j0/img.png',
-                python: 'https://i0.wp.com/junilearning.com/wp-content/uploads/2020/06/python-programming-language.webp?fit=1920%2C1920&ssl=1',
-            },
         };
     },
     computed: {
+        ...mapGetters('project', ['techStack', 'knownTech']),
         filteredTechOptions() {
             const input = this.newTech.trim().toLowerCase();
             let options = [];
 
             if (input.length >= 2) {
-                options = Object.keys(this.knownTech).filter((tech) => tech.toLowerCase().includes(input));
+                options = this.knownTech.filter((tech) => tech.name.toLowerCase().includes(input)).map((tech) => tech.name);
 
-                if (!options.includes(input)) {
-                    options.unshift(input);
+                if (input && !options.includes(input)) {
+                    options.unshift(input); // 사용자 입력이 knownTech에 없을 때 추가
                 }
             }
             return options;
         },
     },
     methods: {
-        addTech() {
-            const techName = this.newTech.trim().toLowerCase();
-            if (techName && !this.techStack.includes(techName)) {
-                this.techStack.push(techName);
-                this.newTech = '';
-            }
-            this.showDropdown = false;
-        },
-        removeTech(index) {
-            this.techStack.splice(index, 1);
-        },
+        ...mapActions('project', ['addTech', 'removeTechAction', 'fetchKnownTech']), // 액션 이름 변경
         isKnownTech(tech) {
-            return Object.keys(this.knownTech).includes(tech);
+            return this.knownTech.some((item) => item.name.toLowerCase() === tech.toLowerCase());
         },
         getTechImage(tech) {
-            return this.knownTech[tech];
+            const techItem = this.knownTech.find((item) => item.name.toLowerCase() === tech.toLowerCase());
+            return techItem ? techItem.ImgUrl : '';
         },
         handleInput() {
             const inputLength = this.newTech.trim().length;
@@ -68,8 +55,24 @@ export default {
         },
         selectTech(tech) {
             this.newTech = tech;
-            this.addTech();
+            this.addTechIfValid(tech);
         },
+        addTechIfValid(tech) {
+            const trimmedTech = tech.trim();
+            if (trimmedTech && !this.techStack.find((t) => t.name.toLowerCase() === trimmedTech.toLowerCase())) {
+                const techItem = this.knownTech.find((item) => item.name.toLowerCase() === trimmedTech.toLowerCase());
+                const techStackId = techItem ? techItem.techStackId : 1; // knownTech에 없으면 ID 1로 설정
+                this.addTech({ techStackId, name: trimmedTech });
+                this.newTech = '';
+            }
+            this.showDropdown = false;
+        },
+        removeTech(index) {
+            this.removeTechAction({ index }); // Vuex 액션 이름이 다르게 설정됨
+        },
+    },
+    created() {
+        this.fetchKnownTech();
     },
 };
 </script>
@@ -83,19 +86,19 @@ export default {
 
                 <div class="d-flex align-center flex-wrap">
                     <div v-for="(tech, index) in techStack" :key="index" class="d-flex align-center mb-2">
-                        <v-chip v-if="isKnownTech(tech)" class="mr-2" close @click:close="removeTech(index)" outlined>
+                        <v-chip v-if="isKnownTech(tech.name)" class="mr-2" close @click:close="removeTech(index)" outlined>
                             <v-avatar left>
-                                <img :src="getTechImage(tech)" alt="tech image" />
+                                <img :src="getTechImage(tech.name)" alt="tech image" />
                             </v-avatar>
-                            {{ tech }}
+                            {{ tech.name }}
                         </v-chip>
                         <v-chip v-else class="mr-2" close @click:close="removeTech(index)" outlined>
-                            {{ tech }}
+                            {{ tech.name }}
                         </v-chip>
                     </div>
                 </div>
 
-                <v-menu v-show="showDropdown" v-model="showDropdown" offset-y open-on-focus="false">
+                <v-menu v-show="showDropdown" v-model="showDropdown" offset-y :open-on-focus="false">
                     <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                             v-model="newTech"
@@ -103,7 +106,7 @@ export default {
                             outlined
                             dense
                             @input="handleInput"
-                            @keyup.enter="addTech()"
+                            @keyup.enter="addTechIfValid(newTech)"
                             class="mb-4"
                             clearable
                             v-bind="attrs"

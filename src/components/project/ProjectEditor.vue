@@ -186,6 +186,9 @@ export default {
             this.showLinkPopup = false;
             this.linkUrl = '';
         },
+        getEditorContent() {
+            return this.editor.getHTML();
+        },
     },
     mounted() {
         this.editor = new Editor({

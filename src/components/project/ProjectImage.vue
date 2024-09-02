@@ -8,21 +8,25 @@
  * 2024-08-29        Yeong-Huns       최초 생성
 -->
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
     name: 'ProjectImage',
-    data() {
-        return {
-            image: null,
-        };
+    computed: {
+        ...mapGetters('project', ['projectImage']),
     },
     methods: {
+        ...mapActions('project', ['updateProjectImage']),
         triggerFileInput() {
             this.$refs.fileInput.click();
         },
         onFileChange(e) {
             const file = e.target.files[0];
             if (file) {
-                this.image = URL.createObjectURL(file); // 이미지 미리보기
+                //const imageUrl = URL.createObjectURL(file); // 이미지 미리보기
+                this.updateProjectImage(file);
+            } else {
+                console.error('파일 존재 X ');
             }
         },
     },
@@ -38,7 +42,7 @@ export default {
 
                 <v-row align="center" justify="center">
                     <v-col cols="12" md="4">
-                        <v-img v-if="image" :src="image" class="mb-2" contain height="200px"></v-img>
+                        <v-img v-if="projectImage" :src="projectImage" class="mb-2" contain height="200px"></v-img>
                         <v-responsive v-else aspect-ratio="3" class="img-placeholder rounded-lg">
                             <v-icon large>mdi-camera</v-icon>
                         </v-responsive>

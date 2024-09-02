@@ -8,6 +8,8 @@
  * 2024-08-29        Yeong-Huns       최초 생성
 -->
 <script>
+import { mapMutations, mapGetters } from 'vuex';
+
 export default {
     name: 'ProjectName',
     data() {
@@ -18,6 +20,20 @@ export default {
                 maxLength: (value) => value.length <= 50 || '최대 50글자 이하이어야 합니다.',
             },
         };
+    },
+    computed: {
+        name: {
+            get() {
+                return this.projectName;
+            },
+            set(value) {
+                this.setProjectName(value);
+            },
+        },
+        ...mapGetters('project', ['projectName']),
+    },
+    methods: {
+        ...mapMutations('project', ['setProjectName']),
     },
 };
 </script>
@@ -35,6 +51,7 @@ export default {
                     counter="50"
                     :rules="[rules.required, rules.minLength, rules.maxLength]"
                     class="rounded-lg"
+                    v-model="name"
                 ></v-text-field>
             </v-col>
         </v-row>
