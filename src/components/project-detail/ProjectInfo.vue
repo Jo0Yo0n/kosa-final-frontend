@@ -13,7 +13,7 @@
 
         <v-divider class="my-6" />
 
-        <recruitment-status :recruitments="project.recruitments" :projectId="project.projectId" />
+        <recruitment-status :recruitments="project.recruitments" :projectId="project.projectId" :status="project.status" />
 
         <v-divider class="my-6" />
 

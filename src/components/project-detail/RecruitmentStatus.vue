@@ -18,7 +18,7 @@
                         <v-card outlined class="text-center" rounded>
                             <v-card-text style="color: black">
                                 <div class="text-h6 mb-2">{{ recruitment.jobName }}</div>
-                                <v-btn color="brown" dark x-small class="font-weight-light">지원하기</v-btn>
+                                <v-btn v-if="status === 1 && recruitment.members.length > recruitment.jobCount" color="brown" dark small class="font-weight-light">지원하기</v-btn>
                                 <div class="text-subtitle-1">{{ recruitment.members.length }} / {{ recruitment.jobCount }}</div>
                             </v-card-text>
                         </v-card>
@@ -37,6 +37,9 @@ export default {
             type: Array,
         },
         projectId: {
+            type: Number,
+        },
+        status: {
             type: Number,
         },
     },
