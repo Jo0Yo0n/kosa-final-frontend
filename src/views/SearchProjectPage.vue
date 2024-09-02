@@ -16,9 +16,9 @@
         <h2 class="text-h4 font-weight-bold">프로젝트 검색</h2>
       </v-col>
     </v-row>
-    <v-row class="align-center">
+    <v-row class="align-center" >
       <!-- 검색창 -->
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="10">
         <v-text-field
             v-model="searchQuery"
             label="프로젝트명, 기술 스택 검색"
@@ -38,109 +38,301 @@
             outlined
         ></v-select>
       </v-col>
-
-
     </v-row>
 <!--필터링 버튼-->
-    <v-row class="mt-4">
-      <v-col cols="12">
-        <v-btn-group row  class="status-btn-group">
-          <v-btn value="전체" label="전체"    class="oval-btn"> 전체 </v-btn>
-          <v-btn value="모집중" label="모집중" class="oval-btn"> 모집중 </v-btn>
-          <v-btn value="진행중" label="진행중" class="oval-btn"> 진행중 </v-btn>
-          <v-btn value="완료됨" label="완료됨" class="oval-btn"> 완료됨 </v-btn>
-          </v-btn-group>
+<!--    <v-row style="margin-top: 0px; margin-left: 20px">-->
+<!--      <v-col cols="12" md="6">-->
+<!--        <div class="status-btn-group d-flex">-->
+<!--          <button-->
+<!--              class="oval-btn"-->
+<!--              :class="{ active: filterStatus === '전체' }"-->
+<!--              @click="setFilterStatus('전체')"-->
+<!--          >-->
+<!--            전체-->
+<!--          </button>-->
+<!--          <button-->
+<!--              class="oval-btn"-->
+<!--              :class="{ active: filterStatus === '모집중' }"-->
+<!--              @click="setFilterStatus('모집중')"-->
+<!--          >-->
+<!--            모집중-->
+<!--          </button>-->
+<!--          <button-->
+<!--              class="oval-btn"-->
+<!--              :class="{ active: filterStatus === '진행중' }"-->
+<!--              @click="setFilterStatus('진행중')"-->
+<!--          >-->
+<!--            진행중-->
+<!--          </button>-->
+<!--          <button-->
+<!--              class="oval-btn"-->
+<!--              :class="{ active: filterStatus === '완료됨' }"-->
+<!--              @click="setFilterStatus('완료됨')"-->
+<!--          >-->
+<!--            완료됨-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </v-col>-->
+<!--    </v-row>-->
+    <v-row style="margin-top: 0px; margin-left: 20px;">
+      <v-col cols="12" md="6">
+        <v-radio-group v-model="filterStatus" row class="custom-radio-group">
+          <v-radio label="전체" value="전체"></v-radio>
+          <v-radio label="모집중" value="모집중"></v-radio>
+          <v-radio label="진행중" value="진행중"></v-radio>
+          <v-radio label="완료됨" value="완료됨"></v-radio>
+        </v-radio-group>
       </v-col>
     </v-row>
 
-<!--    필터링된 프로젝트 리스트 -->
-    <v-row>
+<!--  필터링된 프로젝트 -->
+    <v-row style="margin-top: 20px">
       <v-col cols="12">
         <h3> 프로젝트 {{filterStatus}}  </h3>
       </v-col>
     </v-row>
 
-<!--    <v-row>-->
-<!--      <v-col-->
-<!--        v-for="(project) in filteredProject"-->
-<!--        :key="project.id"-->
-<!--        cols="12"-->
-<!--        sm="6"-->
-<!--        md="3"-->
-<!--      >-->
-<!--        <v-card>-->
-<!--          <v-img :src="project.image" height="200px"></v-img>-->
-<!--          <v-card-title>{{ project.title }}</v-card-title>-->
-<!--          <v-card-subtitle>{{ project.subtitle }}</v-card-subtitle>-->
-<!--          <v-card-text>-->
-<!--            <div>기술 스택: {{ project.techStack }}</div>-->
-<!--            <div>모집인원: {{ project.members }} / {{ project.maxMembers }}</div>-->
-<!--            <div>좋아요: {{ project.likes }}</div>-->
-<!--          </v-card-text>-->
-<!--        </v-card>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
-<!--    &lt;!&ndash; 더보기 버튼 &ndash;&gt;-->
-<!--    <v-row>-->
-<!--      <v-col cols="12" class="text-center">-->
-<!--        <v-btn @click="loadMore" v-if="displayedCount < filteredProjects.length">더보기</v-btn>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
+
+  <!-- 프로젝트 카드 리스트 -->
+    <v-row>
+      <v-col
+          v-for="project in filteredProjects"
+          :key="project.projectId"
+          cols="12"
+          sm="6"
+          md="3"
+      >
+        <ProjectCard :project="project" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
+import ProjectCard from '@/components/ProjectCard.vue';
+
 export default {
   name: "SearchProjectPage",
+  components: {
+    ProjectCard
+  },
   data() {
     return {
+      searchQuery: '',
+      sortOrder: '',
       filterStatus: '전체', // 기본적으로 선택된 상태
+      sortOptions: [
+        { text: '날짜순', value: 'createdAt' } ,
+        { text: '추천순', value: 'cntLike'}
+      ],
+      projects: [
+        {
+          projectId: 1,
+          name: 'Project Alpha',
+          imgUrl: 'path/to/image.jpg',
+          duration: 30,
+          projectTechStack: [
+            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
+            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
+          ],
+          cntLike: 15,
+          currentCnt: 5,
+          teamCnt: 10,
+          status: '모집중',
+          createdAt: '2023-09-01',
+        },
+        {
+          projectId: 2,
+          name: 'Project Beta',
+          imgUrl: 'path/to/image2.jpg',
+          duration: 45,
+          projectTechStack: [
+            { name: 'React', imgUrl: 'path/to/react.jpg' },
+            { name: 'Express', imgUrl: 'path/to/express.jpg' },
+          ],
+          cntLike: 25,
+          currentCnt: 7,
+          teamCnt: 10,
+          status: '진행중',
+          createdAt: '2023-08-15',
+        },
+        {
+          projectId: 1,
+          name: 'Project Alpha',
+          imgUrl: 'path/to/image.jpg',
+          duration: 30,
+          projectTechStack: [
+            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
+            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
+          ],
+          cntLike: 15,
+          currentCnt: 5,
+          teamCnt: 10,
+          status: '모집중',
+          createdAt: '2023-09-01',
+        },
+        {
+          projectId: 2,
+          name: 'Project Beta',
+          imgUrl: 'path/to/image2.jpg',
+          duration: 45,
+          projectTechStack: [
+            { name: 'React', imgUrl: 'path/to/react.jpg' },
+            { name: 'Express', imgUrl: 'path/to/express.jpg' },
+          ],
+          cntLike: 25,
+          currentCnt: 7,
+          teamCnt: 10,
+          status: '진행중',
+          createdAt: '2023-08-15',
+        },
+        {
+          projectId: 1,
+          name: 'Project Alpha',
+          imgUrl: 'path/to/image.jpg',
+          duration: 30,
+          projectTechStack: [
+            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
+            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
+          ],
+          cntLike: 15,
+          currentCnt: 5,
+          teamCnt: 10,
+          status: '모집중',
+          createdAt: '2023-09-01',
+        },
+        {
+          projectId: 2,
+          name: 'Project Beta',
+          imgUrl: 'path/to/image2.jpg',
+          duration: 45,
+          projectTechStack: [
+            { name: 'React', imgUrl: 'path/to/react.jpg' },
+            { name: 'Express', imgUrl: 'path/to/express.jpg' },
+          ],
+          cntLike: 25,
+          currentCnt: 7,
+          teamCnt: 10,
+          status: '진행중',
+          createdAt: '2023-08-15',
+        },
+
+        {
+          projectId: 1,
+          name: 'Project Alpha',
+          imgUrl: 'path/to/image.jpg',
+          duration: 30,
+          projectTechStack: [
+            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
+            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
+          ],
+          cntLike: 15,
+          currentCnt: 5,
+          teamCnt: 10,
+          status: '모집중',
+          createdAt: '2023-09-01',
+        },
+        {
+          projectId: 2,
+          name: 'Project Beta',
+          imgUrl: 'path/to/image2.jpg',
+          duration: 45,
+          projectTechStack: [
+            { name: 'React', imgUrl: 'path/to/react.jpg' },
+            { name: 'Express', imgUrl: 'path/to/express.jpg' },
+          ],
+          cntLike: 25,
+          currentCnt: 7,
+          teamCnt: 10,
+          status: '진행중',
+          createdAt: '2023-08-15',
+        },
+      ],
     };
+  },
+  methods: {
+    setFilterStatus(status) {
+      this.filterStatus = status;
+    },
+  },
+  computed: {
+    filteredProjects() {
+      if (this.filterStatus === '전체') {
+        return this.projects;
+      }
+      return this.projects.filter(project => project.status === this.filterStatus);
+    },
   },
 }
 </script>
 
 <style scoped>
-.align-center{
-  align-items: center
+.align-center {
+  align-items: center;
 }
 
-.custom-toggle {
-  display: flex;
-  justify-content: left;
-  max-width: 50px;
-  margin: 0 auto;
-}
-.oval-btn .v-input--selection-controls__input {
-  height: 20px; /* 버튼 높이 조정 */
-  width: 20px;  /* 버튼 너비 조정 */
-}
 .status-btn-group {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
+}
+
+.oval-btn {
+  border-radius: 50px;
+  background-color: white;
+  color: #8D6E63;
+  border: 1px solid #b5651d;
+  font-weight: bold;
+  padding: 5px 20px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  min-width: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+}
+/* 마우스를 올렸을 때 배경색 변경 */
+.oval-btn:hover {
+  background-color: #f5f5f5;
+}
+/* 선택되었을 때 배경색 변경 */
+.oval-btn.active {
+  background-color: #8D6E63;
+  color: white;
+  border-color: #8D6E63;
 }
 
 
-.oval-btn{
-  border-radius: 50px ; /* 버튼을 타원형으로 만들기 위한 둥근 모서리 */
+
+.custom-radio-group {
+  display: flex;
+  gap: 10px; /* 버튼 사이의 간격 */
+}
+
+.custom-radio .v-input--radio .v-selection-control__ripple {
+  display: none; /* 기본 라디오 버튼의 동그라미 효과 숨기기 */
+}
+
+.custom-radio .v-input--radio .v-selection-control__input {
+  visibility: hidden; /* 기본 라디오 버튼 숨기기 */
+}
+
+
+
+.custom-radio .v-label {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 50px;
   background-color: white;
   color: brown;
   border: 1px solid #b5651d;
   font-weight: bold;
-  padding: 10px 20px; /* 버튼 크기 조절 */
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  min-width: 100px; /* 최소 너비를 설정하여 일정한 크기를 유지 */
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
-}
-/* 마우스를 올렸을 때의 배경색 */
-.oval-btn:hover {
-  background-color: #f5f5f5;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 선택된 상태 */
-.v-btn--is-active .oval-btn {
-  background-color: brown; /* 선택된 상태의 배경색 */
-  color: white; /* 선택된 상태의 텍스트 색상 */
-  border-color: brown; /* 선택된 상태의 테두리 색상 */
+.custom-radio .v-input--radio .v-input--selection-controls__input:checked + .v-selection-control__ripple + .v-label {
+  background-color: brown;
+  color: white;
+  border-color: brown;
 }
 </style>
