@@ -1,6 +1,7 @@
 import TestCompo from '@/components/TestCompo.vue';
 import ProjectDetailPage from '@/views/ProjectDetailPage.vue';
 import ProjectTest from '@/components/project/ProjectTest.vue';
+import SearchProjectPage from '@/views/SearchProjectPage.vue'
 
 export default [
     {
@@ -20,4 +21,9 @@ export default [
         name: 'projectTest',
         component: ProjectTest,
     },
+    {
+        path: '/search/projects',
+        name: 'SearchProject',
+        component: SearchProjectPage,
+    }
 ];

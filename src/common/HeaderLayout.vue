@@ -7,7 +7,7 @@
     <v-spacer></v-spacer>
 
     <v-btn text class="nav-link">라떼바</v-btn>
-    <v-btn text class="nav-link">프로젝트</v-btn>
+    <v-btn text class="/search/projects">프로젝트</v-btn>
 
     <v-spacer></v-spacer>
 
