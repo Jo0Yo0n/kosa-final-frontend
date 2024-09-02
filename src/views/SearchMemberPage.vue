@@ -11,10 +11,10 @@
 
 <template>
   <div class = "pa-8">
-    <!--프로젝트 검색 타이틀-->
+    <!--멤버 검색 타이틀-->
     <v-row>
       <v-col cols="12">
-        <h2 class="text-h4 font-weight-bold">프로젝트 검색</h2>
+        <h2 class="text-h4 font-weight-bold">라떼버 검색</h2>
       </v-col>
     </v-row>
     <v-row class="align-center" >
