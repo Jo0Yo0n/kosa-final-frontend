@@ -14,11 +14,11 @@
             <h2>기술 스택</h2>
             <div class="d-flex flex-wrap align-center">
                 <template v-for="tech in projectTechStack">
-                    <div v-if="tech.imgUrl" :key="tech.name" class="ma-2">
-                        <v-avatar size="48" class="mb-1" tile>
+                    <div v-if="tech.imgUrl" :key="tech.name" class="ma-2 d-flex flex-column align-center">
+                        <v-avatar size="40" class="mb-1" tile>
                             <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
                         </v-avatar>
-                        <div class="text-center">#{{ tech.name }}</div>
+                        <div class="caption text-center black--text">#{{ tech.name }}</div>
                     </div>
                     <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
                 </template>

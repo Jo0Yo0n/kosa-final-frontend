@@ -35,7 +35,7 @@
                 <div class="d-flex flex-wrap">
                     <template v-for="tech in member.techStack">
                         <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">
-                            <v-avatar size="32" class="mb-1">
+                            <v-avatar size="30" class="mb-1" tile>
                                 <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
                             </v-avatar>
                             <div class="caption text-center black--text">#{{ tech.name }}</div>
