@@ -11,9 +11,6 @@
   <div>
     <h1>Search Results for "{{ query }}"</h1>
     <!-- 검색 결과 표시 부분 -->
-
-    <h3 class="mb-4">프로젝트</h3>
-
     <!-- 프로젝트 리스트 -->
     <h3 class="mb-4">프로젝트</h3>
     <div v-if="projects.length">
