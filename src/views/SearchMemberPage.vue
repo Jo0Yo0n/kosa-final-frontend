@@ -29,7 +29,7 @@
             dense
         ></v-text-field>
       </v-col>
-      <!--검색창, 정렬 기중 드롭다운-->
+      <!--검색창, 정렬 기준 드롭다운-->
       <v-col cols="6" md="2">
         <v-select
             v-model="sortOrder"

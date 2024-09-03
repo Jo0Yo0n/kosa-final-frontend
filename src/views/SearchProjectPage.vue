@@ -22,12 +22,15 @@
         <v-text-field
             v-model="searchQuery"
             label="프로젝트명, 기술 스택 검색"
-            prepend-icon="mdi-magnify"
             clearable
             outlined
             dense
+            append-outer-icon="mdi-magnify"
+            @click:append-outer="searchProjects"
         ></v-text-field>
       </v-col>
+
+
 <!--검색창, 정렬 기중 드롭다운-->
       <v-col cols="6" md="2">
         <v-select
@@ -80,7 +83,7 @@
           <v-radio label="전체" value="전체"></v-radio>
           <v-radio label="모집중" value="모집중"></v-radio>
           <v-radio label="진행중" value="진행중"></v-radio>
-          <v-radio label="완료됨" value="완료됨"></v-radio>
+          <v-radio label="완료됨" value="종료"></v-radio>
         </v-radio-group>
       </v-col>
     </v-row>
@@ -125,132 +128,38 @@ export default {
         { text: '날짜순', value: 'createdAt' } ,
         { text: '추천순', value: 'cntLike'}
       ],
-      projects: [
-        {
-          projectId: 1,
-          name: 'Project Alpha',
-          imgUrl: 'path/to/image.jpg',
-          duration: 30,
-          projectTechStack: [
-            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
-            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
-          ],
-          cntLike: 15,
-          currentCnt: 5,
-          teamCnt: 10,
-          status: '모집중',
-          createdAt: '2023-09-01',
-        },
-        {
-          projectId: 2,
-          name: 'Project Beta',
-          imgUrl: 'path/to/image2.jpg',
-          duration: 45,
-          projectTechStack: [
-            { name: 'React', imgUrl: 'path/to/react.jpg' },
-            { name: 'Express', imgUrl: 'path/to/express.jpg' },
-          ],
-          cntLike: 25,
-          currentCnt: 7,
-          teamCnt: 10,
-          status: '진행중',
-          createdAt: '2023-08-15',
-        },
-        {
-          projectId: 1,
-          name: 'Project Alpha',
-          imgUrl: 'path/to/image.jpg',
-          duration: 30,
-          projectTechStack: [
-            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
-            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
-          ],
-          cntLike: 15,
-          currentCnt: 5,
-          teamCnt: 10,
-          status: '모집중',
-          createdAt: '2023-09-01',
-        },
-        {
-          projectId: 2,
-          name: 'Project Beta',
-          imgUrl: 'path/to/image2.jpg',
-          duration: 45,
-          projectTechStack: [
-            { name: 'React', imgUrl: 'path/to/react.jpg' },
-            { name: 'Express', imgUrl: 'path/to/express.jpg' },
-          ],
-          cntLike: 25,
-          currentCnt: 7,
-          teamCnt: 10,
-          status: '진행중',
-          createdAt: '2023-08-15',
-        },
-        {
-          projectId: 1,
-          name: 'Project Alpha',
-          imgUrl: 'path/to/image.jpg',
-          duration: 30,
-          projectTechStack: [
-            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
-            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
-          ],
-          cntLike: 15,
-          currentCnt: 5,
-          teamCnt: 10,
-          status: '모집중',
-          createdAt: '2023-09-01',
-        },
-        {
-          projectId: 2,
-          name: 'Project Beta',
-          imgUrl: 'path/to/image2.jpg',
-          duration: 45,
-          projectTechStack: [
-            { name: 'React', imgUrl: 'path/to/react.jpg' },
-            { name: 'Express', imgUrl: 'path/to/express.jpg' },
-          ],
-          cntLike: 25,
-          currentCnt: 7,
-          teamCnt: 10,
-          status: '진행중',
-          createdAt: '2023-08-15',
-        },
-
-        {
-          projectId: 1,
-          name: 'Project Alpha',
-          imgUrl: 'path/to/image.jpg',
-          duration: 30,
-          projectTechStack: [
-            { name: 'Vue.js', imgUrl: 'path/to/vue.jpg' },
-            { name: 'Node.js', imgUrl: 'path/to/node.jpg' },
-          ],
-          cntLike: 15,
-          currentCnt: 5,
-          teamCnt: 10,
-          status: '모집중',
-          createdAt: '2023-09-01',
-        },
-        {
-          projectId: 2,
-          name: 'Project Beta',
-          imgUrl: 'path/to/image2.jpg',
-          duration: 45,
-          projectTechStack: [
-            { name: 'React', imgUrl: 'path/to/react.jpg' },
-            { name: 'Express', imgUrl: 'path/to/express.jpg' },
-          ],
-          cntLike: 25,
-          currentCnt: 7,
-          teamCnt: 10,
-          status: '진행중',
-          createdAt: '2023-08-15',
-        },
-      ],
+      projects: [],
     };
   },
   methods: {
+    async searchProjects(){
+      try {
+
+
+        console.log('Sending request with params:', {
+          keyword: this.searchQuery,
+          sortby: this.sortOrder,
+          status: this.filterStatus,
+        });
+
+
+
+        const response = await this.$axios.get(`/api/search/projects` , {
+          params:{
+            keyword: this.searchQuery,
+            sortby: this.sortOrder,
+            status: this.filterStatus,
+          }
+
+        });
+
+        console.log('Response received:', response);
+
+        this.projects = response.data;
+      } catch (error) {
+        console.error('Error fetching project details:', error);
+      }
+    },
     setFilterStatus(status) {
       this.filterStatus = status;
     },
