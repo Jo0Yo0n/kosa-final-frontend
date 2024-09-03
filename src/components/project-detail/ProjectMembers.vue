@@ -36,6 +36,7 @@ export default {
     props: {
         recruitments: {
             type: Array,
+            default: () => [],
         },
     },
     computed: {

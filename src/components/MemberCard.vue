@@ -40,7 +40,7 @@
                             </v-avatar>
                             <div class="caption text-center black--text">#{{ tech.name }}</div>
                         </div>
-                        <v-chip v-else :key="tech.name" class="ma-1" x-small outlined color="black"> #{{ tech.name }} </v-chip>
+                        <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
                     </template>
                 </div>
             </div>
