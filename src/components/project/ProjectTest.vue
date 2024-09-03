@@ -60,7 +60,7 @@ export default {
         },
         async saveProject(data) {
             try {
-                const response = await axios.post('/api/projects', data);
+                const response = await axios.post('/api/projects', data, { withCredentials: true });
                 console.log('프로젝트 저장 성공:', response.data);
                 this.showSuccessModal = true;
             } catch (error) {
