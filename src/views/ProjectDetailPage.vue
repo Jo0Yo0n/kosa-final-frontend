@@ -33,19 +33,19 @@
 
         <v-tabs v-model="activeTab" class="mt-10">
             <v-tab>정보</v-tab>
-            <v-tab>회고</v-tab>
-            <v-tab>관리</v-tab>
+            <v-tab v-if="this.project.status !== 0">회고</v-tab>
+            <v-tab v-if="this.project.status === 0">관리</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="activeTab">
             <v-tab-item>
-                <project-info :project="project"></project-info>
+                <project-info :project="project" />
             </v-tab-item>
             <v-tab-item>
-                <project-retrospective></project-retrospective>
+                <project-retrospective :project="project" />
             </v-tab-item>
             <v-tab-item>
-                <project-management></project-management>
+                <project-management />
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -53,7 +53,7 @@
 
 <script>
 import ProjectInfo from '@/components/project-detail/ProjectInfo.vue';
-import ProjectRetrospective from '@/components/ProjectRetrospective.vue';
+import ProjectRetrospective from '@/components/project-retrospective/ProjectRetrospective.vue';
 import ProjectManagement from '@/components/ProjectManagement.vue';
 
 export default {
