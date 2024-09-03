@@ -1,6 +1,7 @@
 import TestCompo from '@/components/TestCompo.vue';
 import ProjectDetailPage from '@/views/ProjectDetailPage.vue';
 import ProjectTest from '@/components/project/ProjectTest.vue';
+import MainPage from '@/views/MainPage.vue';
 
 export default [
     {
@@ -19,5 +20,10 @@ export default [
         path: '/projectTest',
         name: 'projectTest',
         component: ProjectTest,
+    },
+    {
+        path: '/',
+        name: 'MainPage',
+        component: MainPage,
     },
 ];
