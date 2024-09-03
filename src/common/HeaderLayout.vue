@@ -62,9 +62,12 @@ export default {
       if (this.search.trim()) {
         // 검색어를 쿼리 파라미터로 라우터에 전달하여 searchAllPage로 이동
         this.$router.push({
-          name: 'searchAllPage',
-          query: { q: this.query }
+          name: 'SearchAll',
+          query: { keyword: this.search }
         });
+
+        // 검색이 완료된 후 검색어 초기화
+        this.search = '';
       }
     }
   },

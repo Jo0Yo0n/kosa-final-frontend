@@ -97,7 +97,7 @@ export default {
         console.log('Response received:', response);
         this.members = response.data;
       }catch (error) {
-        console.error('Error fetching project details:', error);
+        console.error('검색 결과를 가져오는 중 오류 발생:', error);
       }
     }
   },

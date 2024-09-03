@@ -8,7 +8,7 @@
  * 2024-09-02        Heeseon       최초 생성
 -->
 <template>
-  <v-card class="ma-4 project-card" outlined>
+  <v-card class="ma-4 project-card" outlined  @click="goToDetailPage">
     <!-- 프로젝트 이미지 -->
     <v-img :src="project.imgUrl" height="140px" class="project-img"></v-img>
 
@@ -64,6 +64,11 @@ export default {
     project: {
       type: Object,
       required: true
+    }
+  },
+  methods: {
+    goToDetailPage() {
+      this.$router.push({ name: 'ProjectDetail', params: { projectId: this.project.projectId } });
     }
   }
 }
