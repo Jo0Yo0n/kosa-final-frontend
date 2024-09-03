@@ -11,33 +11,13 @@
   <div>
     <h1>Search Results for "{{ searchQuery }}"</h1>
     <!-- 검색 결과 표시 부분 -->
-    <div v-if="projects.length">
-      <h3>프로젝트</h3>
-      <!-- 프로젝트 카드 리스트 -->
-      <div class="project-list">
-        <v-card v-for="project in projects" :key="project.id" class="project-card">
-          <v-img :src="project.imgUrl"></v-img>
-          <v-card-title>{{ project.name }}</v-card-title>
-          <v-card-subtitle>{{ project.deadline }}</v-card-subtitle>
-          <v-card-actions>
-            <v-chip>{{ project.techStack }}</v-chip>
-            <v-chip>{{ project.members }}</v-chip>
-          </v-card-actions>
-        </v-card>
-      </div>
-    </div>
 
-    <div v-if="members.length">
-      <h3>라떼버</h3>
-      <!-- 멤버 카드 리스트 -->
-      <div class="member-list">
-        <v-card v-for="member in members" :key="member.id" class="member-card">
-          <v-img :src="member.profileImageUrl"></v-img>
-          <v-card-title>{{ member.name }}</v-card-title>
-          <v-card-subtitle>{{ member.skills }}</v-card-subtitle>
-        </v-card>
-      </div>
-    </div>
+    <h3 class="mb-4">프로젝트</h3>
+    <ProjectCardList :projects="projects" />
+
+    <h3 class="mb-4">라떼버</h3>
+    <MemberCardList :members="members" />
+
   </div>
 </template>
 <script>
@@ -53,36 +33,27 @@ export default {
       members: [],
     };
   },
-
-  // watch: {
-  //   '$route.query.q': {
-  //     immediate: true,
-  //     handler(newQuery) {
-  //       this.searchQuery = newQuery;
-  //       this.fetchSearchResults();
-  //     }
-  //   }
-  // },
+  created() {
+    const query = this.$route.query.q;
+    if(query){
+      this.fetchSearchResults(query);
+    }
+  },
   methods: {
-    fetchSearchResults() {
-      if (this.searchQuery.trim()) {
-        // API 호출을 통해 검색 결과 가져오기
-        axios.get('/api/search', {
-          params: {
-            query: this.searchQuery
-          }
-        })
-            .then(response => {
-              this.searchResults = response.data.results;
-            })
-            .catch(error => {
-              console.error('Error fetching search results:', error);
-            });
-      }
+    fetchSearchResults(query) {
+      axios.get('/api/search/all', {
+        params: { query }
+      })
+          .then(response => {
+            this.projects = response.data.projects;
+            this.members = response.data.members;
+          })
+          .catch(error => {
+            console.error('Error fetching search results:', error);
+          });
     }
   }
-
-}
+};
 </script>
 
 <style scoped>

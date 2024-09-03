@@ -60,21 +60,11 @@ export default {
     ...mapActions('member', ['checkLoginStatus', 'logout']),
     getSearchResults() {
       if (this.search.trim()) {
-        // 검색어를 쿼리 파라미터로 API에 전달
-        axios.get('/api/search',{
-          prams: { query: this.query }
-        })
-            .then(() => {
-              // 검색 결과 처리
-              this.$router.push({
-                name: 'SearchAllPage',
-                query: { q: this.search }
-              });
-            })
-            .catch(error => {
-              console.error("Error fetching search results:", error); // Optional: handle the error
-            });
-
+        // 검색어를 쿼리 파라미터로 라우터에 전달하여 searchAllPage로 이동
+        this.$router.push({
+          name: 'searchAllPage',
+          query: { q: this.query }
+        });
       }
     }
   },
