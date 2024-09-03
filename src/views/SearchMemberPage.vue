@@ -73,7 +73,8 @@ export default {
       sortOrder: '',
       sortOptions:[
         {text: '신규순', value: 'latest'},
-        {text: '경력순', value: 'career'}
+        {text: '경력 내림차순', value: 'career_desc'},
+        {text: '경력 오름차순', value: 'career_asc'},
 
       ],
       members: [],
@@ -104,9 +105,6 @@ export default {
     sortOrder() {
       this.searchMembers();
     }
-  },
-  mounted() {
-    this.searchMembers();
   },
 }
 </script>

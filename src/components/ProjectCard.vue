@@ -22,20 +22,6 @@
         <div class="project-duration grey--text">
           {{ project.duration }}일
         </div>
-
-        <!-- 기술 스택 -->
-<!--        <div class="project-tech-stack mt-2">-->
-<!--          <v-avatar-->
-<!--              v-for="tech in project.projectTechStack"-->
-<!--              :key="tech.name"-->
-<!--              size="24"-->
-<!--              class="mr-1"-->
-<!--          >-->
-<!--            <v-img v-if="tech.imgUrl" :src="tech.imgUrl"></v-img>-->
-<!--            <span v-else>{{ tech.name }}</span>-->
-<!--          </v-avatar>-->
-
-<!--        </div>-->
         <div class="project-tech-stack mt-2 d-flex flex-wrap">
           <template v-for="tech in project.projectTechStack" >
             <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">

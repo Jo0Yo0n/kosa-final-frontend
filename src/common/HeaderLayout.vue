@@ -43,7 +43,7 @@
 <script>
 import LoginModal from '@/components/login/LoginModal.vue';
 import { mapGetters, mapActions } from 'vuex';
-import axios from 'axios';
+
 
 export default {
   components: {LoginModal},
