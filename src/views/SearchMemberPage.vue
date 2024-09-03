@@ -23,7 +23,9 @@
         <v-text-field
             v-model="searchQuery"
             label="닉네임, 기술 스택, 직무 검색"
-            prepend-icon="mdi-magnify"
+            append-icon="mdi-magnify"
+            @click:append-outer="searchMembers"
+            @keyup.enter="searchMembers"
             clearable
             outlined
             dense
@@ -44,7 +46,7 @@
     <!-- 멤버 카드 리스트 -->
     <v-row>
       <v-col
-          v-for="member in memberList"
+          v-for="member in members"
           :key="member.memberId"
           cols="12"
           sm="6"
@@ -67,9 +69,45 @@ export default {
   },
   data(){
     return{
-      //
+      searchQuery: '',
+      sortOrder: '',
+      sortOptions:[
+        {text: '신규순', value: 'latest'},
+        {text: '경력순', value: 'career'}
+
+      ],
+      members: [],
     }
-  }
+  },
+  methods:{
+    async searchMembers(){
+      try{
+        console.log('Sending request with params:',{
+          keyword: this.searchQuery,
+          sortby: this.sortOrder,
+        });
+
+        const response =await this.$axios.get(`/api/search/members`,{
+          params:{
+            keyword: this.searchQuery,
+            sortby: this.sortOrder,
+          }
+        });
+        console.log('Response received:', response);
+        this.members = response.data;
+      }catch (error) {
+        console.error('Error fetching project details:', error);
+      }
+    }
+  },
+  watch: {
+    sortOrder() {
+      this.searchMembers();
+    }
+  },
+  mounted() {
+    this.searchMembers();
+  },
 }
 </script>
 

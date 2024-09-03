@@ -27,6 +27,7 @@
             dense
             append-outer-icon="mdi-magnify"
             @click:append-outer="searchProjects"
+            @keyup.enter="searchProjects"
         ></v-text-field>
       </v-col>
 
@@ -134,15 +135,11 @@ export default {
   methods: {
     async searchProjects(){
       try {
-
-
         console.log('Sending request with params:', {
           keyword: this.searchQuery,
           sortby: this.sortOrder,
           status: this.filterStatus,
         });
-
-
 
         const response = await this.$axios.get(`/api/search/projects` , {
           params:{
