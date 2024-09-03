@@ -164,6 +164,11 @@ export default {
       this.filterStatus = status;
     },
   },
+  watch: {
+    sortOrder() {
+      this.searchProjects();
+    }
+  },
   computed: {
     filteredProjects() {
       if (this.filterStatus === '전체') {
