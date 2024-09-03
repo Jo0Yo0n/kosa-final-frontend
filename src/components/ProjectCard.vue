@@ -24,16 +24,38 @@
         </div>
 
         <!-- 기술 스택 -->
-        <div class="project-tech-stack mt-2">
-          <v-avatar
-              v-for="tech in project.projectTechStack"
-              :key="tech.name"
-              size="24"
-              class="mr-1"
-          >
-            <v-img :src="tech.imgUrl"></v-img>
-          </v-avatar>
+<!--        <div class="project-tech-stack mt-2">-->
+<!--          <v-avatar-->
+<!--              v-for="tech in project.projectTechStack"-->
+<!--              :key="tech.name"-->
+<!--              size="24"-->
+<!--              class="mr-1"-->
+<!--          >-->
+<!--            <v-img v-if="tech.imgUrl" :src="tech.imgUrl"></v-img>-->
+<!--            <span v-else>{{ tech.name }}</span>-->
+<!--          </v-avatar>-->
+
+<!--        </div>-->
+        <div class="project-tech-stack mt-2 d-flex flex-wrap">
+          <template v-for="tech in project.projectTechStack" >
+            <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">
+              <v-avatar size="30" class="mb-1">
+                <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
+              </v-avatar>
+              <div class="caption text-center black--text">#{{ tech.name }}</div>
+            </div>
+            <div v-else :key="tech.name" class="ma-1 tech-item">
+              <v-avatar
+                  class="mb-1"
+                  size="30"
+                  style="width: 60px; height: 30px; background-color: #e0e0e0; color: #000; text-align: center; line-height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                {{ tech.name }}
+              </v-avatar>
+              <div class="caption text-center black--text">#{{ tech.name }}</div>
+            </div>
+          </template>
         </div>
+
 
         <!-- 좋아요 수 및 팀원 정보 -->
         <div class="project-stats d-flex justify-space-between align-center mt-3">
