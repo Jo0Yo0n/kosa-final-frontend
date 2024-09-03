@@ -2,7 +2,7 @@ import ProjectDetailPage from '@/views/ProjectDetailPage.vue';
 import ProjectTest from '@/components/project/ProjectTest.vue';
 import SearchProjectPage from '@/views/SearchProjectPage.vue'
 import SearchMemberPage from '@/views/SearchMemberPage.vue';
-
+import SearchAllPage from '@/views/SearchAllPage.vue';
 import MainPage from '@/views/MainPage.vue';
 
 
@@ -27,6 +27,11 @@ export default [
         path: '/search/members',
         name: 'SearchMember',
         component: SearchMemberPage
+    },
+    {
+        path: '/search/all',
+        name: 'SearchAll',
+        component: SearchAllPage,
     },
     {
 

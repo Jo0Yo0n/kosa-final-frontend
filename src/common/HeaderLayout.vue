@@ -6,20 +6,22 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn text class="nav-link">라떼버</v-btn>
-    <v-btn text class="/search/projects">프로젝트</v-btn>
+    <v-btn text class="nav-link" :to="{ name: 'SearchMember' }">라떼버</v-btn>
+    <v-btn text class="nav-link" :to="{ name: 'SearchProject' }">프로젝트</v-btn>
 
     <v-spacer></v-spacer>
 
     <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
-        label="figma"
+        label="search"
         solo-inverted
         flat
         hide-details
+        dense
         class="search-bar"
         color="#ECE8ED"
+        @keyup.enter="getSearchResults"
     ></v-text-field>
 
     <div class="login-button-container">
@@ -41,6 +43,7 @@
 <script>
 import LoginModal from '@/components/login/LoginModal.vue';
 import { mapGetters, mapActions } from 'vuex';
+import axios from 'axios';
 
 export default {
   components: {LoginModal},
@@ -55,6 +58,25 @@ export default {
   },
   methods: {
     ...mapActions('member', ['checkLoginStatus', 'logout']),
+    getSearchResults() {
+      if (this.search.trim()) {
+        // 검색어를 쿼리 파라미터로 API에 전달
+        axios.get('/api/search',{
+          prams: { query: this.query }
+        })
+            .then(() => {
+              // 검색 결과 처리
+              this.$router.push({
+                name: 'SearchAllPage',
+                query: { q: this.search }
+              });
+            })
+            .catch(error => {
+              console.error("Error fetching search results:", error); // Optional: handle the error
+            });
+
+      }
+    }
   },
   mounted() {
     this.checkLoginStatus(); // 컴포넌트 마운트 시 로그인 상태 확인
@@ -92,23 +114,25 @@ export default {
   color: #6F4A3D !important;
 }
 
-.v-input--selection-controls__input {
-  color: #6F4A3D !important;
-}
 .login-button-container {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   margin-right: 20px;
-  margin-top: 20px;
 }
 
 .login-button {
   cursor: pointer;
-  color: #007bff;
+  color: white;
+}
+.nav-link, .login-button {
+  color: #ECE8ED !important;
   font-size: 16px;
   text-decoration: none;
+  display: flex;
+  align-items: center;
   margin-left: 8px;
+
 }
 
 .login-button:hover {
@@ -119,4 +143,9 @@ export default {
   font-size: 24px;
   color: #007bff;
 }
+
+.nav-link.router-link-exact-active {
+  color: #FFD700 !important; /* Choose your desired active color */
+}
+
 </style>
