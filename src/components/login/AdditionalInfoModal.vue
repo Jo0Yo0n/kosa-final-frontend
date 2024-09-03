@@ -9,7 +9,7 @@
  * 2024-08-30        yunbin       axios 요청 추가
 -->
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import TextInputField from '@/components/login/TextInputField.vue';
 import SelectInputField from '@/components/login/SelectInputField.vue';
 import TechStackSelector from '@/components/login/TechStackSelector.vue';
@@ -41,10 +41,10 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('techStackAndJob', ['allTechStacks']),
-        knownTech() {
+        ...mapGetters('project', ['knownTech', 'roleOptions']),
+        techOptions() {
             // 첫 번째 항목을 제외한 나머지 항목들만 사용
-            const stacks = this.allTechStacks.slice(1);
+            const stacks = this.knownTech.slice(1);
 
             // reduce를 사용하여 이름을 키로, 해당 객체를 값으로 하는 객체 생성
             return stacks.reduce((acc, tech) => {
@@ -52,13 +52,14 @@ export default {
                 return acc;
             }, {});
         },
-        ...mapGetters('techStackAndJob', ['allJobs']),
         jobOptions() {
-            // 첫 번째 요소를 제외한 나머지 요소들을 반환
-            return this.allJobs.slice(1).map((job) => ({
-                jobId: job.jobId,
-                name: job.name,
-            }));
+            // roleOptions가 null이 아닌 경우에만 slice를 호출
+            return this.roleOptions
+                ? this.roleOptions.slice(1).map((job) => ({
+                      jobId: job.jobId,
+                      name: job.name,
+                  }))
+                : [];
         },
         nicknameRules() {
             return [(v) => !!v || '닉네임을 입력해 주세요.', () => this.nicknameStatus !== false || '이미 사용 중인 닉네임입니다.'];
@@ -72,7 +73,6 @@ export default {
     //     },
     // },
     methods: {
-        ...mapActions('techStackAndJob', ['fetchTechStacksAndJobs']),
         async checkNickname() {
             console.log('checkNickname 실행됨');
             const nickname = this.additionalInfo.nickname;
@@ -106,7 +106,7 @@ export default {
             }
         },
         handleTechSelection(techName) {
-            const tech = this.knownTech[techName.toLowerCase()];
+            const tech = this.techOptions[techName.toLowerCase()];
             if (tech) {
                 this.additionalInfo.techStackIds.push(tech.techStackId);
             } else {
@@ -138,15 +138,12 @@ export default {
             }
         },
     },
-    mounted() {
-        this.fetchTechStacksAndJobs();
-    },
 };
 </script>
 
 <template>
     <v-dialog v-model="isVisible" persistent max-width="400px">
-        <!--        {{ additionalInfo }}-->
+        {{ additionalInfo }}
         <v-card>
             <v-card-title class="text-h5 custom-center-class">
                 <span class="headline">추가 정보 입력</span>
@@ -167,7 +164,7 @@ export default {
                     <TechStackSelector
                         :value="additionalInfo.techStackIds"
                         :customStacks="additionalInfo.customStacks"
-                        :knownTech="knownTech"
+                        :techOptions="techOptions"
                         @techSelected="handleTechSelection"
                         @input="
                             (newValue) => {

@@ -38,7 +38,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions('project', ['addTech', 'removeTechAction', 'fetchKnownTech']), // 액션 이름 변경
+        ...mapActions('project', ['addTech', 'removeTechAction']), // 액션 이름 변경
         isKnownTech(tech) {
             return this.knownTech.some((item) => item.name.toLowerCase() === tech.toLowerCase());
         },
@@ -70,9 +70,6 @@ export default {
         removeTech(index) {
             this.removeTechAction({ index }); // Vuex 액션 이름이 다르게 설정됨
         },
-    },
-    created() {
-        this.fetchKnownTech();
     },
 };
 </script>
