@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>구구단</title>
+</head>
+<body>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<div id="root"></div>
+<script type="text/babel">
+    function GuGuDan(){
+        const [state, setState] = React.useState({
+            first: Math.ceil(Math.random() * 9),
+            second: Math.ceil(Math.random() * 9),
+            value: '',
+            result: '',
+        })
+        const inputRef = React.useRef(null);
+        const handleOnChange = (e) => setState((prev)=>({...prev, value: e.target.value}));
+        const handleSubmit = (e) => {
+            e.preventDefault()
+            const answer = state.first * state.second;
+            if(parseInt(state.value) === state.first * state.second){
+                setState((prev)=>({
+                    ...prev,
+                    first: Math.ceil(Math.random() * 9),
+                    second: Math.ceil(Math.random() * 9),
+                    value: '',
+                    result: `${answer} 정답입니다!`,
+                }))
+            }else{
+                setState((prev)=>({
+                    ...prev,
+                    value: '',
+                    result: '오답!'
+                }))
+            }
+            inputRef.current.focus();
+        }
+        return (
+            <div>
+                <div>{state.first} 곱하기 {state.second} 는 ? </div>
+                <form onSubmit={handleSubmit}>
+                    <lable>
+                        <input type="number" ref={inputRef} value={state.value} onChange={handleOnChange} />
+                    </lable>
+                    <button>입력</button>
+                </form>
+                <div>{state.result}</div>
+            </div>
+        );
+    }
+    ReactDOM.createRoot(document.querySelector('#root')).render(<GuGuDan/>);
+</script>
+</body>
+</html>
