@@ -16,10 +16,16 @@ import projectRecruitment from '@/components/project/ProjectRecruitment.vue';
 import projectTechStack from '@/components/project/ProjectTechStack.vue';
 import projectDuration from '@/components/project/ProjectDuration.vue';
 import projectCycle from '@/components/project/ProjectCycle.vue';
+import commonModal from '@/components/commonModal/CommonModal.vue';
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 export default {
     name: 'ProjectTest',
+    data() {
+        return {
+            showSuccessModal: false,
+        };
+    },
     components: {
         card,
         editor,
@@ -29,6 +35,7 @@ export default {
         projectTechStack,
         projectDuration,
         projectCycle,
+        commonModal,
     },
     computed: {
         ...mapGetters('project', ['projectName', 'projectImage', 'recruitmentRoles', 'techStack']),
@@ -55,9 +62,13 @@ export default {
             try {
                 const response = await axios.post('/api/projects', data);
                 console.log('프로젝트 저장 성공:', response.data);
+                this.showSuccessModal = true;
             } catch (error) {
                 console.error('프로젝트 저장 실패:', error);
             }
+        },
+        closeModal() {
+            this.showSuccessModal = false;
         },
     },
 };
@@ -80,6 +91,7 @@ export default {
                 <v-btn color="#49454f" @click="submitAction" outlined> 작성완료 </v-btn>
             </v-row>
         </v-container>
+        <commonModal v-model="showSuccessModal" @close="closeModal"></commonModal>
     </div>
 </template>
 

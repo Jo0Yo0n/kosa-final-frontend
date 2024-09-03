@@ -75,7 +75,7 @@ export const projectStore = {
         async fetchRoleOptions({ commit, state }) {
             if (!state.roleOptions) {
                 try {
-                    const response = await axios.get('/api/job');
+                    const response = await axios.get('/api/jobs');
                     commit('setRoleOptions', response.data);
                 } catch (error) {
                     console.error('직업 옵션을 가져오는데 실패했습니다:', error);
@@ -85,7 +85,7 @@ export const projectStore = {
         async fetchKnownTech({ commit, state }) {
             if (state.knownTech.length === 0) {
                 try {
-                    const response = await axios.get('/api/tech-stack');
+                    const response = await axios.get('/api/tech-stacks');
                     commit('setKnownTech', response.data);
                     console.log('fetchKnownTech 호출', response.data);
                 } catch (error) {
