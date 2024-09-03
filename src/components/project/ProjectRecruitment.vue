@@ -8,50 +8,47 @@
  * 2024-08-29        Yeong-Huns       최초 생성
 -->
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
     name: 'ProjectRecruitment',
-    data() {
-        return {
-            roleOptions: ['디자인', '기획', '프론트엔드 개발', '백엔드 개발'],
-            roles: [
-                { name: '기획', count: 1 },
-                { name: '프론트엔드 개발', count: 1 },
-                { name: '백엔드 개발', count: 1 },
-            ],
-        };
-    },
     computed: {
-        totalCount() {
-            // 총합 계산
-            return this.roles.reduce((total, role) => total + role.count, 0);
-        },
+        ...mapGetters('project', ['recruitmentRoles', 'roleOptions', 'totalCount']),
     },
     methods: {
-        addRole() {
-            if (this.roles.length < 9 && this.totalCount < 9) {
-                this.roles.push({ name: '디자인', count: 1 });
+        ...mapActions('project', ['updateRecruitmentRoles']),
+        addRecruitmentRole() {
+            if (this.recruitmentRoles.length < 9 && this.totalCount < 9) {
+                this.recruitmentRoles.push({ jobId: 6, count: 1 }); // + 디자인
             }
         },
-        removeRole() {
-            if (this.roles.length > 1) {
-                this.roles.pop();
+        removeRecruitmentRole() {
+            if (this.recruitmentRoles.length > 1) {
+                this.recruitmentRoles.pop();
             }
         },
         incrementCount(index) {
-            // 수량 증가 시 총합 체크
             if (this.totalCount < 9) {
-                this.roles[index].count++;
+                const newRoles = [...this.recruitmentRoles];
+                newRoles[index].count++;
+                this.updateRecruitmentRoles(newRoles);
             }
         },
         decrementCount(index) {
-            if (this.roles[index].count > 1) {
-                this.roles[index].count--;
+            if (this.totalCount > 1 && this.recruitmentRoles[index].count > 1) {
+                const newRoles = [...this.recruitmentRoles];
+                newRoles[index].count--;
+                this.updateRecruitmentRoles(newRoles);
             }
+        },
+        updateJob(index, jobId) {
+            const newRoles = [...this.recruitmentRoles];
+            newRoles[index].jobId = jobId;
+            this.updateRecruitmentRoles(newRoles);
         },
     },
 };
 </script>
-
 <template>
     <v-container>
         <v-row>
@@ -59,17 +56,27 @@ export default {
                 <v-card-title class="mb-2 title-text">모집 포지션 및 인원</v-card-title>
                 <p class="mb-4">❗프로젝트에 참여할 인원수를 정해주세요. (최대 9명)</p>
 
-                <v-row v-for="(role, index) in roles" :key="index" align="center" class="mb-2">
+                <v-row v-for="(recruitment, index) in recruitmentRoles" :key="index" align="center" class="mb-2">
                     <v-col cols="12" md="5" class="d-flex align-center">
-                        <v-select v-model="role.name" :items="roleOptions" outlined dense label="역할 선택"></v-select>
+                        <v-select
+                            v-model="recruitment.jobId"
+                            :items="roleOptions"
+                            item-text="name"
+                            item-value="jobId"
+                            outlined
+                            dense
+                            label="역할 선택"
+                            @change="updateJob(index, $event)"
+                            :disabled="recruitment.jobId === 1"
+                        ></v-select>
                     </v-col>
 
                     <v-col cols="12" md="7" class="d-flex align-center margin-bottom">
-                        <v-btn icon @click="decrementCount(index)">
+                        <v-btn icon @click="decrementCount(index)" :disabled="recruitment.jobId === 1">
                             <v-icon>mdi-minus</v-icon>
                         </v-btn>
-                        <span class="mx-2 red--text">{{ role.count }}</span>
-                        <v-btn icon @click="incrementCount(index)">
+                        <span class="mx-2 red--text">{{ recruitment.count }}</span>
+                        <v-btn icon @click="incrementCount(index)" :disabled="recruitment.jobId === 1">
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
                     </v-col>
@@ -77,9 +84,9 @@ export default {
 
                 <v-row>
                     <v-col cols="12">
-                        <v-btn color="grey" outlined @click="removeRole">삭제</v-btn>
+                        <v-btn color="grey" outlined @click="removeRecruitmentRole">삭제</v-btn>
                         &nbsp;
-                        <v-btn color="primary" outlined @click="addRole">추가</v-btn>
+                        <v-btn color="primary" outlined @click="addRecruitmentRole">추가</v-btn>
                     </v-col>
                 </v-row>
             </v-col>

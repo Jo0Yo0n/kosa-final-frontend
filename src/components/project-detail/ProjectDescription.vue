@@ -10,10 +10,8 @@
 
 <template>
     <div class="mb-4">
-        <h2>프로젝트 소개</h2>
-        <div>
-            {{ description }}
-        </div>
+        <h2 class="mb-4">프로젝트 소개</h2>
+        <div v-html="description"></div>
     </div>
 </template>
 

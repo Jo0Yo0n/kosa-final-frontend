@@ -26,18 +26,18 @@
                         </v-btn>
                     </v-col>
                     <v-col cols="auto">
-                        <v-btn color="brown" dark>1:1 채팅</v-btn>
+                        <v-btn color="brown" dark class="font-weight-light">1:1 채팅</v-btn>
                     </v-col>
                 </v-row>
                 <v-row class="mt-2" align="center" no-gutters>
                     <v-col>
                         <div class="d-flex flex-wrap align-center">
                             <template v-for="tech in leader.techStack">
-                                <div v-if="tech.imgUrl" :key="tech.name" class="ma-2">
-                                    <v-avatar size="48" class="mb-1" tile>
+                                <div v-if="tech.imgUrl" :key="tech.name" class="ma-2 d-flex flex-column align-center">
+                                    <v-avatar size="40" class="mb-1" tile>
                                         <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
                                     </v-avatar>
-                                    <div class="text-center">#{{ tech.name }}</div>
+                                    <div class="caption text-center black--text">#{{ tech.name }}</div>
                                 </div>
                                 <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
                             </template>
