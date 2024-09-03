@@ -1,4 +1,4 @@
-const { defineConfig } = require('@vue/cli-service');
+const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
     transpileDependencies: ['vuetify'],
     css: {
@@ -15,7 +15,7 @@ module.exports = defineConfig({
         proxy: {
             // '/api' 로 시작하는 모든 요청을 target url 로 프록시
             '^/api': {
-                target: 'http://localhost:8080',
+                target: `${process.env.VUE_APP_API_URL}`,
                 changeOrigin: true,
             },
         },
