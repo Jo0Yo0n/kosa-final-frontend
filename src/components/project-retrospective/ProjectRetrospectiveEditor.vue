@@ -10,14 +10,6 @@
 
 <template>
     <div>
-        <v-container>
-            <v-row>
-                <v-col>
-                    <v-card-title variant="h6" class="mb-2 title-text"> 프로젝트 회고 </v-card-title>
-                    <p class="mb-4">❗ 해당 주차에 대한 회고를 적어주세요.</p>
-                </v-col>
-            </v-row>
-        </v-container>
         <div v-if="editor" class="container">
             <div id="toolbar">
                 <button class="toolbar-button" @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" :class="{ heading: editor.isActive('heading', { level: 1 }) }">
@@ -151,12 +143,15 @@ export default {
         },
         updatePopupPosition() {
             const { view } = this.editor;
-            const { from } = view.state.selection; // 현재 포인터 위치 (키보드)
+            const { from } = view.state.selection; // 현재 포인터 위치(키보드)
             const coords = view.coordsAtPos(from);
 
+            const editorElement = this.$el.querySelector('.editor-content');
+            const editorRect = editorElement.getBoundingClientRect();
+
             this.linkPosition = {
-                x: coords.left + window.scrollX - 100,
-                y: coords.bottom + window.scrollY + 5,
+                x: coords.left - editorRect.left + 20,
+                y: coords.top - editorRect.top + 60,
             };
         },
         confirmUrlLink() {
