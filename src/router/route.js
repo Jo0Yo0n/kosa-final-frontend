@@ -22,7 +22,7 @@ export default [
         component: ProjectTest,
     },
     {
-        path: '/',
+        path: '/main-page',
         name: 'MainPage',
         component: MainPage,
     },
