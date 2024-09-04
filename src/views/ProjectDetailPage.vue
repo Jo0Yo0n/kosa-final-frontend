@@ -62,6 +62,7 @@ export default {
     data() {
         return {
             project: {},
+            project_recruitment: {},
             activeTab: 0,
         };
     },
@@ -91,6 +92,7 @@ export default {
     },
     created() {
         this.fetchProjectDetails();
+        this.fetchProjectRecruitment();
     },
     methods: {
         async fetchProjectDetails() {
@@ -99,6 +101,16 @@ export default {
                 this.project = response.data;
             } catch (error) {
                 console.error('Error fetching project details:', error);
+            }
+        },
+        async fetchProjectRecruitment() {
+            try {
+                const response = await this.$axios.get(`/api/projects/${this.$route.params.projectId}/applications`);
+                console.log(`😋😋😋`);
+                console.log(response.data);
+                this.project_recruitment = response.data;
+            } catch (error) {
+                console.error('지원자를 불러오는 과정에서 에러 발생 : ', error);
             }
         },
         getStatusColor(status) {

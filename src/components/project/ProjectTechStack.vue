@@ -71,9 +71,6 @@ export default {
             this.removeTechAction({ index }); // Vuex 액션 이름이 다르게 설정됨
         },
     },
-    created() {
-        this.fetchKnownTech();
-    },
 };
 </script>
 
