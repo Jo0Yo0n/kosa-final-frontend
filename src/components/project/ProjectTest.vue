@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-08-29        Yeong-Huns       최초 생성
+ * 2024-08-29        Yeong-Huns       프로젝트 진행 기간 & 회고 주기 vuex 로 관리하기 (진행중 -> 연기)
 -->
 <script>
 import card from '@/components/project/CardCompo.vue';
@@ -18,12 +19,14 @@ import projectDuration from '@/components/project/ProjectDuration.vue';
 import projectCycle from '@/components/project/ProjectCycle.vue';
 import commonModal from '@/components/commonModal/CommonModal.vue';
 import { mapGetters } from 'vuex';
-import axios from 'axios';
+
 export default {
     name: 'ProjectTest',
     data() {
         return {
             showSuccessModal: false,
+            resultHeader: '',
+            resultContent: '',
         };
     },
     components: {
@@ -60,11 +63,13 @@ export default {
         },
         async saveProject(data) {
             try {
-                const response = await axios.post('/api/projects', data, { withCredentials: true });
+                const response = await this.$axiosInstance.post('/api/projects', data, { context: this });
                 console.log('프로젝트 저장 성공:', response.data);
+                this.resultHeader = '저장 성공';
+                this.resultContent = '글 작성에 성공하였습니다.';
                 this.showSuccessModal = true;
             } catch (error) {
-                console.error('프로젝트 저장 실패:', error);
+                // 인터셉터가 처리해서 필요없음
             }
         },
         closeModal() {
@@ -91,7 +96,13 @@ export default {
                 <v-btn color="#49454f" @click="submitAction" outlined> 작성완료 </v-btn>
             </v-row>
         </v-container>
-        <commonModal v-model="showSuccessModal" @close="closeModal"></commonModal>
+        <commonModal v-model="showSuccessModal" @close="closeModal">
+            <template v-slot:title>{{ resultHeader }}</template>
+            <template v-slot:content>{{ resultContent }}</template>
+            <template v-slot:firstButton>
+                <v-btn color="blue darken-1" text @click="closeModal">확인</v-btn>
+            </template>
+        </commonModal>
     </div>
 </template>
 
