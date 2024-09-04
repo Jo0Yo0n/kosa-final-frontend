@@ -72,7 +72,13 @@ export default {
                 // 인터셉터가 처리해서 필요없음
             }
         },
-        closeModal() {
+        async closeModal() {
+            /*try {
+                const response = await this.$axios.get('/node-api/get-member-id');
+                console.log(response.data);
+            } catch (err) {
+                console.error(err);
+            }*/
             this.showSuccessModal = false;
         },
     },
