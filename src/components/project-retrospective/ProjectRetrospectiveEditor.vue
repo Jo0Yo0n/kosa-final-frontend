@@ -113,6 +113,12 @@ lowlight.register('css', css);
 export default {
     name: 'TipTap',
     components: { EditorContent },
+    props: {
+        initialContent: {
+            type: String,
+            default: '',
+        },
+    },
     data() {
         return {
             editor: null,
@@ -172,11 +178,13 @@ export default {
         getEditorContent() {
             return this.editor.getHTML();
         },
+        setEditorContent(content) {
+            this.editor.commands.setContent(content);
+        },
     },
     mounted() {
         this.editor = new Editor({
-            content:
-                '<h3>1. 프로젝트의 시작 동기</h3><br>' + '<h3>2. 회의 진행/모임 방식</h3><br>' + '<h3>3. 나의 경험 및 경력 및 맡게 되는 역할</h3><br>' + '<h3>4. 자유 기재</h3>',
+            content: this.initialContent,
             extensions: [
                 StarterKit.configure({
                     heading: { levels: [1, 2, 3] },
@@ -184,18 +192,29 @@ export default {
                 }),
                 Link.configure({ openOnClick: true }), // 링크 클릭 시, 새창에서 열기
                 Placeholder.configure({
-                    placeholder: '당신의 이야기를 적어보세요...', // 플레이스홀더 텍스트 설정
+                    placeholder: '해당 주차의 회고를 적어보세요...', // 플레이스홀더 텍스트 설정
                     emptyEditorClass: 'is-editor-empty', // 에디터가 비어 있을 때 적용될 클래스
                 }),
                 Image.configure({ inline: true }),
                 CodeBlockLowlight.configure({ lowlight }),
             ],
+            // HTML 파싱 옵션 추가
+            parseOptions: {
+                preserveWhitespace: 'full',
+            },
         });
     },
-    beforeUnmount() {
+    beforeDestroy() {
         if (this.editor) {
             this.editor.destroy();
         }
+    },
+    watch: {
+        initialContent(newContent) {
+            if (this.editor && newContent !== this.editor.getHTML()) {
+                this.setEditorContent(newContent);
+            }
+        },
     },
 };
 </script>

@@ -32,7 +32,9 @@
             </v-col>
         </v-row>
 
-        <div v-if="selectedRetrospective || isEditing" class="mt-4">
+        <v-divider class="ma-6" />
+
+        <div v-if="currentRetrospective || isEditing" class="mt-4">
             <div>
                 <template v-if="isEditing">
                     <v-card-title variant="h6" class="mb-2 title-text"> {{ selectedWeek }}주차 회고</v-card-title>
@@ -45,12 +47,13 @@
                         :rules="[rules.required, rules.minLength, rules.maxLength]"
                         class="rounded-lg"
                     ></v-text-field>
-                    <project-retrospective-editor ref="editor" :initial-content="selectedRetrospective ? selectedRetrospective.content : ''" />
+                    <project-retrospective-editor ref="editor" :initial-content="currentRetrospective ? currentRetrospective.content : ''" />
                 </template>
-                <template v-else>
-                    <p>작성일: {{ formatDate(selectedRetrospective?.createdAt) }}</p>
-                    <h3>{{ selectedRetrospective.content }}</h3>
-                    <div v-html="selectedRetrospective?.content"></div>
+                <template v-else-if="currentRetrospective">
+                    <p>작성일: {{ formatDate(currentRetrospective?.createdAt) }}</p>
+                    <p v-if="currentRetrospective.updatedAt">수정일: {{ formatDate(currentRetrospective.updatedAt) }}</p>
+                    <h2 class="mb-5">{{ currentRetrospective?.title }}</h2>
+                    <div v-html="currentRetrospective?.content"></div>
                 </template>
             </div>
         </div>
@@ -76,7 +79,7 @@ export default {
             members: [],
             selectedMember: null,
             selectedWeek: null,
-            retrospectives: [],
+            currentRetrospective: [],
             isEditing: false,
             title: '',
             rules: {
@@ -87,9 +90,6 @@ export default {
         };
     },
     computed: {
-        selectedRetrospective() {
-            return this.retrospectives.find((r) => r.memberId === this.selectedMember && r.week === this.selectedWeek);
-        },
         currentWeek() {
             const startDate = new Date(this.project.startedAt);
             const today = new Date();
@@ -111,9 +111,20 @@ export default {
             return weeks;
         },
     },
+    watch: {
+        selectedMember() {
+            this.fetchRetrospectives();
+            this.isEditing = false;
+            this.title = '';
+        },
+        selectedWeek() {
+            this.fetchRetrospectives();
+            this.isEditing = false;
+            this.title = '';
+        },
+    },
     created() {
         this.initializeMembers();
-        this.fetchRetrospectives();
     },
     methods: {
         initializeMembers() {
@@ -121,32 +132,70 @@ export default {
             this.selectedMember = this.members[0].memberId;
         },
         async fetchRetrospectives() {
-            // this.retrospectives = await this.$axios.get(`/api/projects/${this.project.projectId}/retrospectives`);
-            // 임시 데이터:
-            this.retrospectives = [];
+            if (this.selectedMember && this.selectedWeek) {
+                try {
+                    const response = await this.$axios.get(`/api/projects/${this.project.projectId}/retrospectives`, {
+                        params: {
+                            memberId: this.selectedMember,
+                            week: this.selectedWeek,
+                        },
+                    });
+                    this.currentRetrospective = response.data;
+                } catch (error) {
+                    console.error('Error fetching retrospective: ', error);
+                    this.currentRetrospective = null;
+                }
+            } else {
+                this.currentRetrospective = null;
+            }
         },
         formatDate(date) {
-            return new Date(date).toLocaleDateString('ko-KR');
+            return new Date(date).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            });
         },
         toggleEditMode() {
             if (this.isEditing) {
                 this.saveRetrospective();
             } else {
                 this.isEditing = true;
+                if (this.currentRetrospective) {
+                    this.title = this.currentRetrospective.title;
+                }
             }
         },
         async saveRetrospective() {
-            await this.$axios.post(
-                `/api/projects/${this.project.projectId}/retrospectives`,
-                {
-                    memberId: this.selectedMember,
-                    week: this.selectedWeek,
-                    content: this.$refs.editor.getEditorContent(),
-                },
-                { withCredentials: true },
-            );
-            this.fetchRetrospectives();
-            this.isEditing = false;
+            try {
+                const content = this.$refs.editor.getEditorContent();
+                const payload = {
+                    title: this.title,
+                    content: content,
+                };
+
+                if (this.currentRetrospective) {
+                    await this.$axios.put(`/api/projects/${this.project.projectId}/retrospectives/${this.currentRetrospective.retrospectiveId}`, payload, {
+                        withCredentials: true,
+                    });
+                } else {
+                    await this.$axios.post(
+                        `api/projects/${this.project.projectId}/retrospectives`,
+                        {
+                            week: this.selectedWeek,
+                            ...payload,
+                        },
+                        { withCredentials: true },
+                    );
+                }
+                await this.fetchRetrospectives();
+                this.isEditing = false;
+            } catch (error) {
+                console.error('Error saving retrospective: ', error);
+            }
         },
     },
 };
