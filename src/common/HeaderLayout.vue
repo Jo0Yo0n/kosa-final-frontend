@@ -26,7 +26,9 @@
 
     <div class="login-button-container">
       <template v-if="isLogIn">
-        <v-icon class="user-icon">mdi-account</v-icon>
+        <router-link to="/me">
+          <v-icon class="user-icon">mdi-account</v-icon>
+        </router-link>
         <span @click="logout" class="login-button">로그아웃</span>
       </template>
       <template v-else>
@@ -134,7 +136,7 @@ export default {
 
 .user-icon {
   font-size: 24px;
-  color: #007bff;
+  color: white;
 }
 
 .nav-link.router-link-exact-active {
