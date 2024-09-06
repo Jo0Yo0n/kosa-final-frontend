@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       // 멤버 프로필 정보
-      memberProfile: [],
+      memberProfile: {},
       // 각 프로젝트 리스트
       favoriteProjects: [],
       myProjects: [],
@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     fetchMemberData() {
-      axios.get('/api/me') // API URL 수정
+      axios.get('/api/users/me') // API URL 수정
           .then((response) => {
             this.memberProfile = response.data; // API에서 가져온 데이터로 memberProfile 업데이트
           })

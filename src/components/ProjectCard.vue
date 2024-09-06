@@ -84,6 +84,7 @@ export default {
 .project-card {
   width: 220px;
   height: 350px;
+  border: 2px solid #6F4A3D; /* 갈색 아웃라인 */
   border-radius: 10px;
   overflow: hidden;
   transition: height 0.3s ease;

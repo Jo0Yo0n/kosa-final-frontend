@@ -15,7 +15,7 @@
       <!-- 이미지 섹션 -->
       <v-col cols="12" md="4">
         <v-img
-            :src="memberProfile.profileImage || 'https://via.placeholder.com/150'"
+            :src="memberProfile.memberImg || 'https://via.placeholder.com/150'"
             class="profile-image"
             max-width="200"
         />
@@ -47,8 +47,8 @@
             <v-col cols="auto">
               <span>직무 :</span>
             </v-col>
-            <v-col cols="auto">
-              <span>{{ memberProfile.job }}</span>
+            <v-col v-for="job in memberProfile.jobs" :key="job" cols="auto">
+              <span>{{ job }}</span>
             </v-col>
           </v-row>
           <v-row class="align-center">
@@ -56,7 +56,7 @@
               <span>경력 :</span>
             </v-col>
             <v-col cols="auto">
-              <span>{{ memberProfile.experience }}</span>
+              <span>{{ memberProfile.career }}</span>
             </v-col>
           </v-row>
         </div>
@@ -66,22 +66,32 @@
     <!-- 기술 스택 섹션 -->
     <v-divider class="my-8" ></v-divider>
     <h3>기술 스택</h3>
-    <v-card class="techstack-card pa-4 mb-6"  outlined style="min-height: 100px;">
-      <v-row>
-        <v-col v-for="tech in memberProfile.techStack" :key="tech.name" cols="auto">
-          <v-avatar size="60">
-            <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
-          </v-avatar>
+    <v-card class="techstack-card pa-4 mb-6" outlined style="min-height: 100px;">
+      <v-row class="align-center">
+        <v-col v-for="tech in memberProfile.memberTechStack" :key="tech.name" cols="auto" class="d-flex align-center">
+          <template v-if="tech.imgUrl">
+            <div class="d-flex flex-column align-center">
+              <v-avatar size="40" class="mb-2">
+                <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
+              </v-avatar>
+              <span class="caption text-center black--text">#{{ tech.name }}</span>
+            </div>
+          </template>
+          <template v-else>
+            <v-chip outlined class="ma-2" style="height: 40px; display: flex; align-items: center;">#{{ tech.name }}</v-chip>
+          </template>
         </v-col>
       </v-row>
     </v-card>
+
+
 
     <!-- 자기소개 섹션 -->
     <v-row class="my-8">
       <v-col>
         <h3>자기소개</h3>
         <v-card class="introduction-card pa-4 mb-6" outlined style="min-height: 200px; max-height: 600px; overflow-y: auto;"> <!-- 최소, 최대 높이 설정 -->
-          <p>{{ memberProfile.introduction }}</p>
+          <p>{{ memberProfile.pr }}</p>
         </v-card>
       </v-col>
     </v-row>
