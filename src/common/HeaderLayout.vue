@@ -24,15 +24,16 @@
             @keyup.enter="getSearchResults"
         ></v-text-field>
 
-        <div class="login-button-container">
-            <template v-if="isLogIn">
-                <v-icon class="user-icon">mdi-account</v-icon>
-                <span @click="logout" class="login-button">로그아웃</span>
-            </template>
-            <template v-else>
-                <span @click="showModal = true" class="login-button">회원가입/로그인</span>
-            </template>
-
+    <div class="login-button-container">
+      <template v-if="isLogIn">
+        <router-link to="/me">
+          <v-icon class="user-icon">mdi-account</v-icon>
+        </router-link>
+        <span @click="logout" class="login-button">로그아웃</span>
+      </template>
+      <template v-else>
+        <span @click="showModal = true" class="login-button">회원가입/로그인</span>
+      </template>
             <LoginModal v-model="showModal" />
         </div>
     </v-app-bar>
@@ -78,6 +79,7 @@ export default {
 .v-app-bar {
     background-color: #6f4a3d !important;
 }
+
 
 .logo {
     background-color: #d0d0d0;
@@ -130,10 +132,9 @@ export default {
 }
 
 .user-icon {
-    font-size: 24px;
-    color: #007bff;
+  font-size: 24px;
+  color: white;
 }
-
 .nav-link.router-link-exact-active {
     color: #ffd700 !important; /* Choose your desired active color */
 }

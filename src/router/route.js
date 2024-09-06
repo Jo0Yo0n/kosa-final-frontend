@@ -4,7 +4,7 @@ import SearchProjectPage from '@/views/SearchProjectPage.vue'
 import SearchMemberPage from '@/views/SearchMemberPage.vue';
 import SearchAllPage from '@/views/SearchAllPage.vue';
 import MainPage from '@/views/MainPage.vue';
-
+import MyPage from '@/views/MyPage.vue';
 
 export default [
     {
@@ -18,7 +18,6 @@ export default [
         component: ProjectTest,
     },
     {
-
         path: '/search/projects',
         name: 'SearchProject',
         component: SearchProjectPage,
@@ -39,4 +38,9 @@ export default [
         name: 'MainPage',
         component: MainPage,
     },
+    {
+        path: "/me",
+        name: "MyPage",
+        component: MyPage,
+    }
 ];

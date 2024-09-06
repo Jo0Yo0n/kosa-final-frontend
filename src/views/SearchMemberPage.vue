@@ -10,7 +10,7 @@
 
 
 <template>
-  <div class = "pa-8">
+  <div >
     <!--멤버 검색 타이틀-->
     <v-row>
       <v-col cols="12">
