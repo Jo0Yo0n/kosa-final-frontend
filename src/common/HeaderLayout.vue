@@ -1,5 +1,5 @@
 <template>
-    <div class="login-button-container">
+    <div class="login-button-container" v-if="isStatusChecked">
         <template v-if="isLogIn">
             <v-icon class="user-icon">mdi-account</v-icon>
             <span @click="logout" class="login-button">로그아웃</span>
@@ -26,7 +26,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('member', ['isLogIn']),
+        ...mapGetters('member', ['isLogIn', 'isStatusChecked']),
     },
     methods: {
         ...mapActions('member', ['checkLoginStatus', 'logout']),

@@ -2,15 +2,18 @@ import axios from 'axios';
 
 const state = {
     isLogIn: false,
+    isStatusChecked: false, // 인증 상태가 확인되었는지 여부
 };
 
 const getters = {
     isLogIn: (state) => state.isLogIn,
+    isStatusChecked: (state) => state.isStatusChecked,
 };
 
 const mutations = {
     SET_LOGIN_STATUS(state, status) {
         state.isLogIn = status;
+        state.isStatusChecked = true; // 상태 확인 완료
     },
 };
 
