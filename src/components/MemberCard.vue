@@ -9,7 +9,7 @@
 -->
 
 <template>
-    <v-card class="ma-2" outlined rounded="lg" style="width: 300px">
+    <v-card class="ma-2" outlined rounded="lg" elevation="1" style="width: 300px">
         <v-card-text class="pa-3">
             <div class="d-flex mb-3">
                 <v-avatar size="100" class="mr-3" tile rounded="xxl">

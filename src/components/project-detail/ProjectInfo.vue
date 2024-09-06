@@ -13,9 +13,9 @@
 
         <v-divider class="my-6" />
 
-        <recruitment-status :recruitments="project.recruitments" :projectId="project.projectId" :status="project.status" />
+        <recruitment-status v-if="project.status === 0" :recruitments="project.recruitments" :projectId="project.projectId" :status="project.status" />
 
-        <v-divider class="my-6" />
+        <v-divider v-if="project.status === 0" class="my-6" />
 
         <project-description :description="project.description" />
 
