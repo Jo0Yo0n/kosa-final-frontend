@@ -10,62 +10,62 @@
 <!-- MemberProfileCard.vue -->
 <template>
   <v-container>
-    <!-- 이미지와 사용자 정보 섹션 -->
-    <v-row>
-      <!-- 이미지 섹션 -->
-      <v-col  class="text-center mx-auto" cols="12" md="4">
+    <!-- 이미지 섹션 -->
+    <v-row justify="center">
+      <v-col cols="12" sm="6" md="4" class="text-center">
         <v-img
             :src="memberProfile.memberImg || 'https://via.placeholder.com/150'"
-            class="profile-image"
+            class="profile-image mx-auto"
+            max-width="150"
+            rounded
         />
       </v-col>
     </v-row>
-  <v-row>
+
     <!-- 사용자 정보 섹션 -->
-    <v-col class="text-center mx-auto" cols="12" md="4">
-      <div class="profile-details">
-        <!-- 닉네임, 깃허브 아이콘, 수정 버튼 -->
-        <v-row class="align-center">
-          <v-col cols="auto">
-            <span>{{ memberProfile.nickname }}</span>
-          </v-col>
-          <v-col cols="auto">
-            <v-btn icon :href="memberProfile.github" target="_blank" color="black" small class="ml-1">
-              <v-icon>mdi-github</v-icon>
-            </v-btn>
-          </v-col>
-          <v-col cols="auto">
-            <v-btn
-                class="edit-button"
-                small
-                @click="enableEdit"
-                v-if="!isEditMode"
-            >수정</v-btn>
-          </v-col>
-  </v-row>
+    <v-row justify="center" class="mt-4">
+      <v-col cols="12" sm="6" md="6">
+        <v-row justify="center">
+          <v-col cols="12" sm="8" md="6">
+            <!-- 닉네임 -->
+            <v-row align="center" class="mb-2">
+              <v-col cols="4" class="text-right">
+                <span>닉네임 :</span>
+              </v-col>
+              <v-col cols="8" class="text-left">
+                <span>{{ memberProfile.nickname }}</span>
+                <v-btn icon :href="memberProfile.github" target="_blank" color="black" small class="ml-2">
+                  <v-icon>mdi-github</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
 
+            <!-- 직무 -->
+            <v-row align="center" class="mb-2">
+              <v-col cols="4" class="text-right">
+                <span>직무 :</span>
+              </v-col>
+              <v-col cols="8" class="text-left">
+                <span v-for="(job, index) in memberProfile.jobs" :key="job">
+                  {{ job }}{{ index < memberProfile.jobs.length - 1 ? ', ' : '' }}
+                </span>
+              </v-col>
+            </v-row>
 
-
-          <!-- 직무 및 경력 -->
-          <v-row class="align-center">
-            <v-col cols="auto">
-              <span>직무 :</span>
-            </v-col>
-            <v-col v-for="job in memberProfile.jobs" :key="job" cols="auto">
-              <span>{{ job }}</span>
-            </v-col>
-          </v-row>
-          <v-row class="align-center">
-            <v-col cols="auto">
-              <span>경력 :</span>
-            </v-col>
-            <v-col cols="auto">
-              <span>{{ memberProfile.career }}</span>
-            </v-col>
-          </v-row>
-        </div>
+            <!-- 경력 -->
+            <v-row align="center">
+              <v-col cols="4" class="text-right">
+                <span>경력 :</span>
+              </v-col>
+              <v-col cols="8" class="text-left">
+                <span>{{ memberProfile.career }}</span>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
+
 
     <!-- 기술 스택 섹션 -->
     <v-divider class="my-8" ></v-divider>
