@@ -25,7 +25,11 @@
                     <v-col cols="auto">
                         <v-btn v-if="selectedWeek" color="brown" dark @click="toggleEditMode">
                             <v-icon left>{{ isEditing ? 'mdi-check' : 'mdi-pencil' }}</v-icon>
-                            {{ isEditing ? '저장' : selectedRetrospective ? '수정' : '작성' }}
+                            {{ isEditing ? '저장' : currentRetrospective ? '수정' : '작성' }}
+                        </v-btn>
+                        <v-btn v-if="isEditing" color="brown darken-2" dark @click="isEditing = false" class="ml-1">
+                            <v-icon>mdi-close</v-icon>
+                            취소
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -142,7 +146,11 @@ export default {
                     });
                     this.currentRetrospective = response.data;
                 } catch (error) {
-                    console.error('Error fetching retrospective: ', error);
+                    if (error.response && error.response.status === 404) {
+                        console.log('회고를 찾을 수 없습니다.');
+                    } else {
+                        console.log('에러 발생: ', error);
+                    }
                     this.currentRetrospective = null;
                 }
             } else {
