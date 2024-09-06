@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     showMoreProjects() {
-      // 더보기 버튼 클릭 시 추가로 3개의 프로젝트를 보여줌
+      // 더보기 버튼 클릭 시 추가로 4개의 프로젝트를 보여줌
       this.visibleCount += 4;
     }
   }

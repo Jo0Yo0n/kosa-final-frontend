@@ -13,34 +13,38 @@
     <!-- 이미지와 사용자 정보 섹션 -->
     <v-row>
       <!-- 이미지 섹션 -->
-      <v-col cols="12" md="4">
+      <v-col  class="text-center mx-auto" cols="12" md="4">
         <v-img
             :src="memberProfile.memberImg || 'https://via.placeholder.com/150'"
             class="profile-image"
-            max-width="200"
         />
       </v-col>
+    </v-row>
+  <v-row>
+    <!-- 사용자 정보 섹션 -->
+    <v-col class="text-center mx-auto" cols="12" md="4">
+      <div class="profile-details">
+        <!-- 닉네임, 깃허브 아이콘, 수정 버튼 -->
+        <v-row class="align-center">
+          <v-col cols="auto">
+            <span>{{ memberProfile.nickname }}</span>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn icon :href="memberProfile.github" target="_blank" color="black" small class="ml-1">
+              <v-icon>mdi-github</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn
+                class="edit-button"
+                small
+                @click="enableEdit"
+                v-if="!isEditMode"
+            >수정</v-btn>
+          </v-col>
+  </v-row>
 
-      <!-- 사용자 정보 섹션 -->
-      <v-col cols="12" md="8">
-        <div class="profile-details">
-          <!-- 닉네임, 깃허브 아이콘, 수정 버튼 -->
-          <v-row class="align-center">
-            <v-col cols="auto">
-              <span>{{ memberProfile.nickname }}</span>
-            </v-col>
-            <v-col cols="auto">
-              <v-icon class="github-icon" color="black" small>mdi-github</v-icon>
-            </v-col>
-            <v-col cols="auto">
-              <v-btn
-                  class="edit-button"
-                  small
-                  @click="enableEdit"
-                  v-if="!isEditMode"
-              >수정</v-btn>
-            </v-col>
-          </v-row>
+
 
           <!-- 직무 및 경력 -->
           <v-row class="align-center">
