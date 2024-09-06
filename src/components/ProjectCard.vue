@@ -9,12 +9,12 @@
 -->
 <template>
   <v-card
-      class="ma-4 project-card"
+      class="ma-2 project-card"
       outlined
       @click="goToDetailPage"
   >
     <!-- 프로젝트 이미지 -->
-    <v-img :src="project.imgUrl" height="140px" class="project-img"></v-img>
+    <v-img :src="project.imgUrl" height="150px" class="project-img"></v-img>
 
     <!-- 카드 내용 -->
     <v-card-text class="pt-2">
@@ -44,7 +44,6 @@
               >
                 {{ tech.name }}
               </v-avatar>
-              <div class="caption text-center black--text">#{{ tech.name }}</div>
             </div>
           </template>
         </div>
@@ -82,12 +81,15 @@ export default {
 
 <style scoped>
 .project-card {
-  width: 220px;
-  height: 350px;
+  width: 100%;
+  max-width: 270px;
+  min-width: 200px;
+  height: auto;
+  aspect-ratio: 2 / 3;
   border: 2px solid #6F4A3D; /* 갈색 아웃라인 */
   border-radius: 10px;
   overflow: hidden;
-  transition: height 0.3s ease;
+  transition: height 0.1s ease;
 }
 
 .project-img {
@@ -110,10 +112,6 @@ export default {
   overflow: hidden;
   max-height: 60px; /* 기본 상태에서 보여줄 높이 */
   transition: max-height 0.3s ease;
-}
-
-.project-card:hover .project-tech-stack {
-  max-height: 120px; /* 호버 시 높이를 확장 */
 }
 
 .project-stats {

@@ -9,16 +9,16 @@
 -->
 
 <template>
-  <div class = "pa-8">
+  <div >
     <!--프로젝트 검색 타이틀-->
     <v-row>
-      <v-col cols="12">
+      <v-col cols="4">
         <h2 class="text-h4 font-weight-bold">프로젝트 검색</h2>
       </v-col>
     </v-row>
     <v-row class="align-center" >
       <!-- 검색창 -->
-      <v-col cols="12" md="10">
+      <v-col>
         <v-text-field
             v-model="searchQuery"
             label="프로젝트명, 기술 스택 검색"
@@ -98,27 +98,17 @@
 
 
   <!-- 프로젝트 카드 리스트 -->
-    <v-row>
-      <v-col
-          v-for="project in filteredProjects"
-          :key="project.projectId"
-          cols="12"
-          sm="6"
-          md="3"
-      >
-        <ProjectCard :project="project" />
-      </v-col>
-    </v-row>
+    <ProjectCardList :projects="filteredProjects" />
   </div>
 </template>
 
 <script>
-import ProjectCard from '@/components/ProjectCard.vue';
+import ProjectCardList from '@/components/ProjectCardList.vue';
 
 export default {
   name: "SearchProjectPage",
   components: {
-    ProjectCard
+    ProjectCardList
   },
   data() {
     return {

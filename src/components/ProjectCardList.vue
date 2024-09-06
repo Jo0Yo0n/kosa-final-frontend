@@ -34,7 +34,7 @@ export default {
   },
   data() {
     return {
-      visibleCount: 3 // 처음에 표시할 프로젝트 수
+      visibleCount: 4 // 처음에 표시할 프로젝트 수
     };
   },
   computed: {
@@ -46,7 +46,7 @@ export default {
   methods: {
     showMoreProjects() {
       // 더보기 버튼 클릭 시 추가로 3개의 프로젝트를 보여줌
-      this.visibleCount += 3;
+      this.visibleCount += 4;
     }
   }
 }
@@ -55,7 +55,7 @@ export default {
 .project-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
 }
 
 button {

@@ -117,8 +117,9 @@ export default {
 <style scoped>
 .mypage {
   width: 100%;
+  max-width: 1200px;
   padding: 20px;
-
+  margin: 0 auto;
 }
 .project-section {
   margin-bottom: 30px; /* 각 프로젝트 섹션 사이에 여백 추가 */
@@ -133,5 +134,52 @@ h3 {
   margin-left: 20px;
   margin-bottom: 30px;
   font-weight: bold;
+}
+
+@media (max-width: 1200px) {
+  .mypage {
+    padding: 15px; /* Reduce padding for smaller screens */
+  }
+
+  h3 {
+    margin-left: 15px; /* Adjust margins */
+  }
+}
+
+@media (max-width: 768px) {
+  .mypage {
+    padding: 10px;
+  }
+
+  h3 {
+    margin-left: 10px;
+  }
+
+  .project-section {
+    margin-bottom: 20px;
+  }
+
+  v-col {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mypage {
+    padding: 5px;
+  }
+
+  h3 {
+    margin-left: 5px;
+    margin-top: 20px;
+  }
+
+  .project-section {
+    margin-bottom: 15px;
+  }
+
+  v-col {
+    margin-bottom: 10px;
+  }
 }
 </style>

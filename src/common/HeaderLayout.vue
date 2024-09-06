@@ -80,9 +80,6 @@ export default {
 </script>
 
 <style scoped>
-.v-app-bar {
-  background-color: #6F4A3D !important;
-}
 
 .logo {
   background-color: #D0D0D0;
