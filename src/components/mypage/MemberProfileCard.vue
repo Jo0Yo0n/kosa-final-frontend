@@ -14,11 +14,13 @@
     <v-row justify="center">
       <v-col cols="12" sm="6" md="4" class="text-center">
         <v-img
-            :src="memberProfile.memberImg || 'https://via.placeholder.com/150'"
+            :src="memberProfile.imgUrl || 'https://via.placeholder.com/150'"
             class="profile-image mx-auto"
             max-width="150"
             rounded
+            @click="selectImage"
         />
+        <v-file-input v-if="isEditMode" label="프로필 이미지 선택" @change="onImageSelected" accept="image/*" prepend-icon="mdi-camera"></v-file-input>
       </v-col>
     </v-row>
 
@@ -33,10 +35,12 @@
                 <span>닉네임 :</span>
               </v-col>
               <v-col cols="8" class="text-left">
-                <span>{{ memberProfile.nickname }}</span>
-                <v-btn icon :href="memberProfile.github" target="_blank" color="black" small class="ml-2">
-                  <v-icon>mdi-github</v-icon>
-                </v-btn>
+                <template v-if="isEditMode">
+                  <v-text-field v-model="editableProfile.nickname"></v-text-field>
+                </template>
+                <template v-else>
+                  <span>{{ memberProfile.nickname }}</span>
+                </template>
               </v-col>
             </v-row>
 
@@ -46,19 +50,41 @@
                 <span>직무 :</span>
               </v-col>
               <v-col cols="8" class="text-left">
-                <span v-for="(job, index) in memberProfile.jobs" :key="job">
-                  {{ job }}{{ index < memberProfile.jobs.length - 1 ? ', ' : '' }}
-                </span>
+                <template v-if="isEditMode">
+                  <v-select
+                      v-model="editableProfile.jobs"
+                      :items="jobOptions"
+                      multiple
+                      label="직무 선택"
+                      chips
+                      deletable-chips
+                  ></v-select>
+                </template>
+                <template v-else>
+                  <span v-for="(job, index) in memberProfile.jobs" :key="job">
+                    {{ job }}{{ index < memberProfile.jobs.length - 1 ? ', ' : '' }}
+                  </span>
+                </template>
               </v-col>
             </v-row>
 
             <!-- 경력 -->
-            <v-row align="center">
+            <v-row align="center" class="mb-2">
               <v-col cols="4" class="text-right">
                 <span>경력 :</span>
               </v-col>
               <v-col cols="8" class="text-left">
-                <span>{{ memberProfile.career }}</span>
+                <template v-if="isEditMode">
+                  <v-select
+                      v-model="editableProfile.career"
+                      :items="careerOptions"
+                      label="경력 선택"
+                  ></v-select>
+                  <!-- 경력을 선택할 수 있도록 v-select 추가 -->
+                </template>
+                <template v-else>
+                  <span>{{ memberProfile.career }}</span>
+                </template>
               </v-col>
             </v-row>
           </v-col>
@@ -68,21 +94,37 @@
 
 
     <!-- 기술 스택 섹션 -->
-    <v-divider class="my-8" ></v-divider>
+    <v-divider class="my-8"></v-divider>
     <h3>기술 스택</h3>
     <v-card class="techstack-card pa-4 mb-6" outlined style="min-height: 100px;">
       <v-row class="align-center">
-        <v-col v-for="tech in memberProfile.memberTechStack" :key="tech.name" cols="auto" class="d-flex align-center">
-          <template v-if="tech.imgUrl">
-            <div class="d-flex flex-column align-center">
-              <v-avatar size="40" class="mb-2">
-                <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
-              </v-avatar>
-              <span class="caption text-center black--text">#{{ tech.name }}</span>
-            </div>
+        <v-col cols="12">
+          <!-- 수정 모드일 때 TechStackSelector 컴포넌트 사용 -->
+          <template v-if="isEditMode">
+            <tech-stack-selector
+                v-model="editableProfile.techStacks"
+                :custom-stacks="editableProfile.customStacks"
+                :known-tech="knownTech"
+                :max-tech-stacks="10"
+                :min-tech-stacks="1"
+                @input="updateTechStacks"
+                @customInput="updateCustomStacks"
+            />
           </template>
+
+          <!-- 수정 모드가 아닐 때 -->
           <template v-else>
-            <v-chip outlined class="ma-2" style="height: 40px; display: flex; align-items: center;">#{{ tech.name }}</v-chip>
+            <div class="d-flex flex-wrap">
+              <template v-for="tech in memberProfile.memberTechStack" >
+                <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">
+                  <v-avatar size="40" class="mb-1">
+                    <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
+                  </v-avatar>
+                  <div class="caption text-center black--text">#{{ tech.name }}</div>
+                </div>
+                <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
+              </template>
+            </div>
           </template>
         </v-col>
       </v-row>
@@ -94,32 +136,98 @@
     <v-row class="my-8">
       <v-col>
         <h3>자기소개</h3>
-        <v-card class="introduction-card pa-4 mb-6" outlined style="min-height: 200px; max-height: 600px; overflow-y: auto;"> <!-- 최소, 최대 높이 설정 -->
-          <p>{{ memberProfile.pr }}</p>
+        <v-card class="introduction-card pa-4 mb-6" outlined style="min-height: 200px; max-height: 600px; overflow-y: auto;">
+          <template v-if="isEditMode">
+            <v-textarea v-model="editableProfile.pr"></v-textarea>
+          </template>
+          <template v-else>
+            <p>{{ memberProfile.pr }}</p>
+          </template>
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- 수정, 저장, 취소 버튼 -->
+    <v-btn v-if="!isEditMode" color="primary" @click="enableEdit">수정</v-btn>
+    <v-btn v-if="isEditMode" color="success" @click="submitChanges">저장</v-btn>
+    <v-btn v-if="isEditMode" color="error" @click="cancelEdit">취소</v-btn>
+
   </v-container>
 </template>
 
 <script>
+import TechStackSelector from '@/components/login/TechStackSelector.vue';
+import {mapGetters} from "vuex"; // TechStackSelector 컴포넌트 임포트
+
 export default {
   name: 'MemberProfileCard',
+  components: {
+    TechStackSelector,
+  },
   props: {
     memberProfile: {
       type: Object,
       required: true
-    }
+    },
+    knownTech: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
-      isEditMode: false
+      isEditMode: false,
+      editableProfile: { ...this.memberProfile },
+      jobOptions: ['Developer', 'Designer', 'Manager', 'QA'], // 직무 옵션들
+      careerOptions:['신입', '주니어', '시니어'],
+      selectedTech: null,
+      selectedTechImg: null,
     };
+  },
+  computed: {
+    ...mapGetters(['knownTech']),
   },
   methods: {
     enableEdit() {
       this.isEditMode = true;
-    }
+    },
+    cancelEdit() {
+      this.isEditMode = false;
+      this.editableProfile = { ...this.memberProfile }; // 취소 시 원래 값으로 복구
+    },
+    async submitChanges() {
+      this.$emit('update-profile', this.editableProfile);
+      this.isEditMode = false;
+    },
+    selectImage() {
+      this.$refs.imageInput.click(); // 이미지 선택 창 열기
+    },
+    onImageSelected(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.editableProfile.imgUrl = URL.createObjectURL(file); // 이미지 URL 생성
+      }
+    },
+    updateTechStacks(newStacks) {
+      this.editableProfile.techStacks = newStacks; // 기술 스택 업데이트
+    },
+    updateCustomStacks(newCustomStacks) {
+      this.editableProfile.customStacks = newCustomStacks; // 사용자 정의 스택 업데이트
+    },
+    selectTech(tech) {
+      this.newTech = tech;
+      this.addTechIfValid(tech);
+    },
+    addTechIfValid(tech) {
+      const trimmedTech = tech.trim();
+      if (trimmedTech && !this.userTechStack.find((t) => t.name.toLowerCase() === trimmedTech.toLowerCase())) {
+        const techItem = this.knownTech.find((item) => item.name.toLowerCase() === trimmedTech.toLowerCase());
+        const imgUrl = techItem ? techItem.imgUrl : ''; // 이미지 URL 가져오기
+        this.userTechStack.push({ name: trimmedTech, imgUrl });
+        this.newTech = '';
+      }
+      this.showDropdown = false;
+    },
   }
 };
 </script>

@@ -24,7 +24,7 @@
             v-model="searchQuery"
             label="닉네임, 기술 스택, 직무 검색"
             append-icon="mdi-magnify"
-            @click:append-outer="searchMembers"
+            @click:append="searchMembers"
             @keyup.enter="searchMembers"
             clearable
             outlined
@@ -44,28 +44,24 @@
     </v-row>
 
     <!-- 멤버 카드 리스트 -->
-    <v-row>
-      <v-col
-          v-for="member in members"
-          :key="member.memberId"
-          cols="12"
-          sm="6"
-          md="3"
-      >
-        <MemberCard :member="member" />
-      </v-col>
-    </v-row>
+    <div v-if="members.length > 0">
+      <MemberCardList :members="members" />
+    </div>
+    <div v-else>
+      검색된 멤버가 없습니다.
+    </div>
   </div>
 </template>
 
 
 <script>
-import MemberCard from "@/components/MemberCard.vue";
+import MemberCardList from '@/components/MemberCardList.vue';
+
 
 export default {
   name: "SearchMemberPage",
   components: {
-    MemberCard
+    MemberCardList
   },
   data(){
     return{
@@ -73,8 +69,8 @@ export default {
       sortOrder: '',
       sortOptions:[
         {text: '신규순', value: 'latest'},
-        {text: '경력 내림차순', value: 'career_desc'},
-        {text: '경력 오름차순', value: 'career_asc'},
+        {text: '경력 높은순', value: 'career_desc'},
+        {text: '경력 낮은순', value: 'career_asc'},
 
       ],
       members: [],

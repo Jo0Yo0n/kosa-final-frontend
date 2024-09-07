@@ -20,7 +20,30 @@
     <v-card-text class="pt-2">
       <div class="project-details">
         <!-- 프로젝트 이름 -->
-        <div class="project-name text-h6">{{ project.name }}</div>
+<!--        <div class="project-name text-h6">{{ project.name }}</div>-->
+        <div v-if="isNameTruncated">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <div
+                  class="project-name text-h6 text-truncate"
+                  v-bind="attrs"
+                  v-on="on"
+                  ref="projectName"
+              >
+                {{ project.name }}
+              </div>
+            </template>
+            <span>{{ project.name }}</span>
+          </v-tooltip>
+        </div>
+        <div v-else>
+          <div
+              class="project-name text-h6 text-truncate"
+              ref="projectName"
+          >
+            {{ project.name }}
+          </div>
+        </div>
 
         <!-- 프로젝트 기간 -->
         <div class="project-duration grey--text">
@@ -42,7 +65,7 @@
                   size="30"
                   style="width: 60px; height: 30px; background-color: #e0e0e0; color: #000; text-align: center; line-height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center;"
               >
-                {{ tech.name }}
+                #{{ tech.name }}
               </v-avatar>
             </div>
           </template>
@@ -50,8 +73,19 @@
 
         <!-- 좋아요 수 및 팀원 정보 -->
         <div class="project-stats d-flex justify-space-between align-center mt-3">
-          <div class="like-count grey--text">
-            <v-icon small left>mdi-thumb-up</v-icon>{{ project.cntLike }}
+          <div
+              class="like-count"
+              :class="{ 'text-primary': project.isLiked, 'grey--text': !project.isLiked }"
+          >
+            <v-icon
+                small
+                left
+                @click="toggleLike(project)"
+                :color="project.isLiked ? 'blue' : 'grey'"
+            >
+              mdi-heart
+            </v-icon>
+            {{ project.cntLike }}
           </div>
           <div class="team-info grey--text">
             <v-icon small left>mdi-account-multiple</v-icon>{{ project.currentCnt }}/{{ project.teamCnt }}
@@ -71,9 +105,33 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      isNameTruncated: false, // 프로젝트 이름이 길어서 자를지 여부
+    };
+  },
+  mounted() {
+    this.checkNameLength();
+    window.addEventListener('resize', this.checkNameLength); // 화면 크기 변경 시 다시 체크
+  },
   methods: {
+    toggleLike(project) {
+      // 좋아요 상태를 토글하고 cntLike 값도 업데이트
+      if (project.isLiked) {
+        project.cntLike--;
+      } else {
+        project.cntLike++;
+      }
+      project.isLiked = !project.isLiked;
+    },
     goToDetailPage() {
       this.$router.push({ name: 'ProjectDetail', params: { projectId: this.project.projectId } });
+    },
+    checkNameLength() {
+      const element = this.$refs.projectName;
+      if (element) {
+        this.isNameTruncated = element.scrollWidth > element.clientWidth;
+      }
     }
   }
 }
@@ -85,7 +143,7 @@ export default {
   max-width: 270px;
   min-width: 200px;
   height: auto;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 4 / 5;
   border: 2px solid #6F4A3D; /* 갈색 아웃라인 */
   border-radius: 10px;
   overflow: hidden;
@@ -102,6 +160,9 @@ export default {
 
 .project-name {
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .project-duration {
@@ -110,7 +171,7 @@ export default {
 
 .project-tech-stack {
   overflow: hidden;
-  max-height: 60px; /* 기본 상태에서 보여줄 높이 */
+  max-height: 60px;
   transition: max-height 0.3s ease;
 }
 

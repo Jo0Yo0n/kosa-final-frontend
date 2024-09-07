@@ -1,63 +1,66 @@
 <!--
- * fileName       : ProjectCardList
+ * fileName       : MemberCardList
  * author         : Heeseon
- * date           : 2024-09-05
+ * date           : 2024-09-07
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2024-09-05        Heeseon       최초 생성
+ * 2024-09-07        Heeseon       최초 생성
 -->
 <template>
-  <section class="projects">
-    <div v-if="visibleProjects.length > 0" class="project-list">
-      <ProjectCard
-          v-for="project in visibleProjects"
-          :key="project.projectId"
-          :project="project"
+  <section class ="members">
+    <div v-if="visibleMembers.length > 0" class="member-list">
+      <MemberCard
+        v-for="member in visibleMembers"
+        :key="member.memberId"
+        :member="member"
       />
     </div>
     <div class="more-button-container">
-      <button v-if="visibleProjects.length < projects.length" @click="showMoreProjects">더보기</button>
+      <button v-if="visibleMembers.length < members.length" @click="showMoreMembers">더보기</button>
     </div>
   </section>
 </template>
 
+
 <script>
-// 사용자가 만든 ProjectCard 컴포넌트 불러오기
-import ProjectCard from './ProjectCard.vue';
+import MemberCard from "./MemberCard.vue";
 
 export default {
-  name: "ProjectCardList",
+  name: "MemberCardList",
   components: {
-    ProjectCard
+    MemberCard
   },
   props: {
-    projects: Array
+    members: {
+      type: Array,
+      default: () => [] // 빈 배열을 기본값으로 설정
+    }
   },
   data() {
     return {
-      visibleCount: 4 // 처음에 표시할 프로젝트 수
+      visibleCount: 3 // 처음에 표시할 라떼버 수
     };
   },
   computed: {
-    visibleProjects() {
-      // 처음에 visibleCount만큼의 프로젝트를 보여줌
-      return this.projects.slice(0, this.visibleCount);
+    visibleMembers() {
+      // 처음에 visibleCount만큼의 라떼버를 보여줌
+      return this.members.slice(0, this.visibleCount);
     }
   },
   methods: {
-    showMoreProjects() {
-      // 더보기 버튼 클릭 시 추가로 4개의 프로젝트를 보여줌
-      this.visibleCount += 4;
+    showMoreMembers() {
+      // 더보기 버튼 클릭 시 추가로 보여줌
+      this.visibleCount += 3;
     }
   }
 }
 </script>
 <style scoped>
-.project-list {
+.member-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 15px;
   margin-right: 0 !important;
 }
 .more-button-container {
