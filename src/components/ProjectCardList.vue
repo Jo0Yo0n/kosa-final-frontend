@@ -16,6 +16,9 @@
           :project="project"
       />
     </div>
+    <div v-else class="no-projects">
+      검색된 프로젝트가 없습니다.
+    </div>
     <div class="more-button-container">
       <button v-if="visibleProjects.length < projects.length" @click="showMoreProjects">더보기</button>
     </div>

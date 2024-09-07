@@ -130,7 +130,7 @@ export default {
 
 .project-tech-stack {
   overflow: hidden;
-  max-height: 60px; /* 기본 상태에서 보여줄 높이 */
+  max-height: 60px;
   transition: max-height 0.3s ease;
 }
 
