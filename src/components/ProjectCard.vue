@@ -20,7 +20,30 @@
     <v-card-text class="pt-2">
       <div class="project-details">
         <!-- 프로젝트 이름 -->
-        <div class="project-name text-h6">{{ project.name }}</div>
+<!--        <div class="project-name text-h6">{{ project.name }}</div>-->
+        <div v-if="isNameTruncated">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <div
+                  class="project-name text-h6 text-truncate"
+                  v-bind="attrs"
+                  v-on="on"
+                  ref="projectName"
+              >
+                {{ project.name }}
+              </div>
+            </template>
+            <span>{{ project.name }}</span>
+          </v-tooltip>
+        </div>
+        <div v-else>
+          <div
+              class="project-name text-h6 text-truncate"
+              ref="projectName"
+          >
+            {{ project.name }}
+          </div>
+        </div>
 
         <!-- 프로젝트 기간 -->
         <div class="project-duration grey--text">
@@ -82,6 +105,15 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      isNameTruncated: false, // 프로젝트 이름이 길어서 자를지 여부
+    };
+  },
+  mounted() {
+    this.checkNameLength();
+    window.addEventListener('resize', this.checkNameLength); // 화면 크기 변경 시 다시 체크
+  },
   methods: {
     toggleLike(project) {
       // 좋아요 상태를 토글하고 cntLike 값도 업데이트
@@ -94,6 +126,12 @@ export default {
     },
     goToDetailPage() {
       this.$router.push({ name: 'ProjectDetail', params: { projectId: this.project.projectId } });
+    },
+    checkNameLength() {
+      const element = this.$refs.projectName;
+      if (element) {
+        this.isNameTruncated = element.scrollWidth > element.clientWidth;
+      }
     }
   }
 }
@@ -105,7 +143,7 @@ export default {
   max-width: 270px;
   min-width: 200px;
   height: auto;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 4 / 5;
   border: 2px solid #6F4A3D; /* 갈색 아웃라인 */
   border-radius: 10px;
   overflow: hidden;
@@ -122,6 +160,9 @@ export default {
 
 .project-name {
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .project-duration {
