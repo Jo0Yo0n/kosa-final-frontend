@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-08-28        JooYoon       최초 생성
+ * 2024-09-07        Yeong-Huns    v-tab-item 에 v-if 추가
 -->
 <template>
     <v-container>
@@ -41,11 +42,11 @@
             <v-tab-item>
                 <project-info :project="project" />
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="this.project.status !== 0">
                 <project-retrospective :project="project" />
             </v-tab-item>
-            <v-tab-item>
-                <project-management />
+            <v-tab-item v-if="this.project.status === 0">
+                <project-management :project_recruitment="project_recruitment" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -54,7 +55,7 @@
 <script>
 import ProjectInfo from '@/components/project-detail/ProjectInfo.vue';
 import ProjectRetrospective from '@/components/project-retrospective/ProjectRetrospective.vue';
-import ProjectManagement from '@/components/ProjectManagement.vue';
+import ProjectManagement from '@/components/project-detail/ProjectManagement.vue';
 
 export default {
     name: 'ProjectDetailPage',
@@ -62,7 +63,7 @@ export default {
     data() {
         return {
             project: {},
-            project_recruitment: {},
+            project_recruitment: [],
             activeTab: 0,
         };
     },
@@ -106,7 +107,7 @@ export default {
         async fetchProjectRecruitment() {
             try {
                 const response = await this.$axios.get(`/api/projects/${this.$route.params.projectId}/applications`);
-                console.log(`😋😋😋`);
+                console.log(`😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋`);
                 console.log(response.data);
                 this.project_recruitment = response.data;
             } catch (error) {
