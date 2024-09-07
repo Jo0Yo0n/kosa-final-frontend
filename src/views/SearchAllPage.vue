@@ -23,17 +23,7 @@
 
     <h3 class="mb-4">라떼버</h3>
     <div v-if="members.length">
-      <v-row>
-        <v-col
-            v-for="member in members"
-            :key="member.id"
-            cols="12"
-            sm="6"
-            md="3"
-        >
-          <MemberCard :member="member" />
-        </v-col>
-      </v-row>
+      <MemberCardList :members="members" />
     </div>
     <div v-else>
       검색된 라떼버가 없습니다.
@@ -45,7 +35,7 @@
 <script>
 import axios from 'axios';
 import ProjectCardList from '@/components/ProjectCardList.vue';
-import MemberCard from '@/components/MemberCard.vue'; // MemberCard 컴포넌트 경로를 적절히 수정
+import MemberCardList from '@/components/MemberCardList.vue'; // MemberCard 컴포넌트 경로를 적절히 수정
 
 export default {
   name: "SearchAllPage",
@@ -58,7 +48,7 @@ export default {
   },
   components: {
     ProjectCardList,
-    MemberCard,
+    MemberCardList,
   },
   async created() {
     const query = this.query;

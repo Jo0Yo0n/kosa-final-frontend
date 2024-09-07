@@ -42,7 +42,7 @@
                   size="30"
                   style="width: 60px; height: 30px; background-color: #e0e0e0; color: #000; text-align: center; line-height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center;"
               >
-                {{ tech.name }}
+                #{{ tech.name }}
               </v-avatar>
             </div>
           </template>

@@ -25,8 +25,8 @@
             clearable
             outlined
             dense
-            append-outer-icon="mdi-magnify"
-            @click:append-outer="searchProjects"
+            append-icon="mdi-magnify"
+            @click:append="searchProjects"
             @keyup.enter="searchProjects"
         ></v-text-field>
       </v-col>
@@ -109,7 +109,7 @@ export default {
 
         this.projects = response.data;
       } catch (error) {
-        console.error('Error fetching project details:', error);
+        console.error('검색 결과를 가져오는 중 오류 발생:', error);
       }
     },
     setFilterStatus(status) {
