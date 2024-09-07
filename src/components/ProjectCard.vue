@@ -83,7 +83,7 @@
                 @click="toggleLike(project)"
                 :color="project.isLiked ? 'blue' : 'grey'"
             >
-              mdi-thumb-up
+              mdi-heart
             </v-icon>
             {{ project.cntLike }}
           </div>
