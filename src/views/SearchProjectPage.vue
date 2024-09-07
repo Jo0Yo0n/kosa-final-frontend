@@ -43,41 +43,6 @@
         ></v-select>
       </v-col>
     </v-row>
-<!--필터링 버튼-->
-<!--    <v-row style="margin-top: 0px; margin-left: 20px">-->
-<!--      <v-col cols="12" md="6">-->
-<!--        <div class="status-btn-group d-flex">-->
-<!--          <button-->
-<!--              class="oval-btn"-->
-<!--              :class="{ active: filterStatus === '전체' }"-->
-<!--              @click="setFilterStatus('전체')"-->
-<!--          >-->
-<!--            전체-->
-<!--          </button>-->
-<!--          <button-->
-<!--              class="oval-btn"-->
-<!--              :class="{ active: filterStatus === '모집중' }"-->
-<!--              @click="setFilterStatus('모집중')"-->
-<!--          >-->
-<!--            모집중-->
-<!--          </button>-->
-<!--          <button-->
-<!--              class="oval-btn"-->
-<!--              :class="{ active: filterStatus === '진행중' }"-->
-<!--              @click="setFilterStatus('진행중')"-->
-<!--          >-->
-<!--            진행중-->
-<!--          </button>-->
-<!--          <button-->
-<!--              class="oval-btn"-->
-<!--              :class="{ active: filterStatus === '완료됨' }"-->
-<!--              @click="setFilterStatus('완료됨')"-->
-<!--          >-->
-<!--            완료됨-->
-<!--          </button>-->
-<!--        </div>-->
-<!--      </v-col>-->
-<!--    </v-row>-->
     <v-row style="margin-top: 0px; margin-left: 20px;">
       <v-col cols="12" md="6">
         <v-radio-group v-model="filterStatus" row class="custom-radio-group">

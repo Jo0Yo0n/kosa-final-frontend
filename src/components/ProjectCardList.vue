@@ -9,15 +9,12 @@
 -->
 <template>
   <section class="projects">
-    <div class="project-list">
+    <div v-if="visibleProjects.length > 0" class="project-list">
       <ProjectCard
           v-for="project in visibleProjects"
           :key="project.projectId"
           :project="project"
       />
-    </div>
-    <div v-else class="no-projects">
-      검색된 프로젝트가 없습니다.
     </div>
     <div class="more-button-container">
       <button v-if="visibleProjects.length < projects.length" @click="showMoreProjects">더보기</button>
