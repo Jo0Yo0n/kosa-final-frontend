@@ -50,8 +50,19 @@
 
         <!-- 좋아요 수 및 팀원 정보 -->
         <div class="project-stats d-flex justify-space-between align-center mt-3">
-          <div class="like-count grey--text">
-            <v-icon small left>mdi-thumb-up</v-icon>{{ project.cntLike }}
+          <div
+              class="like-count"
+              :class="{ 'text-primary': project.isLiked, 'grey--text': !project.isLiked }"
+          >
+            <v-icon
+                small
+                left
+                @click="toggleLike(project)"
+                :color="project.isLiked ? 'blue' : 'grey'"
+            >
+              mdi-thumb-up
+            </v-icon>
+            {{ project.cntLike }}
           </div>
           <div class="team-info grey--text">
             <v-icon small left>mdi-account-multiple</v-icon>{{ project.currentCnt }}/{{ project.teamCnt }}
@@ -72,6 +83,15 @@ export default {
     }
   },
   methods: {
+    toggleLike(project) {
+      // 좋아요 상태를 토글하고 cntLike 값도 업데이트
+      if (project.isLiked) {
+        project.cntLike--;
+      } else {
+        project.cntLike++;
+      }
+      project.isLiked = !project.isLiked;
+    },
     goToDetailPage() {
       this.$router.push({ name: 'ProjectDetail', params: { projectId: this.project.projectId } });
     }
