@@ -99,33 +99,32 @@
     <v-card class="techstack-card pa-4 mb-6" outlined style="min-height: 100px;">
       <v-row class="align-center">
         <v-col cols="12">
-          <!-- 수정 모드일 때 -->
+          <!-- 수정 모드일 때 TechStackSelector 컴포넌트 사용 -->
           <template v-if="isEditMode">
-            <v-select
-                v-model="selectedTech"
-                :items="techOptions"
-                label="기술 선택"
-                @change="onTechSelected"
-            ></v-select>
-
-            <v-row v-if="selectedTechImg" justify="center">
-              <v-avatar size="40" class="mb-2">
-                <v-img :src="selectedTechImg" :alt="selectedTech"></v-img>
-              </v-avatar>
-              <span class="caption text-center black--text">#{{ selectedTech }}</span>
-            </v-row>
+            <tech-stack-selector
+                v-model="editableProfile.techStacks"
+                :custom-stacks="editableProfile.customStacks"
+                :known-tech="knownTech"
+                :max-tech-stacks="10"
+                :min-tech-stacks="1"
+                @input="updateTechStacks"
+                @customInput="updateCustomStacks"
+            />
           </template>
 
           <!-- 수정 모드가 아닐 때 -->
           <template v-else>
-            <v-row justify="center">
-              <v-col v-for="tech in memberProfile.memberTechStack" :key="tech.name" cols="auto" class="d-flex align-center">
-                <v-avatar size="40" class="mb-2">
-                  <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
-                </v-avatar>
-                <span class="caption text-center black--text">{{ tech.name }}</span>
-              </v-col>
-            </v-row>
+            <div class="d-flex flex-wrap">
+              <template v-for="tech in memberProfile.memberTechStack" >
+                <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">
+                  <v-avatar size="40" class="mb-1">
+                    <v-img :src="tech.imgUrl" :alt="tech.name"></v-img>
+                  </v-avatar>
+                  <div class="caption text-center black--text">#{{ tech.name }}</div>
+                </div>
+                <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
+              </template>
+            </div>
           </template>
         </v-col>
       </v-row>
@@ -157,13 +156,23 @@
 </template>
 
 <script>
+import TechStackSelector from '@/components/login/TechStackSelector.vue';
+import {mapGetters} from "vuex"; // TechStackSelector 컴포넌트 임포트
+
 export default {
   name: 'MemberProfileCard',
+  components: {
+    TechStackSelector,
+  },
   props: {
     memberProfile: {
       type: Object,
       required: true
-    }
+    },
+    knownTech: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -171,14 +180,12 @@ export default {
       editableProfile: { ...this.memberProfile },
       jobOptions: ['Developer', 'Designer', 'Manager', 'QA'], // 직무 옵션들
       careerOptions:['신입', '주니어', '시니어'],
-      techOptions: [
-        { name: 'Vue.js', imgUrl: 'vuejs.png' },
-        { name: 'React', imgUrl: 'react.png' },
-        { name: 'Node.js', imgUrl: 'nodejs.png' },
-      ], // 기술 스택 옵션들
       selectedTech: null,
       selectedTechImg: null,
     };
+  },
+  computed: {
+    ...mapGetters(['knownTech']),
   },
   methods: {
     enableEdit() {
@@ -189,13 +196,8 @@ export default {
       this.editableProfile = { ...this.memberProfile }; // 취소 시 원래 값으로 복구
     },
     async submitChanges() {
-      try {
-        await this.updateProfileAPI(this.editableProfile); // API로 데이터 전송
-        this.$emit('update-profile', this.editableProfile); // 변경된 데이터를 부모 컴포넌트에 전달
-        this.isEditMode = false; // 저장 후 수정 모드 해제
-      } catch (error) {
-        console.error('Failed to update profile:', error);
-      }
+      this.$emit('update-profile', this.editableProfile);
+      this.isEditMode = false;
     },
     selectImage() {
       this.$refs.imageInput.click(); // 이미지 선택 창 열기
@@ -206,12 +208,26 @@ export default {
         this.editableProfile.imgUrl = URL.createObjectURL(file); // 이미지 URL 생성
       }
     },
-    onTechSelected() {
-      const selected = this.techOptions.find(tech => tech.name === this.selectedTech);
-      if (selected) {
-        this.selectedTechImg = selected.imgUrl; // 기술 이름 선택 시 이미지 변경
+    updateTechStacks(newStacks) {
+      this.editableProfile.techStacks = newStacks; // 기술 스택 업데이트
+    },
+    updateCustomStacks(newCustomStacks) {
+      this.editableProfile.customStacks = newCustomStacks; // 사용자 정의 스택 업데이트
+    },
+    selectTech(tech) {
+      this.newTech = tech;
+      this.addTechIfValid(tech);
+    },
+    addTechIfValid(tech) {
+      const trimmedTech = tech.trim();
+      if (trimmedTech && !this.userTechStack.find((t) => t.name.toLowerCase() === trimmedTech.toLowerCase())) {
+        const techItem = this.knownTech.find((item) => item.name.toLowerCase() === trimmedTech.toLowerCase());
+        const imgUrl = techItem ? techItem.imgUrl : ''; // 이미지 URL 가져오기
+        this.userTechStack.push({ name: trimmedTech, imgUrl });
+        this.newTech = '';
       }
-    }
+      this.showDropdown = false;
+    },
   }
 };
 </script>
