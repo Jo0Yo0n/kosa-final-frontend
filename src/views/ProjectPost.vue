@@ -17,7 +17,7 @@ import projectRecruitment from '@/components/project/ProjectRecruitment.vue';
 import projectTechStack from '@/components/project/ProjectTechStack.vue';
 import projectDuration from '@/components/project/ProjectDuration.vue';
 import projectCycle from '@/components/project/ProjectCycle.vue';
-import commonModal from '@/components/commonModal/CommonModal.vue';
+import commonModal from '@/components/common/Modal/CommonModal.vue';
 import { mapGetters } from 'vuex';
 
 export default {
