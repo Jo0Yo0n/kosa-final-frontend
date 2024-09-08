@@ -10,7 +10,6 @@
             <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchMember' }">라떼버 검색</v-btn>
             <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchProject' }">프로젝트 검색</v-btn>
 
-            <!-- TODO: 로그인 한 경우에만 프로젝트 생성 버튼 랜더링되도록 변경 -->
             <v-btn v-if="isLogIn" text class="nav-link font-weight-light" :to="{ name: 'projectPost' }">프로젝트 생성</v-btn>
 
             <v-spacer></v-spacer>
@@ -110,6 +109,15 @@ export default {
 
 .search-bar >>> input {
     caret-color: black !important;
+    color: black !important;
+}
+
+.search-bar >>> .v-label {
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.search-bar >>> .v-input__slot {
+    background: #ece8ed !important;
 }
 
 .login-button-container {
