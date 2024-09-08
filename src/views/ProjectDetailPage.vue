@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-08-28        JooYoon       최초 생성
+ * 2024-09-07        Yeong-Huns    v-tab-item 에 v-if 추가
 -->
 <template>
     <v-container>
@@ -33,19 +34,19 @@
 
         <v-tabs v-model="activeTab" class="mt-10">
             <v-tab>정보</v-tab>
-            <v-tab>회고</v-tab>
-            <v-tab>관리</v-tab>
+            <v-tab v-if="this.project.status !== 0">회고</v-tab>
+            <v-tab v-if="this.project.status === 0">관리</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="activeTab">
             <v-tab-item>
-                <project-info :project="project"></project-info>
+                <project-info :project="project" />
             </v-tab-item>
-            <v-tab-item>
-                <project-retrospective></project-retrospective>
+            <v-tab-item v-if="this.project.status !== 0">
+                <project-retrospective :project="project" />
             </v-tab-item>
-            <v-tab-item>
-                <project-management></project-management>
+            <v-tab-item v-if="this.project.status === 0">
+                <project-management :project_recruitment="project_recruitment" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -53,8 +54,8 @@
 
 <script>
 import ProjectInfo from '@/components/project-detail/ProjectInfo.vue';
-import ProjectRetrospective from '@/components/ProjectRetrospective.vue';
-import ProjectManagement from '@/components/ProjectManagement.vue';
+import ProjectRetrospective from '@/components/project-retrospective/ProjectRetrospective.vue';
+import ProjectManagement from '@/components/project-detail/ProjectManagement.vue';
 
 export default {
     name: 'ProjectDetailPage',
@@ -62,6 +63,7 @@ export default {
     data() {
         return {
             project: {},
+            project_recruitment: [],
             activeTab: 0,
         };
     },
@@ -91,6 +93,7 @@ export default {
     },
     created() {
         this.fetchProjectDetails();
+        this.fetchProjectRecruitment();
     },
     methods: {
         async fetchProjectDetails() {
@@ -99,6 +102,16 @@ export default {
                 this.project = response.data;
             } catch (error) {
                 console.error('Error fetching project details:', error);
+            }
+        },
+        async fetchProjectRecruitment() {
+            try {
+                const response = await this.$axios.get(`/api/projects/${this.$route.params.projectId}/applications`);
+                console.log(`😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋`);
+                console.log(response.data);
+                this.project_recruitment = response.data;
+            } catch (error) {
+                console.error('지원자를 불러오는 과정에서 에러 발생 : ', error);
             }
         },
         getStatusColor(status) {

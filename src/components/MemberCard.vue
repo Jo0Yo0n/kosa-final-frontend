@@ -9,7 +9,7 @@
 -->
 
 <template>
-    <v-card class="ma-2" outlined rounded="lg" style="width: 300px">
+    <v-card class="ma-2" outlined rounded="lg" elevation="1" style="width: 300px">
         <v-card-text class="pa-3">
             <div class="d-flex mb-3">
                 <v-avatar size="100" class="mr-3" tile rounded="xxl">
@@ -40,7 +40,7 @@
                             </v-avatar>
                             <div class="caption text-center black--text">#{{ tech.name }}</div>
                         </div>
-                        <v-chip v-else :key="tech.name" class="ma-1" x-small outlined color="black"> #{{ tech.name }} </v-chip>
+                        <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
                     </template>
                 </div>
             </div>

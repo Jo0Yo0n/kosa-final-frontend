@@ -3,12 +3,13 @@ import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
 import axios from 'axios';
+import axiosInstance from '@/plugins/axios_custom';
 import store from '@/store/index';
 import { init } from '@/store/modules/projectStore';
 
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios; // axios를 전역으로 설정
-
+Vue.prototype.$axiosInstance = axiosInstance;
 // Axios 전역 설정
 Vue.prototype.$axios.defaults.withCredentials = true;
 
