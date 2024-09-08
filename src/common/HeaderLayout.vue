@@ -11,7 +11,7 @@
             <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchProject' }">프로젝트 검색</v-btn>
 
             <!-- TODO: 로그인 한 경우에만 프로젝트 생성 버튼 랜더링되도록 변경 -->
-            <v-btn text class="nav-link font-weight-light" :to="{ name: 'projectPost' }">프로젝트 생성</v-btn>
+            <v-btn v-if="isLogIn" text class="nav-link font-weight-light" :to="{ name: 'projectPost' }">프로젝트 생성</v-btn>
 
             <v-spacer></v-spacer>
 
