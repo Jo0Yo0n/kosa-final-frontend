@@ -55,7 +55,7 @@ export default {
 .member-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
     margin-right: 0 !important;
 }
 .more-button-container {
