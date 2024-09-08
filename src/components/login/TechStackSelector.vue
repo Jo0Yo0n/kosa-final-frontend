@@ -116,7 +116,7 @@ export default {
             if (!techName) return ''; // techName이 없으면 빈 문자열 반환
 
             const tech = this.knownTech[techName.toLowerCase()];
-            return tech ? tech.imgUrl : '';
+            return tech ? tech.ImgUrl : '';
         },
         handleInput() {
             const input = (this.newTech || '').trim().toLowerCase(); // null 체크 후 trim 호출
