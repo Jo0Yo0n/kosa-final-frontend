@@ -55,8 +55,8 @@
                 </template>
                 <template v-else-if="currentRetrospective">
                     <p>작성일: {{ formatDate(currentRetrospective?.createdAt) }}</p>
-                    <p v-if="currentRetrospective.updatedAt">수정일: {{ formatDate(currentRetrospective.updatedAt) }}</p>
-                    <h2 class="mb-5">{{ currentRetrospective?.title }}</h2>
+                    <p v-if="currentRetrospective.createdAt !== currentRetrospective.updatedAt">수정일: {{ formatDate(currentRetrospective.updatedAt) }}</p>
+                    <h1 class="mb-5">{{ currentRetrospective?.title }}</h1>
                     <div v-html="currentRetrospective?.content"></div>
                 </template>
             </div>
@@ -191,7 +191,7 @@ export default {
                     });
                 } else {
                     await this.$axios.post(
-                        `api/projects/${this.project.projectId}/retrospectives`,
+                        `/api/projects/${this.project.projectId}/retrospectives`,
                         {
                             week: this.selectedWeek,
                             ...payload,
