@@ -65,9 +65,13 @@ export default {
             try {
                 const response = await this.$axiosInstance.post('/api/projects', data, { context: this });
                 console.log('프로젝트 저장 성공:', response.data);
+                const projectId = response.data;
+
                 this.resultHeader = '저장 성공';
                 this.resultContent = '글 작성에 성공하였습니다.';
                 this.showSuccessModal = true;
+
+                await this.$router.push({ name: 'ProjectDetail', params: { projectId } });
             } catch (error) {
                 // 인터셉터가 처리해서 필요없음
             }

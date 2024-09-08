@@ -62,16 +62,14 @@ export default {
                 showAll: !this.groupedMembers[index].showAll,
             });
         },
-        startProject() {
-            this.$axios
-                .post('/api/projects/start', { projectId: this.$route.params.projectId })
-                .then((response) => {
-                    console.log('프로젝트가 시작되었습니다:', response.data);
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    console.error('프로젝트 시작 오류:', error);
-                });
+        async startProject() {
+            try {
+                const response = await this.$axios.post('/api/projects/start', { projectId: this.$route.params.projectId });
+                console.log('프로젝트가 시작되었습니다:', response.data);
+                window.location.reload();
+            } catch (error) {
+                console.error('프로젝트 시작 오류:', error);
+            }
         },
         handleApprove(member) {
             const value = 1;
@@ -83,21 +81,19 @@ export default {
             console.log('거절 이벤트 발생');
             this.fetchApproval(member, value);
         },
-        fetchApproval(member, value) {
+        async fetchApproval(member, value) {
             const data = {
                 projectId: this.$route.params.projectId,
                 memberId: member.projectMemberId,
                 acceptStatus: value,
             };
-            this.$axios
-                .put(`/api/projects/applications`, data)
-                .then(() => {
-                    console.log('멤버 스테이터스가 업데이트 되었습니다.', data.acceptStatus === 1 ? '승인됨.' : '거절됨.');
-                    this.removeMemberFromList(member);
-                })
-                .catch((error) => {
-                    console.error('멤버 스테이터스를 업데이트 하던 중 에러 발생', error);
-                });
+            try {
+                await this.$axios.put(`/api/projects/applications`, data);
+                console.log('멤버 스테이터스가 업데이트 되었습니다.', data.acceptStatus === 1 ? '승인됨.' : '거절됨.');
+                this.removeMemberFromList(member);
+            } catch (error) {
+                console.error('멤버 스테이터스를 업데이트 하던 중 에러 발생', error);
+            }
         },
         removeMemberFromList(member) {
             this.groupedMembers.forEach((group) => {
