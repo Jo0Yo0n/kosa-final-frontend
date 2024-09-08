@@ -112,6 +112,7 @@ export default {
         console.log('Response received:', response);
 
         this.projects = response.data;
+        console.log('Projects assigned:', this.projects);
       } catch (error) {
         console.error('검색 결과를 가져오는 중 오류 발생:', error);
       }

@@ -76,7 +76,7 @@
 
                 <!-- 프로젝트 기간 -->
                 <v-card-text>
-                  프로젝트 기간: {{ project.duration }}일
+                  프로젝트 기간: {{ project.duration }}주
                 </v-card-text>
 
                 <!-- 좋아요 및 팀 정보 아이콘 오른쪽 하단 배치 -->
@@ -118,56 +118,7 @@ export default {
   data(){
     return{
       // top 10 프로젝트
-      popularProjects: [
-        {
-          projectId: 1,
-          name: '프로젝트명',
-          description: '설명 텍스트',
-          date: '2024-09-01',
-          image: 'path-to-image1',
-          imgUrl: 'https://image.yes24.com/goods/110126993/XL',
-          projectTechStack: [{ name: "Vue.js", imgUrl: "path-to-vue-logo" }],
-          cntLike: 50,
-          currentCnt: 4,
-          teamCnt: 6,
-          duration: 30,
-          recruitmentName: ["Front-end Developer", "Designer"]
-        },
-        {
-          projectId: 2,
-          name: '프로젝트명2',
-          description: '설명 텍스트',
-          date: '2024-09-02',
-          image: 'path-to-image2',
-          imgUrl: 'https://pbs.twimg.com/profile_images/1785867863191932928/EpOqfO6d_400x400.png',
-          projectTechStack: [{ name: "React", imgUrl: "https://pbs.twimg.com/profile_images/1785867863191932928/EpOqfO6d_400x400.png" }],
-          cntLike: 20,
-          currentCnt: 3,
-          teamCnt: 5,
-          duration: 40,
-          recruitment: [
-            { position: "Back-end Developer", available: 1 },
-            { position: "UI/UX Designer", available: 1 }
-          ]
-        },
-        {
-          projectId: 3,
-          name: '프로젝트명3',
-          description: '설명 텍스트',
-          date: '2024-09-03',
-          image: 'path-to-image3',
-          imgUrl: 'https://image.yes24.com/goods/110126993/XL',
-          projectTechStack: [{ name: "Angular", imgUrl: "path-to-angular-logo" }],
-          cntLike: 70,
-          currentCnt: 5,
-          teamCnt: 7,
-          duration: 20,
-          recruitmentName: [
-            { position: "Full-stack Developer", available: 1 },
-            { position: "QA Tester", available: 2 }
-          ]
-        }
-      ],
+      popularProjects: [],
       newProjects: [],
       recentlyCompletedProjects: []
 
@@ -175,10 +126,24 @@ export default {
     };
   },
   mounted(){
+    this.fetchPopularProjects();
     this.fetchNewProjects();
     this.fetchRecentlyCompletedProjects();
   },
   methods: {
+    async fetchPopularProjects() {
+      axios.get('/api/projects/popular') // Adjust the URL according to your backend API
+          .then(response => {
+            this.popularProjects = response.data;
+          })
+          .catch(error => {
+            console.error('Error fetching popular projects:', error);
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+
+    },
     fetchNewProjects() {
       axios.get('/api/projects/new', {
         params: {
