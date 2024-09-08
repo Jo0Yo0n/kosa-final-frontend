@@ -9,14 +9,16 @@
 -->
 <template>
   <section class="projects">
-    <div class="project-list">
+    <div v-if="visibleProjects.length > 0" class="project-list">
       <ProjectCard
           v-for="project in visibleProjects"
           :key="project.projectId"
           :project="project"
       />
     </div>
-    <button v-if="visibleProjects.length < projects.length" @click="showMoreProjects">더보기</button>
+    <div class="more-button-container">
+      <button v-if="visibleProjects.length < projects.length" @click="showMoreProjects">더보기</button>
+    </div>
   </section>
 </template>
 
@@ -56,18 +58,26 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-right: 0 !important;
 }
-
-button {
+.more-button-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the button to the right */
+  width: 100%; /* Ensures the button container spans full width */
   margin-top: 20px;
+}
+button {
   padding: 10px 20px;
+  margin-top: 20px;
   border: none;
-  background-color: #8a6d3b;
-  color: white;
+  background-color: white;
+  color:#6f4a3d;
   cursor: pointer;
+  border-radius: 20px;
 }
 
 button:hover {
-  background-color: #714c2f;
+  background-color: rgba(128, 128, 128, 0.5); /* 투명한 회색 (rgba) */
+  color: black; /* 선택적으로 텍스트 색상 변경 */
 }
 </style>

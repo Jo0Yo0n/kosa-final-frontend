@@ -9,22 +9,13 @@
 -->
 <template>
   <div>
-    <h1>Search Results for "{{ query }}"</h1>
+    <h1> "{{ query }}" 에 대한 검색결과 </h1>
     <!-- 검색 결과 표시 부분 -->
+
     <!-- 프로젝트 리스트 -->
-    <h3 class="mb-4">프로젝트</h3>
+    <h3 class="mb-4"> 프로젝트 </h3>
     <div v-if="projects.length">
-      <v-row>
-        <v-col
-            v-for="project in projects"
-            :key="project.projectId"
-            cols="12"
-            sm="6"
-            md="3"
-        >
-          <ProjectCard :project="project" />
-        </v-col>
-      </v-row>
+      <ProjectCardList :projects="projects" />
     </div>
     <div v-else>
       검색된 프로젝트가 없습니다.
@@ -32,17 +23,7 @@
 
     <h3 class="mb-4">라떼버</h3>
     <div v-if="members.length">
-      <v-row>
-        <v-col
-            v-for="member in members"
-            :key="member.id"
-            cols="12"
-            sm="6"
-            md="3"
-        >
-          <MemberCard :member="member" />
-        </v-col>
-      </v-row>
+      <MemberCardList :members="members" />
     </div>
     <div v-else>
       검색된 라떼버가 없습니다.
@@ -53,8 +34,8 @@
 
 <script>
 import axios from 'axios';
-import ProjectCard from '@/components/ProjectCard.vue'; // ProjectCard 컴포넌트 경로를 적절히 수정
-import MemberCard from '@/components/MemberCard.vue'; // MemberCard 컴포넌트 경로를 적절히 수정
+import ProjectCardList from '@/components/ProjectCardList.vue';
+import MemberCardList from '@/components/MemberCardList.vue'; // MemberCard 컴포넌트 경로를 적절히 수정
 
 export default {
   name: "SearchAllPage",
@@ -66,8 +47,8 @@ export default {
     };
   },
   components: {
-    ProjectCard,
-    MemberCard,
+    ProjectCardList,
+    MemberCardList,
   },
   async created() {
     const query = this.query;
@@ -103,5 +84,12 @@ export default {
 </script>
 
 <style scoped>
+h1, h3, div {
+  margin-bottom: 40px;
+}
 
+
+.mb-4 {
+  margin-bottom: 32px;
+}
 </style>

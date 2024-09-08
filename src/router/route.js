@@ -1,6 +1,6 @@
 import ProjectDetailPage from '@/views/ProjectDetailPage.vue';
-import ProjectTest from '@/components/project/ProjectTest.vue';
-import SearchProjectPage from '@/views/SearchProjectPage.vue'
+import ProjectPost from '@/views/ProjectPost.vue';
+import SearchProjectPage from '@/views/SearchProjectPage.vue';
 import SearchMemberPage from '@/views/SearchMemberPage.vue';
 import SearchAllPage from '@/views/SearchAllPage.vue';
 import MainPage from '@/views/MainPage.vue';
@@ -13,9 +13,9 @@ export default [
         component: ProjectDetailPage,
     },
     {
-        path: '/projectTest',
-        name: 'projectTest',
-        component: ProjectTest,
+        path: '/projects',
+        name: 'projectPost',
+        component: ProjectPost,
     },
     {
         path: '/search/projects',
@@ -33,7 +33,6 @@ export default [
         component: SearchAllPage,
     },
     {
-
         path: '/',
         name: 'MainPage',
         component: MainPage,
