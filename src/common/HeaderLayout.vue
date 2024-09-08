@@ -1,41 +1,46 @@
 <template>
-    <v-app-bar app dense color="#6F4A3D">
-        <router-link to="/">
-            <v-img src="@/assets/logo-sample.png" max-height="48"></v-img>
-        </router-link>
+    <v-app-bar app dense color="#6F4A3D" height="55px">
+        <v-container class="header-container d-flex align-center" style="max-width: 1200px">
+            <router-link to="/">
+                <v-img src="@/assets/logo.png" max-height="48"></v-img>
+            </router-link>
 
-        <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
 
-        <v-btn text class="nav-link" :to="{ name: 'SearchMember' }">라떼버</v-btn>
-        <v-btn text class="nav-link" :to="{ name: 'SearchProject' }">프로젝트</v-btn>
+            <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchMember' }">라떼버 검색</v-btn>
+            <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchProject' }">프로젝트 검색</v-btn>
 
-        <v-spacer></v-spacer>
+            <v-btn v-if="isLogIn" text class="nav-link font-weight-light" :to="{ name: 'projectPost' }">프로젝트 생성</v-btn>
 
-        <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="search"
-            solo-inverted
-            flat
-            hide-details
-            dense
-            class="search-bar"
-            color="#ECE8ED"
-            @keyup.enter="getSearchResults"
-        ></v-text-field>
+            <v-spacer></v-spacer>
 
-    <div class="login-button-container">
-      <template v-if="isLogIn">
-        <router-link to="/me">
-          <v-icon class="user-icon">mdi-account</v-icon>
-        </router-link>
-        <span @click="logout" class="login-button">로그아웃</span>
-      </template>
-      <template v-else>
-        <span @click="showModal = true" class="login-button">회원가입/로그인</span>
-      </template>
-            <LoginModal v-model="showModal" />
-        </div>
+            <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="search"
+                solo-inverted
+                flat
+                hide-details
+                dense
+                class="search-bar"
+                color="#D2B48C"
+                background-color="#ECE8ED"
+                @keyup.enter="getSearchResults"
+            ></v-text-field>
+
+            <div class="login-button-container">
+                <template v-if="isLogIn">
+                    <router-link to="/me">
+                        <v-icon class="user-icon">mdi-account</v-icon>
+                    </router-link>
+                    <v-btn text @click="logout" class="login-button font-weight-light">로그아웃</v-btn>
+                </template>
+                <template v-else>
+                    <v-btn text @click="showModal = true" class="login-button font-weight-light">회원가입/로그인</v-btn>
+                </template>
+                <LoginModal v-model="showModal" />
+            </div>
+        </v-container>
     </v-app-bar>
 </template>
 
@@ -76,15 +81,11 @@ export default {
 </script>
 
 <style scoped>
-.v-app-bar {
-    background-color: #6f4a3d !important;
-}
-
-
-.logo {
-    background-color: #d0d0d0;
-    padding: 0 15px;
-    font-weight: bold;
+.header-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 16px;
 }
 
 .nav-link {
@@ -106,17 +107,30 @@ export default {
     color: #6f4a3d !important;
 }
 
+.search-bar >>> input {
+    caret-color: black !important;
+    color: black !important;
+}
+
+.search-bar >>> .v-label {
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.search-bar >>> .v-input__slot {
+    background: #ece8ed !important;
+}
+
 .login-button-container {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-right: 20px;
 }
 
 .login-button {
     cursor: pointer;
     color: white;
 }
+
 .nav-link,
 .login-button {
     color: #ece8ed !important;
@@ -132,10 +146,11 @@ export default {
 }
 
 .user-icon {
-  font-size: 24px;
-  color: white;
+    font-size: 24px;
+    color: white;
 }
+
 .nav-link.router-link-exact-active {
-    color: #ffd700 !important; /* Choose your desired active color */
+    color: #ffd700 !important;
 }
 </style>
