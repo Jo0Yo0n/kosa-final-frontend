@@ -25,9 +25,16 @@
                                 <!-- 2. 프로젝트가 모집 중 상태여야 함 -->
                                 <!-- 3. 모집 인원보다 참여 인원이 적어야 함 -->
                                 <!-- TODO: 4. 로그인한 사용자가 해당 project_member 테이블에 없어야 함 -->
-                                <v-btn v-if="status === 0 && recruitment.members.length < recruitment.jobCount" color="brown" dark small class="font-weight-light" rounded
-                                    >지원하기</v-btn
-                                >
+                                <v-btn
+                                    v-if="status === 0 && recruitment.members.length < recruitment.jobCount"
+                                    color="brown"
+                                    dark
+                                    small
+                                    class="font-weight-light"
+                                    rounded
+                                    @click="applyForProject(recruitment.jobId)"
+                                    >지원하기
+                                </v-btn>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -49,6 +56,20 @@ export default {
         },
         status: {
             type: Number,
+        },
+    },
+    methods: {
+        async applyForProject(jobId) {
+            try {
+                await this.$axios.post(`/api/projects/${this.projectId}/applications`, {
+                    jobId: jobId,
+                });
+
+                alert('지원이 완료되었습니다.');
+            } catch (error) {
+                console.error('지원 중 오류가 발생했습니다.: ', error);
+                alert('지원 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
         },
     },
 };
