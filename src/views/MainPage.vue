@@ -14,10 +14,12 @@
       <v-carousel
           cycle
           interval="5000"
+          v-if="popularProjects && popularProjects.length"
       >
         <v-carousel-item
             v-for="project in popularProjects"
             :key="project.projectId"
+            @click="goToDetailPage(project.projectId)"
         >
           <v-row class="fill-height ma-0">
             <v-col cols="6" class="pa-0">
@@ -75,12 +77,12 @@
 
 
                 <!-- 프로젝트 기간 -->
-                <v-card-text>
+                <v-card-text class="project-duration">
                   프로젝트 기간: {{ project.duration }}주
                 </v-card-text>
 
                 <!-- 좋아요 및 팀 정보 아이콘 오른쪽 하단 배치 -->
-                <v-card-text class="d-flex align-center justify-end position-absolute" style="bottom: 16px; right: 16px;">
+                <v-card-text class="project-like d-flex align-center justify-end position-absolute" style="bottom: 16px; right: 16px;">
                   <v-icon class="mr-2">mdi-heart</v-icon>
                   <span class="mr-4">{{ project.cntLike }}</span>
                   <v-icon class="mr-2">mdi-account-group</v-icon>
@@ -131,6 +133,13 @@ export default {
     this.fetchRecentlyCompletedProjects();
   },
   methods: {
+    goToDetailPage(projectId) {
+      if (projectId) {
+        this.$router.push({ name: 'ProjectDetail', params: { projectId: projectId } });
+      } else {
+        console.error('Invalid project ID');
+      }
+    },
     async fetchPopularProjects() {
       axios.get('/api/projects/popular') // Adjust the URL according to your backend API
           .then(response => {
@@ -192,13 +201,24 @@ export default {
 }
 
 .description-box {
-  height: 120px;
+  height: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.project-tech-stack{
+  height: 85px;
+}
+.tech-item {
+  width: 60px;
+  height: 60px;
+}
+
+.project-duration{
+  height:70px;
+}
 .recruitment-section {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 .position-absolute {
   position: absolute;
