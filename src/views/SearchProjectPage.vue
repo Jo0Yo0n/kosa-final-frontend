@@ -32,7 +32,7 @@
       </v-col>
 
 
-<!--검색창, 정렬 기중 드롭다운-->
+<!--검색창, 정렬 기준 드롭다운-->
       <v-col cols="6" md="2">
         <v-select
             v-model="sortOrder"
@@ -116,14 +116,6 @@ export default {
         console.error('검색 결과를 가져오는 중 오류 발생:', error);
       }
     },
-    setFilterStatus(status) {
-      this.filterStatus = status;
-    },
-  },
-  watch: {
-    sortOrder() {
-      this.searchProjects();
-    }
   },
   computed: {
     filteredProjects() {
@@ -132,6 +124,15 @@ export default {
       }
       return this.projects.filter(project => project.status === this.filterStatus);
     },
+  },
+  watch: {
+    filterStatus() {
+      this.searchProjects(); // 상태 변경 시 검색 실행
+    },
+    sortOrder() {
+      this.searchProjects();
+    },
+
   },
 }
 </script>
