@@ -87,6 +87,10 @@ export default {
       projects: [],
     };
   },
+  mounted() {
+    // 페이지에 처음 진입할 때 전체 프로젝트를 불러옴
+    this.searchProjects();
+  },
   methods: {
     async searchProjects(){
       try {
