@@ -16,7 +16,6 @@
         <v-card-text class="pt-2">
             <div class="project-details">
                 <!-- 프로젝트 이름 -->
-                <!--<div class="project-name text-h6">{{ project.name }}</div>-->
                 <div v-if="isNameTruncated">
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
