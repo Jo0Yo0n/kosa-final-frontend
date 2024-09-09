@@ -10,7 +10,7 @@
             <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchMember' }">라떼버 검색</v-btn>
             <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchProject' }">프로젝트 검색</v-btn>
 
-            <v-btn v-if="isLogIn" text class="nav-link font-weight-light" :to="{ name: 'projectPost' }">프로젝트 생성</v-btn>
+            <v-btn v-if="isLogIn" text class="nav-link font-weight-light" :to="{ name: 'projectPost' }" exact>프로젝트 생성</v-btn>
 
             <v-spacer></v-spacer>
 
