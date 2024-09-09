@@ -41,12 +41,22 @@
                 </v-row>
             </v-card-text>
         </v-card>
+        <commonModal v-model="showSuccessModal" @close="closeModal">
+            <template v-slot:title>{{ resultHeader }}</template>
+            <template v-slot:content>{{ resultContent }}</template>
+            <template v-slot:firstButton>
+                <v-btn color="blue darken-1" text @click="closeModal">확인</v-btn>
+            </template>
+        </commonModal>
     </div>
 </template>
 
 <script>
+import commonModal from '@/components/common/Modal/CommonModal.vue';
+
 export default {
     name: 'RecruitmentStatus',
+    components: { commonModal },
     props: {
         recruitments: {
             type: Array,
@@ -58,18 +68,30 @@ export default {
             type: Number,
         },
     },
+    data() {
+        return {
+            showSuccessModal: false,
+            resultHeader: '',
+            resultContent: '',
+        };
+    },
     methods: {
         async applyForProject(jobId) {
             try {
-                await this.$axios.post(`/api/projects/${this.projectId}/applications`, {
+                await this.$axiosInstance.post(`/api/projects/${this.projectId}/applications`, {
                     jobId: jobId,
                 });
 
-                alert('지원이 완료되었습니다.');
+                this.resultHeader = '지원 완료';
+                this.resultContent = '프로젝트 지원완료';
+                this.showSuccessModal = true;
             } catch (error) {
-                console.error('지원 중 오류가 발생했습니다.: ', error);
-                alert('지원 중 오류가 발생했습니다. 다시 시도해주세요.');
+                // 인터셉터가 처리해서 필요없음
             }
+        },
+
+        async closeModal() {
+            this.showSuccessModal = false;
         },
     },
 };
