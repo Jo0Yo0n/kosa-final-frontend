@@ -25,7 +25,7 @@ export default [
     {
         path: '/search/members',
         name: 'SearchMember',
-        component: SearchMemberPage
+        component: SearchMemberPage,
     },
     {
         path: '/search/all',
@@ -38,8 +38,8 @@ export default [
         component: MainPage,
     },
     {
-        path: "/me",
-        name: "MyPage",
+        path: '/me',
+        name: 'MyPage',
         component: MyPage,
-    }
+    },
 ];
