@@ -21,6 +21,7 @@ export function connectSocket() {
 
     socket.on('connect', () => {
         console.log('소켓이 연결되었습니다:', socket.id);
+        console.log('ip: ', socket.remoteAddress);
     });
 
     socket.on('disconnect', () => {

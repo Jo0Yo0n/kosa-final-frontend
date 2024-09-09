@@ -18,7 +18,7 @@ import projectTechStack from '@/components/project/ProjectTechStack.vue';
 import projectDuration from '@/components/project/ProjectDuration.vue';
 import projectCycle from '@/components/project/ProjectCycle.vue';
 import commonModal from '@/components/common/Modal/CommonModal.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
     name: 'ProjectTest',
@@ -44,6 +44,7 @@ export default {
         ...mapGetters('project', ['projectName', 'projectImage', 'recruitmentRoles', 'techStack']),
     },
     methods: {
+        ...mapMutations('project', ['resetState']),
         cancelAction() {
             this.$router.go(-1);
         },
@@ -70,7 +71,7 @@ export default {
                 this.resultHeader = '저장 성공';
                 this.resultContent = '글 작성에 성공하였습니다.';
                 this.showSuccessModal = true;
-
+                this.resetState();
                 await this.$router.push({ name: 'ProjectDetail', params: { projectId } });
             } catch (error) {
                 // 인터셉터가 처리해서 필요없음
