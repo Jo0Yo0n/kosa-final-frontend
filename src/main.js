@@ -6,6 +6,7 @@ import axios from 'axios';
 import axiosInstance from '@/plugins/axios_custom';
 import store from '@/store/index';
 import { init } from '@/store/modules/projectStore';
+import './assets/css/fonts.css';
 
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios; // axios를 전역으로 설정

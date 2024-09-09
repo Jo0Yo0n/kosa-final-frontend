@@ -143,7 +143,6 @@ export default {
 
 <template>
     <v-dialog v-model="isVisible" persistent max-width="400px">
-        {{ additionalInfo }}
         <v-card>
             <v-card-title class="text-h5 custom-center-class">
                 <span class="headline">추가 정보 입력</span>
