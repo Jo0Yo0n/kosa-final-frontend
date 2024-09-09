@@ -22,10 +22,10 @@
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                     <span
-                                        class="text-h5 font-weight-bold black--text text-truncate"
+                                        class="font-weight-bold black--text text-truncate"
                                         v-bind="attrs"
                                         v-on="on"
-                                        style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"
+                                        style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 20px"
                                     >
                                         {{ member.memberNickname }}
                                     </span>
@@ -44,9 +44,9 @@
                 </div>
 
                 <div class="mt-3">
-                    <div class="caption black--text mb-1 grey--text">진행 중인 프로젝트: {{ member.ongoingProjectCount }}개</div>
-                    <div class="caption black--text mb-2 grey--text">완료한 프로젝트: {{ member.completedProjectCount }}개</div>
-                    <div class="caption font-weight-bold black--text mb-1 text-h6">기술 스택</div>
+                    <div class="black--text mb-1 grey--text" style="font-size: 12px">진행 중인 프로젝트: {{ member.ongoingProjectCount }}개</div>
+                    <div class="black--text mb-2 grey--text" style="font-size: 12px">완료한 프로젝트: {{ member.completedProjectCount }}개</div>
+                    <div class="on font-weight-medium black--text mb-1" style="font-size: 20px">기술 스택</div>
                     <div class="d-flex flex-wrap">
                         <template v-for="tech in member.techStack">
                             <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">
@@ -87,7 +87,7 @@ export default {
 
 <style scoped>
 .member-card {
-    width: 270px;
+    width: 260px;
     height: auto;
     aspect-ratio: 4 / 5;
     border: 2px solid #6f4a3d; /* 갈색 아웃라인 */

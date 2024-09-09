@@ -4,27 +4,27 @@
             <v-row dense justify="center" align="center">
                 <v-col cols="12" sm="6" md="3" class="text-center">
                     <v-icon small class="mr-2">mdi-account</v-icon>
-                    <span class="caption">이주윤(c)</span>
+                    <span class="font-weight-light" style="font-size: 12px">이주윤(c)</span>
                     <v-icon small class="mx-2">mdi-email</v-icon>
-                    <a href="mailto:dlwndbs10@gmail.com" class="caption">dlwndbs10@gmail.com</a>
+                    <a href="mailto:dlwndbs10@gmail.com" class="font-weight-light" style="font-size: 12px">dlwndbs10@gmail.com</a>
                 </v-col>
                 <v-col cols="12" sm="6" md="3" class="text-center">
                     <v-icon small class="mr-2">mdi-account</v-icon>
-                    <span class="caption">김영훈</span>
+                    <span class="font-weight-light" style="font-size: 12px">김영훈</span>
                     <v-icon small class="mx-2">mdi-email</v-icon>
-                    <a href="mailto:vosxja1@gmail.com" class="caption">vosxja1@gmail.com</a>
+                    <a href="mailto:vosxja1@gmail.com" class="font-weight-light" style="font-size: 12px">vosxja1@gmail.com</a>
                 </v-col>
                 <v-col cols="12" sm="6" md="3" class="text-center">
                     <v-icon small class="mr-2">mdi-account</v-icon>
-                    <span class="caption">이윤빈</span>
+                    <span class="font-weight-light" style="font-size: 12px">이윤빈</span>
                     <v-icon small class="mx-2">mdi-email</v-icon>
-                    <a href="mailto:kig0632@naver.com" class="caption">kig0632@naver.com</a>
+                    <a href="mailto:kig0632@naver.com" class="font-weight-light" style="font-size: 12px">kig0632@naver.com</a>
                 </v-col>
                 <v-col cols="12" sm="6" md="3" class="text-center">
                     <v-icon small class="mr-2">mdi-account</v-icon>
-                    <span class="caption">장희선</span>
+                    <span class="font-weight-light" style="font-size: 12px">장희선</span>
                     <v-icon small class="mx-2">mdi-email</v-icon>
-                    <a href="mailto:adastra1123@kakao.com" class="caption">adastra1123@naver.com</a>
+                    <a href="mailto:adastra1123@kakao.com" class="font-weight-light" style="font-size: 12px">adastra1123@naver.com</a>
                 </v-col>
             </v-row>
             <v-divider class="my-4" />

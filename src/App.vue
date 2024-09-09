@@ -31,7 +31,10 @@ export default {
     }),
 };
 </script>
-<style scoped>
+<style>
+v-app {
+    font-family: 'BMDOHYEON', sans-serif;
+}
 .chat-button {
     position: fixed;
     bottom: 130px;
