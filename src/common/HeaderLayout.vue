@@ -194,8 +194,6 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-right: 20px;
-    margin-top: 20px;
 }
 
 .login-button {

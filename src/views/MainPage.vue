@@ -22,7 +22,7 @@
             >
                 <v-carousel-item v-for="project in popularProjects" :key="project.projectId" @click="goToDetailPage(project.projectId)">
                     <v-row class="fill-height ma-0">
-                        <v-col cols="6" class="pa-0 d-flex align-center justify-center">
+                        <v-col cols="6" class="pa-0 justify-center">
                             <v-img :src="project.imgUrl" width="100%" class="carousel-image" contain cover style="object-fit: cover; object-position: center"></v-img>
                         </v-col>
                         <v-col class="pa-7 d-flex flex-column justify-space-between">
@@ -113,51 +113,51 @@ export default {
             }
         },
         // fetchPopularProjects() {
-        //   // Simulated API call - replace with real API call if necessary
-        //   this.popularProjects = [
-        //     {
-        //       projectId: 1,
-        //       name: 'Project Alpha',
-        //       imgUrl: 'https://via.placeholder.com/150',
-        //       projectTechStack: [
-        //         { name: 'Vue.js', imgUrl: 'https://via.placeholder.com/30' },
-        //         { name: 'Spring Boot', imgUrl: null },
-        //       ],
-        //       recruitmentName: ['Frontend', 'Backend'],
-        //       duration: 12,
-        //       cntLike: 25,
-        //       currentCnt: 3,
-        //       teamCnt: 5,
-        //     },
-        //     {
-        //       projectId: 2,
-        //       name: 'Project Beta',
-        //       imgUrl: 'https://via.placeholder.com/150',
-        //       projectTechStack: [
-        //         { name: 'React', imgUrl: 'https://via.placeholder.com/30' },
-        //         { name: 'Node.js', imgUrl: 'https://via.placeholder.com/30' },
-        //       ],
-        //       recruitmentName: ['Fullstack'],
-        //       duration: 8,
-        //       cntLike: 40,
-        //       currentCnt: 5,
-        //       teamCnt: 6,
-        //     },
-        //     {
-        //       projectId: 3,
-        //       name: 'Project Gamma',
-        //       imgUrl: 'https://via.placeholder.com/150',
-        //       projectTechStack: [
-        //         { name: 'Angular', imgUrl: null },
-        //         { name: 'Django', imgUrl: 'https://via.placeholder.com/30' },
-        //       ],
-        //       recruitmentName: ['UI/UX Designer'],
-        //       duration: 10,
-        //       cntLike: 18,
-        //       currentCnt: 2,
-        //       teamCnt: 4,
-        //     },
-        //   ];
+        //     // Simulated API call - replace with real API call if necessary
+        //     this.popularProjects = [
+        //         {
+        //             projectId: 1,
+        //             name: 'Project Alpha',
+        //             imgUrl: 'https://via.placeholder.com/150',
+        //             projectTechStack: [
+        //                 { name: 'Vue.js', imgUrl: 'https://via.placeholder.com/30' },
+        //                 { name: 'Spring Boot', imgUrl: null },
+        //             ],
+        //             recruitmentName: ['Frontend', 'Backend'],
+        //             duration: 12,
+        //             cntLike: 25,
+        //             currentCnt: 3,
+        //             teamCnt: 5,
+        //         },
+        //         {
+        //             projectId: 2,
+        //             name: 'Project Beta',
+        //             imgUrl: 'https://via.placeholder.com/150',
+        //             projectTechStack: [
+        //                 { name: 'React', imgUrl: 'https://via.placeholder.com/30' },
+        //                 { name: 'Node.js', imgUrl: 'https://via.placeholder.com/30' },
+        //             ],
+        //             recruitmentName: ['Fullstack'],
+        //             duration: 8,
+        //             cntLike: 40,
+        //             currentCnt: 5,
+        //             teamCnt: 6,
+        //         },
+        //         {
+        //             projectId: 3,
+        //             name: 'Project Gamma',
+        //             imgUrl: 'https://via.placeholder.com/150',
+        //             projectTechStack: [
+        //                 { name: 'Angular', imgUrl: null },
+        //                 { name: 'Django', imgUrl: 'https://via.placeholder.com/30' },
+        //             ],
+        //             recruitmentName: ['UI/UX Designer'],
+        //             duration: 10,
+        //             cntLike: 18,
+        //             currentCnt: 2,
+        //             teamCnt: 4,
+        //         },
+        //     ];
         // },
         fetchPopularProjects() {
             axios
