@@ -34,7 +34,7 @@ export default {
     },
     data() {
         return {
-            visibleCount: 3, // 처음에 표시할 라떼버 수
+            visibleCount: 4, // 처음에 표시할 라떼버 수
         };
     },
     computed: {
@@ -46,7 +46,7 @@ export default {
     methods: {
         showMoreMembers() {
             // 더보기 버튼 클릭 시 추가로 보여줌
-            this.visibleCount += 3;
+            this.visibleCount += 4;
         },
     },
 };
@@ -55,7 +55,7 @@ export default {
 .member-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
     margin-right: 0 !important;
 }
 .more-button-container {

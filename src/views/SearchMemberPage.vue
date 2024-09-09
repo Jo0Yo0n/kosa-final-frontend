@@ -76,6 +76,10 @@ export default {
       members: [],
     }
   },
+  mounted() {
+    // 페이지에 처음 진입할 때 모든 라떼버를 불러옴
+    this.searchMembers();
+  },
   methods:{
     async searchMembers(){
       try{
