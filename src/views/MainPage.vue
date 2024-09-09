@@ -23,7 +23,7 @@
                 <v-carousel-item v-for="project in popularProjects" :key="project.projectId" @click="goToDetailPage(project.projectId)">
                     <v-row class="fill-height ma-0">
                         <v-col cols="6" class="pa-0 d-flex align-center justify-center">
-                            <v-img :src="project.imgUrl" height="100%" width="100%" class="carousel-image" contain cover style="object-fit: cover; object-position: center"></v-img>
+                            <v-img :src="project.imgUrl" width="100%" class="carousel-image" contain cover style="object-fit: cover; object-position: center"></v-img>
                         </v-col>
                         <v-col class="pa-7 d-flex flex-column justify-space-between">
                             <div class="project-info d-flex flex-column justify-space-between h-100">

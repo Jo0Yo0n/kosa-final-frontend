@@ -186,7 +186,7 @@ export default {
 }
 
 .search-bar >>> .v-input__slot {
-    background: #ece8ed !important;
+    background: white !important;
 }
 
 .login-button-container {
