@@ -25,7 +25,7 @@
                 dense
                 class="search-bar"
                 color="#D2B48C"
-                background-color="#ECE8ED"
+                background-color="white"
                 @keyup.enter="getSearchResults"
             ></v-text-field>
 
@@ -187,15 +187,13 @@ export default {
 }
 
 .search-bar >>> .v-input__slot {
-    background: #ece8ed !important;
+    background: white !important;
 }
 
 .login-button-container {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-right: 20px;
-    margin-top: 20px;
 }
 
 .login-button {
@@ -227,7 +225,7 @@ export default {
 }
 .alarm-button {
     position: relative;
-    color: #ece8ed !important;
+    color: white !important;
     margin-right: 12px;
 }
 

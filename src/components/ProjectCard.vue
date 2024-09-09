@@ -44,26 +44,7 @@
                             </v-avatar>
                             <div class="caption text-center black--text">#{{ tech.name }}</div>
                         </div>
-                        <div v-else :key="tech.name" class="ma-1 tech-item">
-                            <v-avatar
-                                class="mb-1"
-                                size="30"
-                                style="
-                                    width: 60px;
-                                    height: 30px;
-                                    background-color: #e0e0e0;
-                                    color: #000;
-                                    text-align: center;
-                                    line-height: 30px;
-                                    border-radius: 15px;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                "
-                            >
-                                #{{ tech.name }}
-                            </v-avatar>
-                        </div>
+                        <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
                     </template>
                 </div>
 
