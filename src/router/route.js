@@ -33,7 +33,7 @@ export default [
         component: SearchAllPage,
     },
     {
-        path: '/main-page',
+        path: '/',
         name: 'MainPage',
         component: MainPage,
     },

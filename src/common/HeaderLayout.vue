@@ -64,7 +64,7 @@
                 </v-list>
             </v-menu>
 
-            <!--             테스트용
+            <!--             테스트용 -->
             <v-btn @click="triggerAlarm" class="ml-4">테스트 알람</v-btn>
 
             <div class="login-button-container" v-if="isStatusChecked">
