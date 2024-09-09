@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-09-07        Yeong-Huns       최초 생성
+ * 2024-09-09        Yeong-Huns       카드 디자인 변경
 -->
 <script>
 export default {
@@ -15,6 +16,11 @@ export default {
             type: Object,
             required: true,
         },
+    },
+    data() {
+        return {
+            isNameTruncated: false,
+        };
     },
     computed: {
         memberImg() {
@@ -33,7 +39,11 @@ export default {
             return this.member.completedProjectCount || 0;
         },
         techStack() {
-            return this.member.techStack || [];
+            return [...this.member.techStack].sort((a, b) => {
+                const lengthA = a.techUrl ? a.techUrl.length : Infinity;
+                const lengthB = b.techUrl ? b.techUrl.length : Infinity;
+                return lengthA - lengthB;
+            });
         },
     },
     methods: {
@@ -43,35 +53,62 @@ export default {
         rejectMember() {
             this.$emit('reject-member', this.member);
         },
+        checkNameLength() {
+            this.$nextTick(() => {
+                const element = this.$refs.memberNickname;
+                if (element) {
+                    this.isNameTruncated = element.scrollWidth + 10 > element.clientWidth;
+                }
+            });
+        },
+    },
+    mounted() {
+        this.checkNameLength();
+        window.addEventListener('resize', this.checkNameLength);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkNameLength);
     },
 };
 </script>
 
 <template>
-    <v-card class="ma-2" outlined rounded="lg" elevation="1" style="width: 300px">
+    <v-card class="ma-2 member-card" outlined>
         <v-card-text class="pa-3">
             <div class="d-flex mb-3">
-                <v-avatar size="100" class="mr-3" tile rounded="xxl">
+                <v-avatar size="80" class="mr-3" tile rounded="xxl">
                     <v-img :src="memberImg" :alt="memberNickname"></v-img>
                 </v-avatar>
-                <div class="d-flex flex-column justify-center flex-grow-1">
-                    <div class="d-flex align-center justify-center mb-1">
-                        <span class="text-h5 font-weight-bold black--text">{{ memberNickname }}</span>
-                        <v-btn v-if="memberGithub && memberGithub.trim() !== ''" icon :href="memberGithub" target="_blank" color="black" small class="ml-1">
-                            <v-icon>mdi-github</v-icon>
-                        </v-btn>
+                <div class="d-flex flex-column justify-center">
+                    <div class="d-flex align-items-center justify-between">
+                        <div class="d-flex member-name-container">
+                            <v-tooltip bottom v-if="isNameTruncated">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <div class="member-name text-h6 flex-grow-1" v-bind="attrs" v-on="on" ref="memberNickname" :title="memberNickname">
+                                        {{ memberNickname }}
+                                    </div>
+                                </template>
+                                <span>{{ memberNickname }}</span>
+                            </v-tooltip>
+                            <div v-else class="flex-grow-1">
+                                <div class="member-name text-h6" ref="memberNickname">{{ memberNickname }}</div>
+                            </div>
+                            <v-btn v-if="memberGithub && memberGithub.trim() !== ''" icon :href="memberGithub" target="_blank" color="black" small class="ml-1">
+                                <v-icon>mdi-github</v-icon>
+                            </v-btn>
+                        </div>
                     </div>
-                    <div class="d-flex justify-center">
-                        <v-btn color="brown" dark small class="font-weight-light" style="width: 40%" @click="approveMember">승인</v-btn>
+                    <div class="d-flex justify-center mt-2">
+                        <v-btn color="brown" dark small class="font-weight-light" style="width: 40%" @click="approveMember"> 승인 </v-btn>
                         &nbsp;
-                        <v-btn color="brown" dark small class="font-weight-light" style="width: 40%" @click="rejectMember">거절</v-btn>
+                        <v-btn color="brown" dark small class="font-weight-light" style="width: 40%" @click="rejectMember"> 거절 </v-btn>
                     </div>
                 </div>
             </div>
 
             <div class="mt-3">
-                <div class="caption black--text mb-1">진행 중인 프로젝트: {{ ongoingProjectCount }}개</div>
-                <div class="caption black--text mb-2">완료한 프로젝트: {{ completedProjectCount }}개</div>
+                <div class="caption grey--text mb-1">진행 중인 프로젝트: {{ ongoingProjectCount }}개</div>
+                <div class="caption grey--text mb-2">완료한 프로젝트: {{ completedProjectCount }}개</div>
                 <div class="caption font-weight-bold black--text mb-1 text-h6">기술 스택</div>
                 <div class="d-flex flex-wrap">
                     <template v-for="tech in techStack">
@@ -90,10 +127,33 @@ export default {
 </template>
 
 <style scoped>
+.member-card {
+    width: 100%;
+    max-width: 270px;
+    min-width: 200px;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    border: 2px solid #6f4a3d; /* 갈색 아웃라인 */
+    border-radius: 10px;
+    overflow: hidden;
+    transition: height 0.1s ease;
+}
 .tech-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 50px;
+}
+.member-name-container {
+    display: flex;
+    align-items: center;
+    max-width: 150px;
+}
+.member-name {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
 }
 </style>

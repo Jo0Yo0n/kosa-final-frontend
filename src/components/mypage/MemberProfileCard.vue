@@ -96,24 +96,25 @@
     <!-- 기술 스택 섹션 -->
     <v-divider class="my-8"></v-divider>
     <h3>기술 스택</h3>
-    <v-card class="techstack-card pa-4 mb-6" outlined style="min-height: 100px;">
-      <v-row class="align-center">
-        <v-col cols="12">
-          <!-- 수정 모드일 때 TechStackSelector 컴포넌트 사용 -->
-          <template v-if="isEditMode">
-            <tech-stack-selector
-                v-model="editableProfile.techStacks"
-                :custom-stacks="editableProfile.customStacks"
-                :known-tech="knownTech"
-                :max-tech-stacks="10"
-                :min-tech-stacks="1"
-                @input="updateTechStacks"
-                @customInput="updateCustomStacks"
-            />
-          </template>
 
-          <!-- 수정 모드가 아닐 때 -->
-          <template v-else>
+    <!-- 수정 모드일 때 TechStackSelector 컴포넌트 사용 -->
+    <template v-if="isEditMode">
+      <tech-stack-selector
+          v-model="editableProfile.techStacks"
+          :custom-stacks="editableProfile.customStacks"
+          :known-tech="knownTech"
+          :max-tech-stacks="10"
+          :min-tech-stacks="1"
+          @input="updateTechStacks"
+          @customInput="updateCustomStacks"
+      />
+    </template>
+
+    <!-- 수정 모드가 아닐 때만 카드 사용 -->
+    <template v-else>
+      <v-card class="techstack-card pa-4 mb-6" outlined style="min-height: 100px;">
+        <v-row class="align-center">
+          <v-col cols="12">
             <div class="d-flex flex-wrap">
               <template v-for="tech in memberProfile.memberTechStack" >
                 <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">
@@ -125,10 +126,11 @@
                 <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
               </template>
             </div>
-          </template>
-        </v-col>
-      </v-row>
-    </v-card>
+          </v-col>
+        </v-row>
+      </v-card>
+    </template>
+
 
 
 
@@ -148,9 +150,13 @@
     </v-row>
 
     <!-- 수정, 저장, 취소 버튼 -->
-    <v-btn v-if="!isEditMode" color="primary" @click="enableEdit">수정</v-btn>
-    <v-btn v-if="isEditMode" color="success" @click="submitChanges">저장</v-btn>
-    <v-btn v-if="isEditMode" color="error" @click="cancelEdit">취소</v-btn>
+    <v-row justify="end" class="button-container">
+      <v-btn v-if="!isEditMode" class="edit-btn" @click="enableEdit">수정</v-btn>
+    </v-row>
+    <v-row v-if="isEditMode" class="button-container">
+      <v-btn class="save-btn" @click="submitChanges">저장</v-btn>
+      <v-btn class="cancel-btn" @click="cancelEdit">취소</v-btn>
+    </v-row>
 
   </v-container>
 </template>
@@ -258,6 +264,17 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 가벼운 그림자 */
   color: #333; /* 텍스트 색상 */
   font-family: Arial, sans-serif; /* 폰트 설정 */
+}
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.save-btn, .cancel-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-right: 15px; /* Space between Save and Cancel buttons */
 }
 
 

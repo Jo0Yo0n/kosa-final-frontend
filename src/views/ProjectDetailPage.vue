@@ -102,6 +102,8 @@ export default {
                 this.project = response.data;
             } catch (error) {
                 console.error('Error fetching project details:', error);
+                alert('프로젝트 정보를 불러오는 중 에러가 발생했습니다.');
+                this.$router.push('/');
             }
         },
         async fetchProjectRecruitment() {

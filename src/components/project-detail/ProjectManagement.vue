@@ -25,7 +25,7 @@ export default {
     },
     data() {
         return {
-            initialDisplayCount: 3,
+            initialDisplayCount: 4,
             groupedMembers: [],
         };
     },
@@ -116,46 +116,39 @@ export default {
             <v-col cols="12">
                 <h2>{{ group.jobName }}</h2>
             </v-col>
-            <v-col v-for="(member, i) in group.members.slice(0, group.showAll ? group.members.length : group.initialDisplayCount)" :key="i" cols="12" sm="6" md="4">
+            <v-col v-for="(member, i) in group.members.slice(0, group.showAll ? group.members.length : group.initialDisplayCount)" :key="i" cols="12" sm="6" md="3">
                 <project-management-card :member="member" @approve-member="handleApprove" @reject-member="handleReject" />
             </v-col>
-            <v-col cols="12" v-if="group.members.length > group.initialDisplayCount" class="d-flex justify-center">
-                <v-btn text color="lightgray" @click="toggleShowAll(index)" class="toggle-btn">
+            <div class="more-button-container" v-if="group.members.length > group.initialDisplayCount">
+                <v-btn @click="toggleShowAll(index)" class="my-button">
                     {{ group.showAll ? '접기' : '더보기' }}
-                    <span class="arrow-icon" :class="{ 'rotate-down': !group.showAll, 'rotate-up': group.showAll }">{{ group.showAll ? '<' : '<' }}</span>
                 </v-btn>
-            </v-col>
+            </div>
         </v-row>
     </v-container>
 </template>
 
 <style scoped>
-.toggle-btn {
-    font-size: 20px;
+.more-button-container {
     display: flex;
-    align-items: center;
-    font-weight: bold;
-    color: #b0b0b0;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 20px;
 }
 
-.toggle-btn:hover {
-    background-color: #e0c3b0;
-    border-radius: 8px;
-    transform: scale(1.05);
+.my-button {
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: transparent !important;
+    color: #6f4a3d;
+    cursor: pointer;
+    border: none !important;
+    border-radius: 20px;
+    box-shadow: none;
 }
 
-.arrow-icon {
-    display: inline-block;
-
-    margin-left: 8px;
-    transition: transform 0.3s ease;
-}
-
-.toggle-btn:hover .rotate-down {
-    transform: rotate(-90deg);
-}
-.toggle-btn:hover .rotate-up {
-    transform: rotate(90deg);
+.my-button:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    color: black;
 }
 </style>

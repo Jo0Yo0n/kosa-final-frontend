@@ -9,28 +9,41 @@
 -->
 
 <template>
-    <v-card class="ma-2" outlined rounded="lg" elevation="1" style="width: 300px">
+    <v-card class="ma-2 member-card" outlined>
         <v-card-text class="pa-3">
             <div class="d-flex mb-3">
                 <v-avatar size="100" class="mr-3" tile rounded="xxl">
-                    <v-img :src="member.memberImg" :alt="member.memberNickname"></v-img>
+                    <v-img :src="member.memberImg"></v-img>
                 </v-avatar>
                 <div class="d-flex flex-column justify-center flex-grow-1">
                     <div class="d-flex align-center justify-center mb-1">
-                        <span class="text-h5 font-weight-bold black--text">{{ member.memberNickname }}</span>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                <span
+                    class="text-h5 font-weight-bold black--text text-truncate"
+                    v-bind="attrs"
+                    v-on="on"
+                    style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                >
+                  {{ member.memberNickname }}
+                </span>
+                        </template>
+                        <span>{{ member.memberNickname }}</span>
+                      </v-tooltip>
+
                         <v-btn icon :href="member.memberGithub" target="_blank" color="black" small class="ml-1">
                             <v-icon>mdi-github</v-icon>
                         </v-btn>
                     </div>
                     <div class="d-flex justify-center">
-                        <v-btn color="brown" dark small class="font-weight-light" style="width: 60%">1:1 채팅</v-btn>
+                        <v-btn color="brown" dark small class="font-weight-light" style="width: 60%">커피 챗</v-btn>
                     </div>
                 </div>
             </div>
 
             <div class="mt-3">
-                <div class="caption black--text mb-1">진행 중인 프로젝트: {{ member.ongoingProjectCount }}개</div>
-                <div class="caption black--text mb-2">완료한 프로젝트: {{ member.completedProjectCount }}개</div>
+                <div class="caption black--text mb-1 grey--text">진행 중인 프로젝트: {{ member.ongoingProjectCount }}개</div>
+                <div class="caption black--text mb-2 grey--text">완료한 프로젝트: {{ member.completedProjectCount }}개</div>
                 <div class="caption font-weight-bold black--text mb-1 text-h6">기술 스택</div>
                 <div class="d-flex flex-wrap">
                     <template v-for="tech in member.techStack">
@@ -61,6 +74,15 @@ export default {
 </script>
 
 <style scoped>
+.member-card {
+    width: 270px;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    border: 2px solid #6f4a3d; /* 갈색 아웃라인 */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
 .tech-item {
     display: flex;
     flex-direction: column;
