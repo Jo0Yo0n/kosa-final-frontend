@@ -66,8 +66,9 @@
 
             <!--             테스트용
             <v-btn @click="triggerAlarm" class="ml-4">테스트 알람</v-btn>
--->
-            <div class="login-button-container">
+
+            <div class="login-button-container" v-if="isStatusChecked">
+
                 <template v-if="isLogIn">
                     <router-link to="/me">
                         <v-icon class="user-icon">mdi-account</v-icon>
@@ -99,7 +100,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('member', ['isLogIn']),
+        ...mapGetters('member', ['isLogIn', 'isStatusChecked']),
     },
     methods: {
         ...mapActions('member', ['checkLoginStatus', 'logout']),
@@ -193,6 +194,8 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    margin-right: 20px;
+    margin-top: 20px;
 }
 
 .login-button {

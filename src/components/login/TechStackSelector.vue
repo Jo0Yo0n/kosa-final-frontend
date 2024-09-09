@@ -19,7 +19,7 @@ export default {
             type: Array,
             default: () => [],
         },
-        knownTech: {
+        techOptions: {
             type: Object,
             default: () => ({}),
         },
@@ -45,7 +45,7 @@ export default {
             let options = [];
 
             if (input.length >= 2) {
-                options = Object.keys(this.knownTech).filter((tech) => tech.toLowerCase().includes(input));
+                options = Object.keys(this.techOptions).filter((tech) => tech.toLowerCase().includes(input));
 
                 if (!options.includes(input)) {
                     options.unshift(input);
@@ -73,8 +73,8 @@ export default {
                 return;
             }
             const techNameLower = techName.toLowerCase();
-            if (this.knownTech[techNameLower]) {
-                const techId = this.knownTech[techNameLower].techStackId;
+            if (this.techOptions[techNameLower]) {
+                const techId = this.techOptions[techNameLower].techStackId;
                 if (!this.value.includes(techId)) {
                     this.$emit('input', [...this.value, techId]);
                 }
@@ -110,12 +110,13 @@ export default {
             this.errorMessage = '';
         },
         isKnownTech(tech) {
-            return Object.keys(this.knownTech).includes(tech);
+            return Object.keys(this.techOptions).includes(tech);
         },
         getTechImage(techName) {
             if (!techName) return ''; // techName이 없으면 빈 문자열 반환
 
-            const tech = this.knownTech[techName.toLowerCase()];
+            const tech = this.techOptions[techName.toLowerCase()];
+            
             return tech ? tech.ImgUrl : '';
         },
         handleInput() {
@@ -137,10 +138,10 @@ export default {
         <div class="d-flex align-center flex-wrap">
             <div v-for="(techId, index) in filteredValue" :key="`known-${index}`" class="d-flex align-center mb-2">
                 <v-chip class="mr-2" close @click:close="removeTech(index, false)" outlined>
-                    <v-avatar left v-if="getTechImage(Object.keys(knownTech).find((key) => knownTech[key].techStackId === techId))">
-                        <img :src="getTechImage(Object.keys(knownTech).find((key) => knownTech[key].techStackId === techId))" alt="tech image" />
+                    <v-avatar left v-if="getTechImage(Object.keys(techOptions).find((key) => techOptions[key].techStackId === techId))">
+                        <img :src="getTechImage(Object.keys(techOptions).find((key) => techOptions[key].techStackId === techId))" alt="tech image" />
                     </v-avatar>
-                    {{ Object.keys(knownTech).find((key) => knownTech[key].techStackId === techId) }}
+                    {{ Object.keys(techOptions).find((key) => techOptions[key].techStackId === techId) }}
                 </v-chip>
             </div>
             <div v-for="(tech, index) in customStacks" :key="`custom-${index}`" class="d-flex align-center mb-2">
