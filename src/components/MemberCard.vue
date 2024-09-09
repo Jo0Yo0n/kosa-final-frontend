@@ -22,7 +22,7 @@
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                     <span
-                                        class="font-weight-bold black--text text-truncate"
+                                        class="font-weight-medium black--text text-truncate"
                                         v-bind="attrs"
                                         v-on="on"
                                         style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 20px"
@@ -46,7 +46,7 @@
                 <div class="mt-3">
                     <div class="black--text mb-1 grey--text" style="font-size: 12px">진행 중인 프로젝트: {{ member.ongoingProjectCount }}개</div>
                     <div class="black--text mb-2 grey--text" style="font-size: 12px">완료한 프로젝트: {{ member.completedProjectCount }}개</div>
-                    <div class="on font-weight-medium black--text mb-1" style="font-size: 20px">기술 스택</div>
+                    <div class="on font-weight-medium black--text mb-1" style="font-size: 18px">기술 스택</div>
                     <div class="d-flex flex-wrap">
                         <template v-for="tech in member.techStack">
                             <div v-if="tech.imgUrl" :key="tech.name" class="ma-1 tech-item">
@@ -55,7 +55,7 @@
                                 </v-avatar>
                                 <div class="caption text-center black--text">#{{ tech.name }}</div>
                             </div>
-                            <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
+                            <v-chip v-else :key="tech.name" class="caption ma-2" outlined> #{{ tech.name }} </v-chip>
                         </template>
                     </div>
                 </div>

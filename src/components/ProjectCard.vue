@@ -19,7 +19,7 @@
                 <div v-if="isNameTruncated">
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
-                            <div class="project-name text-h6 text-truncate" v-bind="attrs" v-on="on" ref="projectName">
+                            <div class="project-name text-truncate font-weight-medium" v-bind="attrs" v-on="on" ref="projectName" style="font-size: 17px; color: black">
                                 {{ project.name }}
                             </div>
                         </template>
@@ -27,7 +27,7 @@
                     </v-tooltip>
                 </div>
                 <div v-else>
-                    <div class="project-name text-h6 text-truncate" ref="projectName">
+                    <div class="project-name text-truncate font-weight-medium" ref="projectName" style="font-size: 17px; color: black">
                         {{ project.name }}
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                             </v-avatar>
                             <div class="caption text-center black--text">#{{ tech.name }}</div>
                         </div>
-                        <v-chip v-else :key="tech.name" class="ma-2" outlined> #{{ tech.name }} </v-chip>
+                        <v-chip v-else :key="tech.name" class="caption ma-2" outlined> #{{ tech.name }} </v-chip>
                     </template>
                 </div>
 
