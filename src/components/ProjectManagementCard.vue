@@ -57,7 +57,7 @@ export default {
             this.$nextTick(() => {
                 const element = this.$refs.memberNickname;
                 if (element) {
-                    this.isNameTruncated = element.scrollWidth > element.clientWidth;
+                    this.isNameTruncated = element.scrollWidth + 10 > element.clientWidth;
                 }
             });
         },

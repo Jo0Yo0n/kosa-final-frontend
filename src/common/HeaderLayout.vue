@@ -65,8 +65,8 @@
             </v-menu>
 
             <!--             테스트용
-            <v-btn @click="triggerAlarm" class="ml-4">테스트 알람</v-btn>-->
-
+            <v-btn @click="triggerAlarm" class="ml-4">테스트 알람</v-btn>
+-->
             <div class="login-button-container">
                 <template v-if="isLogIn">
                     <router-link to="/me">
@@ -131,7 +131,7 @@ export default {
             this.isShaking = true; // 아이콘 흔들림 시작
             setTimeout(() => {
                 this.isShaking = false; // 흔들림 멈춤
-            }, 1000); // 1초 후에 흔들림 멈춤
+            }, 800); // 0.8 초로 변경
         },
         isTruncated(message) {
             return message.length > 20; // 길이 기준으로 툴팁이 필요한지 확인
@@ -237,10 +237,10 @@ export default {
     width: 10px;
     height: 10px;
 }
-
+/*
 .shake-icon {
     animation: bell-shake 1s ease infinite;
-    transform-origin: top center; /* 종의 위쪽을 고정하여 회전 */
+    transform-origin: top center; !* 종의 위쪽을 고정하여 회전 *!
 }
 
 @keyframes bell-shake {
@@ -254,7 +254,7 @@ export default {
     75% {
         transform: rotate(-15deg);
     }
-}
+}*/
 
 .notification-menu {
     width: 550px !important;
@@ -321,23 +321,25 @@ export default {
     background: #555;
 }
 .shake-icon {
-    animation: bell-shake 0.25s cubic-bezier(0.25, 1, 0.5, 1) infinite; /* 애니메이션 설정 */
-    transform-origin: 20% 0%;
+    animation: bell-shake 0.33s cubic-bezier(0.25, 1, 0.5, 1) infinite; /* 애니메이션 설정 */
+    transform-origin: top center;
 }
 
 @keyframes bell-shake {
-    0%,
-    100% {
+    0% {
         transform: rotate(0deg);
     }
     25% {
-        transform: rotate(15deg);
+        transform: rotate(10deg);
     }
     50% {
         transform: rotate(0deg);
     }
     75% {
-        transform: rotate(-15deg);
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(0deg); /* 원래 위치로 돌아옴 */
     }
 }
 </style>
