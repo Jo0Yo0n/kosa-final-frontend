@@ -6,15 +6,14 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-09-04        yunbin       최초 생성
+ * 2024-09-08        yunbin       첫 채팅일 때 처리
 -->
 <script>
+import moment from 'moment/moment';
+import 'moment/locale/ko';
+
 export default {
     name: 'ChatCompo',
-    data() {
-        return {
-            items: [1, 2, 3, 4], // 반복되는 항목의 수
-        };
-    },
     props: {
         backColor: {
             type: String,
@@ -23,6 +22,22 @@ export default {
         textColor: {
             type: String,
             default: '#d7ccc8',
+        },
+        chat: Object,
+    },
+    computed: {
+        formattedTime() {
+            // 메시지가 없거나 created_at이 없으면 빈 문자열 반환
+            if (!this.chat.messages || this.chat.messages.length === 0 || !this.chat.messages[0].created_at) {
+                return '';
+            }
+            // 마지막 메시지의 created_at을 현재 시간과 비교하여 상대적인 시간 표시
+            const lastMessageTime = moment(this.chat.messages[0].created_at);
+            return lastMessageTime.fromNow(); // "몇 분 전", "몇 시간 전" 등으로 반환
+        },
+        lastMessageContent() {
+            // 메시지가 없으면 빈 문자열 반환
+            return this.chat.messages && this.chat.messages.length > 0 ? this.chat.messages[0].content : '';
         },
     },
 };
@@ -36,7 +51,7 @@ export default {
                     <v-row class="align-center">
                         <v-col cols="2">
                             <v-avatar size="48">
-                                <img src="https://image.fnnews.com/resource/media/image/2023/08/12/202308121347460461_l.jpg" alt="프로필 이미지" />
+                                <img :src="chat.participants[0].img_url" alt="profile_img" />
                             </v-avatar>
                         </v-col>
                         <v-col cols="1">
@@ -44,17 +59,12 @@ export default {
                         </v-col>
                         <v-col cols="9">
                             <v-row no-gutters>
-                                <div class="text-h6 m-0">닉네임</div>
+                                <div class="text-h6 m-0">{{ chat.participants[0].nickname }}</div>
                                 <v-spacer></v-spacer>
-                                <div class="text-caption" :style="{ color: textColor }">9시간 전</div>
+                                <div class="text-caption" :style="{ color: textColor }">{{ formattedTime }}</div>
                             </v-row>
                             <v-row no-gutters>
-                                <div class="text-subtitle-2 m-0">마지막 대화 내용</div>
-                            </v-row>
-                            <v-row no-gutters>
-                                <div class="text-caption mt-1" :style="{ color: textColor }">마지막 접속: 24.08.13 10:40</div>
-                                <v-spacer></v-spacer>
-                                <v-icon>mdi-logout</v-icon>
+                                <div class="text-subtitle-2 m-0">{{ lastMessageContent }}</div>
                             </v-row>
                         </v-col>
                     </v-row>
