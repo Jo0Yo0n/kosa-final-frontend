@@ -24,7 +24,7 @@
                 dense
                 class="search-bar"
                 color="#D2B48C"
-                background-color="#ECE8ED"
+                background-color="white"
                 @keyup.enter="getSearchResults"
             ></v-text-field>
 
@@ -224,7 +224,7 @@ export default {
 }
 .alarm-button {
     position: relative;
-    color: #ece8ed !important;
+    color: white !important;
     margin-right: 12px;
 }
 
