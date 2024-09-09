@@ -15,6 +15,7 @@
           cycle
           interval="5000"
           v-if="popularProjects && popularProjects.length"
+          height="400px"
       >
         <v-carousel-item
             v-for="project in popularProjects"
@@ -54,11 +55,6 @@
                   </template>
                 </v-card-subtitle>
 
-                <!-- 설명 박스 -->
-                <v-card-text class="description-box">
-                  {{ project.description }}
-                </v-card-text>
-
                 <!-- 모집 포지션 나열 -->
                 <v-card-subtitle class="recruitment-section mt-2 d-flex flex-wrap">
                   <template v-for="recruitment in project.recruitmentName" >
@@ -73,7 +69,6 @@
                     </v-chip>
                   </template>
                 </v-card-subtitle>
-
 
 
                 <!-- 프로젝트 기간 -->
@@ -198,12 +193,6 @@ export default {
 
 .project-section h2 {
   margin-bottom: 20px;
-}
-
-.description-box {
-  height: 110px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .project-tech-stack{
