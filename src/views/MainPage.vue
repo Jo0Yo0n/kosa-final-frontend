@@ -28,7 +28,7 @@
                         <v-col class="pa-7 d-flex flex-column justify-space-between">
                             <div class="project-info d-flex flex-column justify-space-between h-100">
                                 <!-- Project Name with Extra Margin -->
-                                <div class="project-title text-h4 font-weight-bold" style="margin-bottom: 20px">
+                                <div class="project-title" style="margin-bottom: 20px; font-size: 34px">
                                     {{ project.name }}
                                 </div>
 
