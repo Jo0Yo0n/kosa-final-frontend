@@ -19,7 +19,7 @@ export default {
             type: Array,
             default: () => [],
         },
-        knownTech: {
+        techOptions: {
             type: Object,
             default: () => ({}),
         },
