@@ -50,6 +50,18 @@ export const projectStore = {
         setKnownTech(state, techData) {
             state.knownTech = techData;
         },
+        resetState(state) {
+            state.projectName = '';
+            state.projectImage = null;
+            state.recruitmentRoles = [
+                { jobId: 1, count: 1 }, // 리더
+                { jobId: 9, count: 1 }, // 프론트엔드 개발
+                { jobId: 2, count: 1 }, // 백엔드 개발
+            ];
+            state.roleOptions = null;
+            state.techStack = [];
+            state.knownTech = [];
+        },
     },
     actions: {
         async updateProjectImage({ commit }, payload) {
