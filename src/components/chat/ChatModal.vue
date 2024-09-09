@@ -6,10 +6,17 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-09-03        yunbin       최초 생성
+ * 2024-09-05        yunbin       웹 소켓 연결
+ * 2024-09-07        yunbin       대화 목록 요청
+ * 2024-09-08        yunbin       coffee chat 버튼 눌렀을 때 로직 추가
+ * 2024-09-09        yunbin       메세지 전송
 -->
 <script>
 import ChatCompo from '@/components/chat/ChatCompo.vue';
 import ChatMessage from '@/components/chat/ChatMessage.vue';
+import { getSocket } from '../../socket.js';
+import axios from 'axios';
+import moment from 'moment';
 
 export default {
     name: 'ChatModal',
@@ -19,23 +26,165 @@ export default {
             type: Boolean,
             default: false,
         },
+        member: {
+            type: Object,
+            default: () => {},
+        },
     },
     data() {
         return {
             isVisible: this.value,
             message: '', // 입력된 메시지
-            nickname: '성찬',
+            messages: [], // 현재 선택된 채팅방의 메시지 목록
+            chatList: [], // 전체 채팅방 목록
+            selectedChatRoom: null, // 현재 선택된 채팅방
+            currentUser: '',
+            targetMemberId: null,
+            socket: null,
+            hasFetchedChatList: false,
         };
     },
     methods: {
-        sendMessage() {
+        connectSocket() {
+            this.socket = getSocket();
+
+            this.socket.on('private message', (msgObj) => {
+                this.messages.push(`${msgObj.from}: ${msgObj.message}`); // 받은 메시지 추가
+                this.$nextTick(() => {
+                    const chatContainer = this.$el.querySelector('.pa-0 div');
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                });
+            });
+        },
+        // 메세지 보내기
+        async sendMessage() {
             if (this.message.trim() !== '') {
-                console.log('Message sent:', this.message);
-                this.message = ''; // 메시지 전송 후 입력 필드 초기화
+                // 새로 생성된 채팅방일 경우, 먼저 방을 생성한 후 메시지 전송
+                if (!this.selectedChatRoom || this.selectedChatRoom.room_id.startsWith('temp_room_')) {
+                    // 새로운 채팅방을 생성
+                    try {
+                        const createRoomResponse = await axios.post('/node-api/private-chat-rooms', {
+                            participants: [this.currentUser._id, this.member.memberId],
+                        });
+
+                        if (createRoomResponse.status === 201) {
+                            const newRoom = createRoomResponse.data.room;
+
+                            // 방 생성 후 selectedChatRoom 업데이트
+                            this.selectedChatRoom = newRoom;
+                            this.targetMemberId = this.member.memberId;
+
+                            // 참여자의 chat_room_list 업데이트
+                            await axios.put('/node-api/members', {
+                                memberId: this.member.memberId,
+                                roomId: newRoom._id,
+                            });
+
+                            await axios.put('/node-api/members', {
+                                memberId: this.currentUser._id,
+                                roomId: newRoom._id,
+                            });
+
+                            // 방 생성 후 메시지 전송
+                            await this.sendMessageToServer(this.message, newRoom._id);
+                        }
+                    } catch (error) {
+                        console.error('Error creating chat room:', error);
+                    }
+                } else {
+                    // 기존 채팅방이 있는 경우 메시지만 전송
+                    await this.sendMessageToServer(this.message, this.selectedChatRoom._id);
+                }
+
+                // 메시지 전송 후 입력 필드 초기화
+                this.message = '';
+            }
+        },
+        // 메시지를 서버에 전송하고 DB에 저장하는 함수
+        async sendMessageToServer(message, roomId) {
+            try {
+                await axios.post('/node-api/messages', {
+                    roomId,
+                    senderId: this.currentUser._id,
+                    message,
+                });
+
+                // 메시지를 소켓으로 다른 사용자에게 전송
+                this.socket.emit('private message', this.targetMemberId, message);
+            } catch (error) {
+                console.error('Error sending message:', roomId);
             }
         },
         closeModal() {
             this.isVisible = false;
+            this.selectedChatRoom = null;
+        },
+        handleMemberChat() {
+            console.log('modal', this.member.memberId);
+            console.log('chat list', this.chatList);
+            const existingChatRoom = this.chatList.find((chat) => chat.participants.some((participant) => String(participant._id) === String(this.member.memberId)));
+            console.log(existingChatRoom);
+
+            if (existingChatRoom) {
+                // 이미 채팅방이 존재하면 그 채팅방을 선택
+                this.selectedChatRoom = existingChatRoom;
+                this.messages = existingChatRoom.messages;
+                this.targetMemberId = this.member.memberId;
+            } else {
+                // 채팅방이 없으면 임시 채팅방 생성
+
+                const tempParticipant = {
+                    _id: this.member.memberId,
+                    nickname: this.member.memberNickname,
+                    img_url: this.member.memberImg,
+                };
+
+                const tempChatRoom = {
+                    room_id: `temp_room_${Date.now()}`, // 임시 방 ID
+                    participants: [tempParticipant], // props로 전달된 멤버
+                    messages: [], // 빈 메시지 배열로 시작
+                };
+
+                // 채팅 목록에 추가하고 자동 선택
+                this.chatList.unshift(tempChatRoom);
+                this.selectedChatRoom = tempChatRoom;
+                this.targetMemberId = this.member.memberId;
+            }
+        },
+        async getChatList() {
+            try {
+                const response = await axios.get('/node-api/private-chat-rooms');
+
+                if (response.status === 200) {
+                    console.log('getChatList', response.data);
+                    this.chatList = response.data.chatRoom;
+                    this.currentUser = response.data.currentUser;
+
+                    if (this.member && Object.keys(this.member).length > 0) {
+                        this.handleMemberChat();
+                    }
+                }
+            } catch (error) {
+                console.error('Error getting user data:', error);
+            }
+        },
+        selectChatRoom(chat) {
+            this.selectedChatRoom = chat;
+            this.messages = chat.messages;
+
+            if (chat.participants.length > 0) {
+                this.targetMemberId = chat.participants[0]._id;
+            }
+        },
+        groupMessagesByDate() {
+            return this.messages.reduce((groups, message) => {
+                const date = moment(message.created_at).format('YYYY년 M월 D일');
+                if (!groups[date]) {
+                    groups[date] = [];
+                }
+                groups[date].push(message);
+                return groups;
+            }, {});
         },
     },
     watch: {
@@ -43,7 +192,23 @@ export default {
             this.isVisible = val;
         },
         isVisible(val) {
+            if (val && !this.hasFetchedChatList) {
+                this.connectSocket(); // 소켓 연결
+                this.getChatList().then(() => {
+                    this.hasFetchedChatList = true;
+                });
+            } else {
+                // 이미 채팅 목록을 가져왔으면 member에 맞는 채팅방을 선택
+                if (this.member && Object.keys(this.member).length > 0) {
+                    this.handleMemberChat();
+                }
+            }
             this.$emit('input', val);
+        },
+    },
+    computed: {
+        reversedMessages() {
+            return [...this.messages].reverse();
         },
     },
 };
@@ -62,18 +227,21 @@ export default {
                         대화 목록
                     </v-card-title>
                     <v-divider></v-divider>
-                    <div>
-                        <ChatCompo></ChatCompo>
-                        <ChatCompo></ChatCompo>
+                    <div v-for="chat in chatList" :key="chat.room_id" @click="selectChatRoom(chat)">
+                        <ChatCompo
+                            :chat="chat"
+                            :backColor="selectedChatRoom && selectedChatRoom.room_id === chat.room_id ? '#8D6E63' : '#D7CCC8'"
+                            :textColor="selectedChatRoom && selectedChatRoom.room_id === chat.room_id ? '#D7CCC8' : '#8D6E63'"
+                        ></ChatCompo>
                     </div>
                 </v-col>
                 <v-divider vertical></v-divider>
-                <v-col cols="8">
+                <v-col v-if="selectedChatRoom" cols="8">
                     <v-card-title class="headline">
                         <v-avatar size="36">
-                            <img src="https://image.fnnews.com/resource/media/image/2023/08/12/202308121347460461_l.jpg" alt="profile_img" />
+                            <img :src="selectedChatRoom.participants[0].img_url" alt="profile_img" />
                         </v-avatar>
-                        <div class="chat-title">{{ nickname }}님과의 대화</div>
+                        <div class="chat-title">{{ selectedChatRoom.participants[0].nickname }}님과의 대화</div>
                         <v-spacer></v-spacer>
                         <v-btn icon color="#6D4C41">
                             <v-icon x-large>mdi-logout</v-icon>
@@ -81,8 +249,22 @@ export default {
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text class="pa-0">
-                        <!-- 채팅 내용 -->
-                        <div :style="{ height: '450px', overflowY: 'auto' }"><ChatMessage></ChatMessage></div>
+                        <div :style="{ height: '450px', overflowY: 'auto' }">
+                            <div v-for="(msgs, date) in groupMessagesByDate()" :key="date">
+                                <div class="text-center my-2">
+                                    <div class="date-label">{{ date }}</div>
+                                </div>
+                                <div v-for="(msg, index) in reversedMessages" :key="index">
+                                    <div>
+                                        <ChatMessage
+                                            :senderImage="msg.sender_id === currentUser._id ? currentUser.img_url : selectedChatRoom.participants[0].img_url"
+                                            :message="msg"
+                                            :currentUser="currentUser._id"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
@@ -91,6 +273,9 @@ export default {
                             <v-icon x-large>mdi-send-circle</v-icon>
                         </v-btn>
                     </v-card-actions>
+                </v-col>
+                <v-col cols="8" v-else>
+                    <div class="empty-chat-space"></div>
                 </v-col>
             </v-row>
         </v-card>
@@ -106,10 +291,27 @@ export default {
     right: 1px;
     padding: 0;
     margin: 0;
-    z-index: 1;
+    z-index: 2;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* 모달에 그림자 추가 */
 }
 .chat-title {
     margin-left: 10px;
+}
+.date-label {
+    display: inline-block;
+    padding: 4px 30px;
+    background-color: #e0e0e0;
+    border-radius: 24px;
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0 auto;
+}
+.empty-chat-space {
+    height: 670px;
+    /*display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #bbb;
+    font-size: 1.5rem;*/
 }
 </style>
