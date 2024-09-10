@@ -32,7 +32,10 @@ export default {
     ProjectCard
   },
   props: {
-    projects: Array
+    projects: {
+      type: Array,
+      default: () => [], // 빈 배열을 기본값으로 설정
+    }
   },
   data() {
     return {
@@ -44,6 +47,9 @@ export default {
       // 처음에 visibleCount만큼의 프로젝트를 보여줌
       return this.projects.slice(0, this.visibleCount);
     }
+  },
+  mounted() {
+    console.log('Projects received in ProjectCardList:', this.projects); // 전달받은 프로젝트 로그 확인
   },
   methods: {
     showMoreProjects() {

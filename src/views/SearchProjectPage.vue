@@ -100,13 +100,13 @@ export default {
           status: this.filterStatus,
         });
 
+        // API 요청 시 필터 상태를 파라미터로 전달
         const response = await this.$axios.get(`/api/search/projects` , {
           params:{
             keyword: this.searchQuery,
             sortby: this.sortOrder,
-            status: this.filterStatus,
+            status: this.filterStatus === '전체' ? '' : this.filterStatus,  // '전체'일 경우 필터링 없이 요청
           }
-
         });
 
         console.log('Response received:', response);
@@ -120,15 +120,14 @@ export default {
   },
   computed: {
     filteredProjects() {
-      if (this.filterStatus === '전체') {
-        return this.projects;
-      }
-      return this.projects.filter(project => project.status === this.filterStatus);
+      // 필터링을 API로 처리하므로 굳이 추가 필터링이 필요하지 않음
+      return this.projects;
     },
   },
   watch: {
     filterStatus() {
-      this.searchProjects(); // 상태 변경 시 검색 실행
+      console.log('filter 변경' +this.filterStatus);
+      this.searchProjects();
     },
     sortOrder() {
       this.searchProjects();
