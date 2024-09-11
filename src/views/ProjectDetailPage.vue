@@ -10,8 +10,8 @@
 -->
 <template>
     <v-container>
-        <v-row justify="center" align="center">
-            <v-col cols="12" class="text-center">
+        <v-row align="center" justify="center">
+            <v-col class="text-center" cols="12">
                 <h1 class="ma-2">{{ project.name }}</h1>
                 <v-chip :color="getStatusColor(project.status)" text-color="white">
                     {{ getStatusText(project.status) }}
@@ -20,7 +20,7 @@
         </v-row>
 
         <v-row v-if="project.status === 1" justify="center">
-            <v-col cols="12" sm="8" md="6" lg="4">
+            <v-col cols="12" lg="4" md="6" sm="8">
                 <div class="position-relative ma-10">
                     <div class="date-labels d-flex justify-space-between mb-1">
                         <span class="caption">{{ formatDate(startDate) }}</span>
@@ -65,6 +65,7 @@ export default {
             project: {},
             project_recruitment: [],
             activeTab: 0,
+            isFetching: false,
         };
     },
     computed: {
@@ -91,11 +92,32 @@ export default {
             return Math.round((elapsedDuration / totalDuration) * 100);
         },
     },
-    created() {
-        this.fetchProjectDetails();
-        this.fetchProjectRecruitment();
+    beforeCreated() {
+        this.isFetching = false; // beforeCreate에서 플래그를 설정하여 초기화를 방지
+        console.log('beforeCreated 실행');
+    },
+    mounted() {
+        console.log('Mounted 실행');
+        this.fetchProjectData();
     },
     methods: {
+        async fetchProjectData() {
+            if (this.isFetching) {
+                console.warn('이미 데이터 가져오는 중입니다. 요청을 건너뜁니다.');
+                return; // 이미 요청 중이면 중단
+            }
+            this.isFetching = true; // 요청 시작
+            try {
+                console.log('fetchProjectDetails 호출');
+                await this.fetchProjectDetails();
+                console.log('fetchProjectRecruitment 호출');
+                await this.fetchProjectRecruitment();
+            } catch (error) {
+                console.error('데이터 가져오는 중 오류 발생:', error);
+            } finally {
+                this.isFetching = true; // 요청 완료
+            }
+        },
         async fetchProjectDetails() {
             try {
                 const response = await this.$axios.get(`/api/projects/${this.$route.params.projectId}`);
@@ -103,7 +125,9 @@ export default {
             } catch (error) {
                 console.error('Error fetching project details:', error);
                 alert('프로젝트 정보를 불러오는 중 에러가 발생했습니다.');
-                this.$router.push('/');
+                await this.$router.push('/');
+            } finally {
+                console.log('fetchProjectDetails 실행');
             }
         },
         async fetchProjectRecruitment() {
@@ -114,6 +138,8 @@ export default {
                 this.project_recruitment = response.data;
             } catch (error) {
                 console.error('지원자를 불러오는 과정에서 에러 발생 : ', error);
+            } finally {
+                console.log('fetchProjectRecruitment 실행');
             }
         },
         getStatusColor(status) {

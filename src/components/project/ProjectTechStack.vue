@@ -68,7 +68,7 @@ export default {
             this.showDropdown = false;
         },
         removeTech(index) {
-            this.removeTechAction({ index }); // Vuex 액션 이름이 다르게 설정됨
+            this.removeTechAction(index); // Vuex 액션 이름이 다르게 설정됨
         },
     },
 };

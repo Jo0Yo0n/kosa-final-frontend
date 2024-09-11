@@ -126,6 +126,7 @@ import { createLowlight } from 'lowlight';
 
 import javascript from 'highlight.js/lib/languages/javascript';
 import css from 'highlight.js/lib/languages/css';
+import axios from 'axios';
 
 const lowlight = createLowlight();
 lowlight.register('javascript', javascript);
@@ -145,17 +146,26 @@ export default {
         insertFile() {
             this.$refs.fileInput.click();
         },
+        async updateProjectImage(payload) {
+            try {
+                const formData = new FormData();
+                formData.append('file', payload);
+
+                const response = await axios.post('/api/file/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                const imageUrl = response.data;
+                this.editor.chain().focus().setImage({ src: imageUrl, style: 'max-width: 100%; max-height: 100px;' }).run();
+            } catch (error) {
+                console.error('S3 업로드 오류:', error);
+            }
+        },
         handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
-            // 파일을 읽고 URL로 변환
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const url = e.target.result;
-                this.editor.chain().focus().setImage({ src: url }).run();
-            };
-            reader.readAsDataURL(file);
+            this.updateProjectImage(file);
         },
         addLink() {
             this.updatePopupPosition();
