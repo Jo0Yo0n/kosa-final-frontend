@@ -38,6 +38,7 @@ init(store)
     .catch((Error) => {
         console.error('스토어 초기화 중 오류 발생 : ', Error);
     });
+/*
 
 new Vue({
     router,
@@ -45,3 +46,4 @@ new Vue({
     store,
     render: (h) => h(App),
 }).$mount('#app');
+*/
