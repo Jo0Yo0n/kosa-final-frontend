@@ -49,11 +49,22 @@ export default {
             this.socket = getSocket();
 
             this.socket.on('private message', (msgObj) => {
-                this.messages.push(`${msgObj.from}: ${msgObj.message}`); // 받은 메시지 추가
-                this.$nextTick(() => {
-                    const chatContainer = this.$el.querySelector('.pa-0 div');
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                });
+                console.log('메시지 수신:', msgObj);
+
+                // 현재 선택된 채팅방의 메시지라면 추가
+                if (this.selectedChatRoom && this.selectedChatRoom.room_id === msgObj.roomId) {
+                    this.messages.push({
+                        sender_id: msgObj.from,
+                        content: msgObj.message,
+                        created_at: new Date(),
+                    });
+                    this.$nextTick(() => {
+                        const chatContainer = this.$el.querySelector('.pa-0 div');
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    });
+                } else {
+                    console.log('수신한 메시지가 현재 선택된 채팅방이 아님');
+                }
             });
         },
         // 메세지 보내기
@@ -68,32 +79,26 @@ export default {
                         });
 
                         if (createRoomResponse.status === 201) {
-                            const newRoom = createRoomResponse.data.room;
+                            const newRoom = {
+                                room_id: createRoomResponse.data.room_id,
+                                participants: [this.currentUser._id, this.member.memberId],
+                                messages: [],
+                            };
 
                             // 방 생성 후 selectedChatRoom 업데이트
                             this.selectedChatRoom = newRoom;
                             this.targetMemberId = this.member.memberId;
 
-                            // 참여자의 chat_room_list 업데이트
-                            await axios.put('/node-api/members', {
-                                memberId: this.member.memberId,
-                                roomId: newRoom._id,
-                            });
-
-                            await axios.put('/node-api/members', {
-                                memberId: this.currentUser._id,
-                                roomId: newRoom._id,
-                            });
-
                             // 방 생성 후 메시지 전송
-                            await this.sendMessageToServer(this.message, newRoom._id);
+                            await this.sendMessageToServer(this.message, newRoom.room_id);
                         }
                     } catch (error) {
                         console.error('Error creating chat room:', error);
                     }
                 } else {
                     // 기존 채팅방이 있는 경우 메시지만 전송
-                    await this.sendMessageToServer(this.message, this.selectedChatRoom._id);
+                    console.log('채팅방 id ', this.selectedChatRoom.room_id);
+                    await this.sendMessageToServer(this.message, this.selectedChatRoom.room_id);
                 }
 
                 // 메시지 전송 후 입력 필드 초기화
@@ -103,14 +108,25 @@ export default {
         // 메시지를 서버에 전송하고 DB에 저장하는 함수
         async sendMessageToServer(message, roomId) {
             try {
+                console.log(message, roomId);
                 await axios.post('/node-api/messages', {
-                    roomId,
-                    senderId: this.currentUser._id,
-                    message,
+                    chat_room_id: roomId,
+                    sender_id: this.currentUser._id,
+                    sender_nickname: this.currentUser.nickname,
+                    content: message,
                 });
 
-                // 메시지를 소켓으로 다른 사용자에게 전송
-                this.socket.emit('private message', this.targetMemberId, message);
+                // 소켓을 통해 채팅방(room)에 메시지 전송
+                this.socket.emit('private message', {
+                    roomId: roomId, // 채팅방 ID
+                    from: this.currentUser._id, // 현재 유저 ID
+                    message: message, // 메시지 내용
+                });
+
+                this.$nextTick(() => {
+                    const chatContainer = this.$el.querySelector('.pa-0 div');
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                });
             } catch (error) {
                 console.error('Error sending message:', roomId);
             }
@@ -150,6 +166,11 @@ export default {
                 this.selectedChatRoom = tempChatRoom;
                 this.targetMemberId = this.member.memberId;
             }
+
+            if (this.selectedChatRoom && this.socket) {
+                console.log(`방에 참가 중: ${this.selectedChatRoom.room_id}`);
+                this.socket.emit('join room', this.selectedChatRoom.room_id);
+            }
         },
         async getChatList() {
             try {
@@ -159,6 +180,13 @@ export default {
                     console.log('getChatList', response.data);
                     this.chatList = response.data.chatRoom;
                     this.currentUser = response.data.currentUser;
+
+                    // 마지막 메시지 기준으로 채팅방을 정렬
+                    this.chatList.sort((a, b) => {
+                        const lastMessageA = a.messages.length > 0 ? moment(a.messages[a.messages.length - 1].created_at) : moment(0);
+                        const lastMessageB = b.messages.length > 0 ? moment(b.messages[b.messages.length - 1].created_at) : moment(0);
+                        return lastMessageB - lastMessageA; // 최신 메시지가 먼저 오게 정렬
+                    });
 
                     if (this.member && Object.keys(this.member).length > 0) {
                         this.handleMemberChat();
@@ -174,6 +202,11 @@ export default {
 
             if (chat.participants.length > 0) {
                 this.targetMemberId = chat.participants[0]._id;
+            }
+
+            if (this.selectedChatRoom && this.socket) {
+                console.log(`방에 참가 중: ${this.selectedChatRoom.room_id}`);
+                this.socket.emit('join room', this.selectedChatRoom.room_id);
             }
         },
         groupMessagesByDate() {
@@ -204,11 +237,6 @@ export default {
                 }
             }
             this.$emit('input', val);
-        },
-    },
-    computed: {
-        reversedMessages() {
-            return [...this.messages].reverse();
         },
     },
 };
@@ -254,7 +282,7 @@ export default {
                                 <div class="text-center my-2">
                                     <div class="date-label">{{ date }}</div>
                                 </div>
-                                <div v-for="(msg, index) in reversedMessages" :key="index">
+                                <div v-for="(msg, index) in msgs" :key="index">
                                     <div>
                                         <ChatMessage
                                             :senderImage="msg.sender_id === currentUser._id ? currentUser.img_url : selectedChatRoom.participants[0].img_url"
