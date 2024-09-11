@@ -32,12 +32,12 @@ export default {
                 return '';
             }
             // 마지막 메시지의 created_at을 현재 시간과 비교하여 상대적인 시간 표시
-            const lastMessageTime = moment(this.chat.messages[0].created_at);
+            const lastMessageTime = moment(this.chat.messages[this.chat.messages.length - 1].created_at);
             return lastMessageTime.fromNow(); // "몇 분 전", "몇 시간 전" 등으로 반환
         },
         lastMessageContent() {
             // 메시지가 없으면 빈 문자열 반환
-            return this.chat.messages && this.chat.messages.length > 0 ? this.chat.messages[0].content : '';
+            return this.chat.messages && this.chat.messages.length > 0 ? this.chat.messages[this.chat.messages.length - 1].content : '';
         },
     },
 };
@@ -64,7 +64,7 @@ export default {
                                 <div class="text-caption" :style="{ color: textColor }">{{ formattedTime }}</div>
                             </v-row>
                             <v-row no-gutters>
-                                <div class="text-subtitle-2 m-0">{{ lastMessageContent }}</div>
+                                <div class="text-subtitle-2 m-0 last-message">{{ lastMessageContent }}</div>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -74,4 +74,10 @@ export default {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.last-message {
+    white-space: nowrap; /* 한 줄로 표시 */
+    overflow: hidden; /* 넘치는 부분을 숨김 */
+    text-overflow: ellipsis; /* 넘치는 부분을 '...'으로 표시 */
+}
+</style>

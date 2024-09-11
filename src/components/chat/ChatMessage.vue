@@ -62,7 +62,7 @@ export default {
     margin: 0 8px 30px;
 }
 .chat-bubble {
-    max-width: 50%;
+    max-width: 80%;
     padding: 10px 15px;
     border-radius: 15px;
     margin-bottom: 10px;
