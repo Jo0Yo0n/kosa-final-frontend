@@ -78,9 +78,13 @@ export default {
     methods: {
         async applyForProject(jobId) {
             try {
-                await this.$axiosInstance.post(`/api/projects/${this.projectId}/applications`, {
-                    jobId: jobId,
-                });
+                await this.$axiosInstance.post(
+                    `/api/projects/${this.projectId}/applications`,
+                    {
+                        jobId: jobId,
+                    },
+                    { context: this },
+                );
 
                 this.resultHeader = '지원 완료';
                 this.resultContent = '프로젝트 지원완료';

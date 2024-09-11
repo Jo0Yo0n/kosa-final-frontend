@@ -84,6 +84,7 @@ export default {
         async fetchApproval(member, value) {
             const data = {
                 projectId: this.$route.params.projectId,
+                jobId: member.jobId,
                 memberId: member.projectMemberId,
                 acceptStatus: value,
             };
