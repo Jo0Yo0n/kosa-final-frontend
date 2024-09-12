@@ -87,7 +87,7 @@ export default {
 
 <style scoped>
 .member-card {
-    width: 260px;
+    width: 270px;
     height: auto;
     aspect-ratio: 4 / 5;
     border: 2px solid #6f4a3d; /* 갈색 아웃라인 */
