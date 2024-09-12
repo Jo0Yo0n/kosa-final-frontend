@@ -32,7 +32,7 @@
             </template>
         </v-snackbar>
         <!--
-         승인 알람 창
+         승인 알람 창-->
         <v-snackbar
             v-model="showProjectNotification"
             :timeout="5000"
@@ -57,7 +57,7 @@
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </template>
-        </v-snackbar>-->
+        </v-snackbar>
 
         <router-view></router-view>
         <AdditionalInfoModal v-if="isNewUser" @info-submitted="handleInfoSubmitted" />
@@ -71,11 +71,15 @@ export default {
     data() {
         return {
             isNewUser: false, // 새 사용자 여부 확인
-            showNotification: false, // 푸시 알림 표시 여부
+            showNotification: true,
+            showProjectNotification: true,
             notification: {
                 title: '샴푸의 요정',
                 message: '혹시 짜장배달 되나요',
                 logoUrl: 'https://lh3.googleusercontent.com/a/ACg8ocKz2zF2C7m_spjw0G7bhNDS9blvM4GvCA0Qh7xdYcnHBYPszg=s96-c',
+            },
+            projectNotification: {
+                message: '메세지가 작성',
             },
         };
     },
@@ -93,6 +97,10 @@ export default {
         triggerPushNotification(title, message, logoUrl) {
             this.notification = { title, message, logoUrl };
             this.showNotification = true;
+        },
+        triggerProjectNotification(projectName, status) {
+            this.projectNotification.message = `${projectName} 참여 요청이 ${status} 되었습니다.`;
+            this.showProjectNotification = true;
         },
     },
 };
