@@ -10,6 +10,7 @@
  * 2024-09-07        yunbin       대화 목록 요청
  * 2024-09-08        yunbin       coffee chat 버튼 눌렀을 때 로직 추가
  * 2024-09-09        yunbin       메세지 전송
+ * 2024-09-11        yunbin       selectedChatRoom vuex로 변경
 -->
 <script>
 import ChatCompo from '@/components/chat/ChatCompo.vue';
@@ -17,6 +18,7 @@ import ChatMessage from '@/components/chat/ChatMessage.vue';
 import { getSocket } from '../../socket.js';
 import axios from 'axios';
 import moment from 'moment';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     name: 'ChatModal',
@@ -37,7 +39,6 @@ export default {
             message: '', // 입력된 메시지
             messages: [], // 현재 선택된 채팅방의 메시지 목록
             chatList: [], // 전체 채팅방 목록
-            selectedChatRoom: null, // 현재 선택된 채팅방
             currentUser: '',
             targetMemberId: null,
             socket: null,
@@ -45,6 +46,9 @@ export default {
         };
     },
     methods: {
+        ...mapActions('chat', {
+            setSelectedChatRoom: 'selectChatRoom', // Vuex 액션에 별칭 부여
+        }),
         connectSocket() {
             this.socket = getSocket();
 
@@ -63,7 +67,21 @@ export default {
                         chatContainer.scrollTop = chatContainer.scrollHeight;
                     });
                 } else {
-                    console.log('수신한 메시지가 현재 선택된 채팅방이 아님');
+                    const chatRoomIndex = this.chatList.findIndex((chat) => chat.room_id === msgObj.roomId);
+                    if (chatRoomIndex !== -1) {
+                        this.chatList[chatRoomIndex].messages.push({
+                            sender_id: msgObj.from,
+                            content: msgObj.message,
+                            created_at: new Date(),
+                        });
+
+                        // // 마지막 메시지를 기준으로 대화 목록을 정렬
+                        // this.chatList.sort((a, b) => {
+                        //   const lastMessageA = a.messages.length > 0 ? moment(a.messages[a.messages.length - 1].created_at) : moment(0);
+                        //   const lastMessageB = b.messages.length > 0 ? moment(b.messages[b.messages.length - 1].created_at) : moment(0);
+                        //   return lastMessageB - lastMessageA;
+                        // });
+                    }
                 }
             });
         },
@@ -86,8 +104,12 @@ export default {
                             };
 
                             // 방 생성 후 selectedChatRoom 업데이트
-                            this.selectedChatRoom = newRoom;
-                            this.targetMemberId = this.member.memberId;
+                            this.handleRoomSelection(newRoom);
+
+                            if (newRoom && this.socket) {
+                                console.log(`방에 참가 중: ${newRoom.room_id}`);
+                                this.socket.emit('join room', newRoom.room_id);
+                            }
 
                             // 방 생성 후 메시지 전송
                             await this.sendMessageToServer(this.message, newRoom.room_id);
@@ -119,7 +141,9 @@ export default {
                 // 소켓을 통해 채팅방(room)에 메시지 전송
                 this.socket.emit('private message', {
                     roomId: roomId, // 채팅방 ID
-                    from: this.currentUser._id, // 현재 유저 ID
+                    from: this.currentUser._id, // 보낸 사람 ID
+                    fromNickname: this.currentUser.nickname, // 보낸 사람 닉네임
+                    fromImgUrl: this.currentUser.img_url, // 보낸 사람 이미지 URL
                     message: message, // 메시지 내용
                 });
 
@@ -133,7 +157,7 @@ export default {
         },
         closeModal() {
             this.isVisible = false;
-            this.selectedChatRoom = null;
+            this.setSelectedChatRoom(null);
         },
         handleMemberChat() {
             console.log('modal', this.member.memberId);
@@ -143,12 +167,9 @@ export default {
 
             if (existingChatRoom) {
                 // 이미 채팅방이 존재하면 그 채팅방을 선택
-                this.selectedChatRoom = existingChatRoom;
-                this.messages = existingChatRoom.messages;
-                this.targetMemberId = this.member.memberId;
+                this.handleRoomSelection(existingChatRoom);
             } else {
                 // 채팅방이 없으면 임시 채팅방 생성
-
                 const tempParticipant = {
                     _id: this.member.memberId,
                     nickname: this.member.memberNickname,
@@ -163,13 +184,7 @@ export default {
 
                 // 채팅 목록에 추가하고 자동 선택
                 this.chatList.unshift(tempChatRoom);
-                this.selectedChatRoom = tempChatRoom;
-                this.targetMemberId = this.member.memberId;
-            }
-
-            if (this.selectedChatRoom && this.socket) {
-                console.log(`방에 참가 중: ${this.selectedChatRoom.room_id}`);
-                this.socket.emit('join room', this.selectedChatRoom.room_id);
+                this.handleRoomSelection(tempChatRoom);
             }
         },
         async getChatList() {
@@ -196,18 +211,14 @@ export default {
                 console.error('Error getting user data:', error);
             }
         },
-        selectChatRoom(chat) {
-            this.selectedChatRoom = chat;
+        handleRoomSelection(chat) {
+            this.setSelectedChatRoom(chat); // Vuex에 상태 저장
             this.messages = chat.messages;
 
-            if (chat.participants.length > 0) {
-                this.targetMemberId = chat.participants[0]._id;
-            }
-
-            if (this.selectedChatRoom && this.socket) {
-                console.log(`방에 참가 중: ${this.selectedChatRoom.room_id}`);
-                this.socket.emit('join room', this.selectedChatRoom.room_id);
-            }
+            // if (chat && this.socket) {
+            //   console.log(`방에 참가 중: ${chat.room_id}`);
+            //   this.socket.emit('join room', chat.room_id);
+            // }
         },
         groupMessagesByDate() {
             return this.messages.reduce((groups, message) => {
@@ -239,6 +250,9 @@ export default {
             this.$emit('input', val);
         },
     },
+    computed: {
+        ...mapGetters('chat', ['selectedChatRoom']),
+    },
 };
 </script>
 
@@ -255,7 +269,7 @@ export default {
                         대화 목록
                     </v-card-title>
                     <v-divider></v-divider>
-                    <div v-for="chat in chatList" :key="chat.room_id" @click="selectChatRoom(chat)">
+                    <div v-for="chat in chatList" :key="chat.room_id" @click="handleRoomSelection(chat)">
                         <ChatCompo
                             :chat="chat"
                             :backColor="selectedChatRoom && selectedChatRoom.room_id === chat.room_id ? '#8D6E63' : '#D7CCC8'"

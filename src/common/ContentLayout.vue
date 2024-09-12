@@ -11,12 +11,12 @@
         >
             <v-row no-gutters align="center">
                 <v-avatar size="40" class="mr-2">
-                    <img :src="notification.logoUrl" alt="logo" />
+                    <img :src="notification.imgUrl" alt="logo" />
                 </v-avatar>
                 <v-col>
                     <div class="d-flex align-center">
                         <span :style="{ color: '#333', fontSize: '16px', fontWeight: 'bold', marginRight: '8px' }">
-                            {{ notification.title }}
+                            {{ notification.nickname }}
                         </span>
                         <span :style="{ color: '#888', fontSize: '12px' }">{{ notification.time }}</span>
                     </div>
@@ -61,21 +61,26 @@
 
         <router-view></router-view>
         <AdditionalInfoModal v-if="isNewUser" @info-submitted="handleInfoSubmitted" />
+        <!--        <ChatAlarmPopup v-if="showAlarm" :nickname="alarmNickname" :messageContent="alarmMessage" />-->
     </div>
 </template>
 
 <script>
 import AdditionalInfoModal from '@/components/login/AdditionalInfoModal.vue';
+import { getSocket } from '../../src/socket.js';
+import { mapGetters } from 'vuex';
+
 export default {
     components: { AdditionalInfoModal },
+
     data() {
         return {
             isNewUser: false, // 새 사용자 여부 확인
             showNotification: false, // 푸시 알림 표시 여부
             notification: {
-                title: '샴푸의 요정',
-                message: '혹시 짜장배달 되나요',
-                logoUrl: 'https://lh3.googleusercontent.com/a/ACg8ocKz2zF2C7m_spjw0G7bhNDS9blvM4GvCA0Qh7xdYcnHBYPszg=s96-c',
+                nickname: '',
+                message: '',
+                imgUrl: '',
             },
         };
     },
@@ -94,6 +99,25 @@ export default {
             this.notification = { title, message, logoUrl };
             this.showNotification = true;
         },
+        connectSocket() {
+            this.socket = getSocket();
+            this.socket.on('private message', (msgObj) => {
+                console.log('메시지 수신:', msgObj);
+                console.log('alarm', this.selectedChatRoom);
+                if (!this.selectedChatRoom || (this.selectedChatRoom.room_id !== msgObj.roomId && msgObj.from !== this.selectedChatRoom.participants[0]._id)) {
+                    this.showNotification = true;
+                    this.notification.nickname = msgObj.fromNickname;
+                    this.notification.message = msgObj.message;
+                    this.notification.imgUrl = msgObj.fromImgUrl;
+                }
+            });
+        },
+    },
+    computed: {
+        ...mapGetters('chat', ['selectedChatRoom']),
+    },
+    mounted() {
+        this.connectSocket();
     },
 };
 </script>
