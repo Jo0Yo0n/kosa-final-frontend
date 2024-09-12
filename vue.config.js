@@ -15,11 +15,11 @@ module.exports = defineConfig({
         proxy: {
             // '/api' 로 시작하는 모든 요청을 target url 로 프록시
             '^/api': {
-                target: `${process.env.VUE_APP_API_URL}`,
+                target: `https://hesil.site`,
                 changeOrigin: true,
             },
             '^/node-api': {
-                target: `${process.env.VUE_APP_NODE_API_URL}`,
+                target: `https://hesil.site`,
                 changeOrigin: true,
             },
         },
