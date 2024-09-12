@@ -28,6 +28,22 @@ export function connectSocket() {
         console.log('소켓이 끊어졌습니다.');
     });
 
+    socket.on('alarm', (data) => {
+        console.log('알람 수신:', data);
+
+        // 알람 타입에 따른 처리
+        switch (data.type) {
+            case 'application-message':
+                console.log('Application 메시지:', data.message);
+                break;
+            case 'approval-message':
+                console.log('Approval 메시지:', data.message);
+                break;
+            default:
+                console.log('알 수 없는 알람 타입:', data.type);
+        }
+    });
+
     return socket;
 }
 

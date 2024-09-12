@@ -17,10 +17,12 @@ module.exports = defineConfig({
             '^/api': {
                 target: `https://hesil.site`,
                 changeOrigin: true,
+                pathRewrite: { '^/api': '' },
             },
             '^/node-api': {
                 target: `https://hesil.site`,
                 changeOrigin: true,
+                pathRewrite: { '^/node-api': '' },
             },
         },
     },
