@@ -18,7 +18,7 @@
                 height="300px"
                 active-class="custom-active-dot"
                 class="custom-carousel"
-                hide-delimiters="false"
+                hide-delimiters
             >
                 <v-carousel-item v-for="project in popularProjects" :key="project.projectId" @click="goToDetailPage(project.projectId)">
                     <v-row class="fill-height ma-0">
