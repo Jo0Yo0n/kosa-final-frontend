@@ -7,6 +7,7 @@
  * -----------------------------------------------------------
  * 2024-08-28        JooYoon       최초 생성
  * 2024-09-07        Yeong-Huns    v-tab-item 에 v-if 추가
+ * 2024-09-13        Yeong-Huns    project 지원시, project 지원자 목록 최신화.
 -->
 <template>
     <v-container>
@@ -40,7 +41,7 @@
 
         <v-tabs-items v-model="activeTab">
             <v-tab-item>
-                <project-info :project="project" />
+                <project-info :project="project" @project-applied-to-parent="fetchProjectRecruitment" />
             </v-tab-item>
             <v-tab-item v-if="this.project.status !== 0">
                 <project-retrospective :project="project" />
