@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-08-28        JooYoon       최초 생성
+ * 2024-09-13        Yeong-Huns    project 지원시, project 지원자 목록 최신화.
 -->
 <template>
     <div class="pa-4">
@@ -13,7 +14,13 @@
 
         <v-divider class="my-6" />
 
-        <recruitment-status v-if="project.status === 0" :recruitments="project.recruitments" :projectId="project.projectId" :status="project.status" />
+        <recruitment-status
+            v-if="project.status === 0"
+            :recruitments="project.recruitments"
+            :projectId="project.projectId"
+            :status="project.status"
+            @project-applied="handleProjectApplied"
+        />
 
         <v-divider v-if="project.status === 0" class="my-6" />
 
@@ -42,6 +49,12 @@ export default {
     props: {
         project: {
             type: Object,
+        },
+    },
+    methods: {
+        handleProjectApplied() {
+            // 부모의 부모 컴포넌트로 이벤트 전달
+            this.$emit('project-applied-to-parent');
         },
     },
 };
