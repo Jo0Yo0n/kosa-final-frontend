@@ -186,7 +186,7 @@ export default {
                 };
 
                 if (this.currentRetrospective) {
-                    await this.$axios.put(`/api/projects/${this.project.projectId}/retrospectives/${this.currentRetrospective.retrospectiveId}`, payload, {
+                    await this.$axios.put(`/api/projects/${this.project.projectId}/retrospectives/${this.currentRetrospective.retId}`, payload, {
                         withCredentials: true,
                     });
                 } else {
