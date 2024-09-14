@@ -57,6 +57,7 @@
 import ProjectInfo from '@/components/project-detail/ProjectInfo.vue';
 import ProjectRetrospective from '@/components/project-retrospective/ProjectRetrospective.vue';
 import ProjectManagement from '@/components/project-detail/ProjectManagement.vue';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     name: 'ProjectDetailPage',
@@ -70,6 +71,8 @@ export default {
         };
     },
     computed: {
+        ...mapState('project', ['hasApplied']),
+
         startDate() {
             return new Date(this.project.startedAt);
         },
@@ -97,11 +100,18 @@ export default {
         this.isFetching = false; // beforeCreate에서 플래그를 설정하여 초기화를 방지
         console.log('beforeCreated 실행');
     },
-    mounted() {
+    async mounted() {
         console.log('Mounted 실행');
-        this.fetchProjectData();
+        try {
+            await this.fetchProjectData();
+            await this.fetchApplicationStatus(this.$route.params.projectId);
+        } catch (error) {
+            console.error('Error fetching project data:', error);
+        }
     },
     methods: {
+        ...mapActions('project', ['fetchApplicationStatus']),
+
         async fetchProjectData() {
             if (this.isFetching) {
                 console.warn('이미 데이터 가져오는 중입니다. 요청을 건너뜁니다.');
