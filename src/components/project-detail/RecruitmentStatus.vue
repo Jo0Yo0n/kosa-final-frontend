@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-08-29        JooYoon       최초 생성
+ * 2024-09-13        Yeong-Huns    project 지원시, project 지원자 목록 최신화.
 -->
 
 <template>
@@ -100,6 +101,7 @@ export default {
                 this.resultHeader = '지원 완료';
                 this.resultContent = '프로젝트 지원완료';
                 this.showSuccessModal = true;
+                this.$emit('project-applied');
             } catch (error) {
                 // 인터셉터가 처리해서 필요없음
             }
