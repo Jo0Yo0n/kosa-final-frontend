@@ -21,11 +21,11 @@
                                 <div class="mb-1" style="font-size: 18px">{{ recruitment.jobName }}</div>
                                 <div class="mb-1" style="font-size: 13px">{{ recruitment.members.length }} / {{ recruitment.jobCount }}</div>
 
-                                <!-- 지원하기 버튼 랜더링 조건 -->
+                                <!-- 지원하기 버튼 활성화 조건 -->
                                 <!-- 1. 사용자가 로그인한 상태여야 함 -->
                                 <!-- 2. 프로젝트가 모집 중 상태여야 함 -->
                                 <!-- 3. 모집 인원보다 참여 인원이 적어야 함 -->
-                                <!-- TODO: 4. 로그인한 사용자가 해당 project_member 테이블에 없어야 함 -->
+                                <!-- 4. 로그인한 사용자가 해당 project_member 테이블에 없어야 함 -> projectStore의 hasApplied status로 체크 -->
                                 <v-btn
                                     v-if="isLogIn && !hasApplied && status === 0 && recruitment.members.length < recruitment.jobCount"
                                     color="brown"
