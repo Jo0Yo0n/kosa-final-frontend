@@ -87,6 +87,7 @@
 <script>
 import LoginModal from '@/components/login/LoginModal.vue';
 import { mapGetters, mapActions } from 'vuex';
+import { eventEmitter } from '@/socket';
 
 export default {
     components: { LoginModal },
@@ -146,6 +147,10 @@ export default {
     },
     mounted() {
         this.checkLoginStatus(); // 컴포넌트 마운트 시 로그인 상태 확인
+        eventEmitter.on('alarm', this.triggerAlarm);
+    },
+    beforeDestroy() {
+        eventEmitter.off('alarm', this.triggerAlarm);
     },
 };
 </script>

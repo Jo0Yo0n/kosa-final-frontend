@@ -8,6 +8,7 @@
  * 2024-08-28        JooYoon       최초 생성
  * 2024-09-07        Yeong-Huns    v-tab-item 에 v-if 추가
  * 2024-09-13        Yeong-Huns    project 지원시, project 지원자 목록 최신화.
+ * 2024-09-14        Yeong-Huns    소켓이벤트 구독처리 .
 -->
 <template>
     <v-container>
@@ -57,6 +58,7 @@
 import ProjectInfo from '@/components/project-detail/ProjectInfo.vue';
 import ProjectRetrospective from '@/components/project-retrospective/ProjectRetrospective.vue';
 import ProjectManagement from '@/components/project-detail/ProjectManagement.vue';
+import { eventEmitter } from '@/socket';
 
 export default {
     name: 'ProjectDetailPage',
@@ -99,9 +101,27 @@ export default {
     },
     mounted() {
         console.log('Mounted 실행');
+        eventEmitter.on('alarm', this.handleAlarm);
         this.fetchProjectData();
     },
+    beforeDestroy() {
+        eventEmitter.off('alarm', this.handleAlarm);
+    },
     methods: {
+        handleAlarm(message) {
+            switch (message.type) {
+                case 'application-message':
+                    this.fetchProjectRecruitment();
+
+                    break;
+                case 'approval-message':
+                    this.fetchProjectRecruitment();
+                    this.fetchProjectDetails();
+                    break;
+                default:
+                    console.log('알 수 없는 알람 타입:', message.type);
+            }
+        },
         async fetchProjectData() {
             if (this.isFetching) {
                 console.warn('이미 데이터 가져오는 중입니다. 요청을 건너뜁니다.');
