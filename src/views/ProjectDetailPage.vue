@@ -134,7 +134,7 @@ export default {
                     console.log('알 수 없는 알람 타입:', message.type);
             }
         },
-        
+
 
         async fetchProjectData() {
             if (this.isFetching) {
