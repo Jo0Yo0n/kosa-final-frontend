@@ -62,7 +62,6 @@ import ProjectManagement from '@/components/project-detail/ProjectManagement.vue
 import { eventEmitter } from '@/socket';
 import { mapState, mapActions } from 'vuex';
 
-
 export default {
     name: 'ProjectDetailPage',
     components: { ProjectManagement, ProjectInfo, ProjectRetrospective },
@@ -118,13 +117,13 @@ export default {
         eventEmitter.off('alarm', this.handleAlarm);
     },
     methods: {
-    ...mapActions('project', ['fetchApplicationStatus']),
+        ...mapActions('project', ['fetchApplicationStatus']),
 
         handleAlarm(message) {
             switch (message.type) {
                 case 'application-message':
                     this.fetchProjectRecruitment();
-
+                    this.fetchProjectDetails();
                     break;
                 case 'approval-message':
                     this.fetchProjectRecruitment();
@@ -134,7 +133,6 @@ export default {
                     console.log('알 수 없는 알람 타입:', message.type);
             }
         },
-        
 
         async fetchProjectData() {
             if (this.isFetching) {
