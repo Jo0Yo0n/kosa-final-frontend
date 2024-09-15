@@ -1,10 +1,16 @@
 import { io } from 'socket.io-client';
+import { EventEmitter } from 'events';
 
 let socket = null;
+export const eventEmitter = new EventEmitter();
 
 export function getSocket() {
     if (!socket) {
-        socket = io('http://localhost:7070', {
+        // const url = process.env.NODE_ENV === 'production' ? 'https://hesil.site/node-api' : 'http://localhost:7070';
+        const url = 'https://hesil.site/node-api';
+        console.log('Connecting to socket at URL:', url);
+
+        socket = io(url, {
             path: '/socket.io',
             transports: ['polling', 'websocket'],
             withCredentials: true,
@@ -29,19 +35,10 @@ export function connectSocket() {
     });
 
     socket.on('alarm', (data) => {
-        console.log('알람 수신:', data);
+        const message = data.message;
+        console.log('알람 수신:', message);
 
-        // 알람 타입에 따른 처리
-        switch (data.type) {
-            case 'application-message':
-                console.log('Application 메시지:', data.message);
-                break;
-            case 'approval-message':
-                console.log('Approval 메시지:', data.message);
-                break;
-            default:
-                console.log('알 수 없는 알람 타입:', data.type);
-        }
+        eventEmitter.emit('alarm', message);
     });
 
     return socket;

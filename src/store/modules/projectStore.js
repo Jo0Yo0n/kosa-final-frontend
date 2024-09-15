@@ -25,6 +25,7 @@ export const projectStore = {
         roleOptions: null,
         techStack: [],
         knownTech: [],
+        hasApplied: false,
     },
     mutations: {
         setProjectName(state, name) {
@@ -61,6 +62,9 @@ export const projectStore = {
             state.roleOptions = null;
             state.techStack = [];
             state.knownTech = [];
+        },
+        setHasApplied(state, status) {
+            state.hasApplied = status;
         },
     },
     actions: {
@@ -117,6 +121,15 @@ export const projectStore = {
         submitAction({ commit }) {
             console.log(`제출버튼 클릭 ${commit}`);
         },
+        async fetchApplicationStatus({ commit }, projectId) {
+            try {
+                const response = await axios.get(`/api/projects/${projectId}/applications/status`);
+                commit('setHasApplied', response.data.hasApplied);
+            } catch (error) {
+                console.error('Error fetching application status:', error);
+                commit('setHasApplied', false);
+            }
+        },
     },
     getters: {
         projectName: (state) => state.projectName,
@@ -126,6 +139,7 @@ export const projectStore = {
         roleOptions: (state) => state.roleOptions,
         techStack: (state) => state.techStack,
         knownTech: (state) => state.knownTech,
+        hasApplied: (state) => state.hasApplied,
     },
 };
 

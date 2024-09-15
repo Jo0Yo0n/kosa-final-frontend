@@ -23,7 +23,7 @@
                         <v-select v-model="selectedWeek" :items="retrospectiveWeeks" label="주차" dense hide-details></v-select>
                     </v-col>
                     <v-col cols="auto">
-                        <v-btn v-if="selectedWeek" color="brown" dark @click="toggleEditMode">
+                        <v-btn v-if="isParticipating && selectedWeek" color="brown" dark @click="toggleEditMode">
                             <v-icon left>{{ isEditing ? 'mdi-check' : 'mdi-pencil' }}</v-icon>
                             {{ isEditing ? '저장' : currentRetrospective ? '수정' : '작성' }}
                         </v-btn>
@@ -91,6 +91,7 @@ export default {
                 minLength: (value) => value.length >= 3 || '최소 3글자 이상이어야 합니다.',
                 maxLength: (value) => value.length <= 50 || '최대 50글자 이하이어야 합니다.',
             },
+            isParticipating: false,
         };
     },
     computed: {
@@ -118,6 +119,7 @@ export default {
     watch: {
         selectedMember() {
             this.fetchRetrospectives();
+            this.checkProjectParticipation();
             this.isEditing = false;
             this.title = '';
         },
@@ -186,7 +188,7 @@ export default {
                 };
 
                 if (this.currentRetrospective) {
-                    await this.$axios.put(`/api/projects/${this.project.projectId}/retrospectives/${this.currentRetrospective.retrospectiveId}`, payload, {
+                    await this.$axios.put(`/api/projects/${this.project.projectId}/retrospectives/${this.currentRetrospective.retId}`, payload, {
                         withCredentials: true,
                     });
                 } else {
@@ -203,6 +205,18 @@ export default {
                 this.isEditing = false;
             } catch (error) {
                 console.error('Error saving retrospective: ', error);
+            }
+        },
+        async checkProjectParticipation() {
+            try {
+                const response = await this.$axios.get(`/api/projects/${this.project.projectId}/participation`, {
+                    params: {
+                        selectedMemberId: this.selectedMember,
+                    },
+                });
+                this.isParticipating = response.data.isParticipating;
+            } catch (error) {
+                console.error('Error checking project participation: ', error);
             }
         },
     },
