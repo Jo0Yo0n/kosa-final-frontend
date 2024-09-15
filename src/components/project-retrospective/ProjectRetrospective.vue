@@ -61,6 +61,10 @@
                 </template>
             </div>
         </div>
+
+        <div v-else class="d-flex justify-center">
+            <v-alert> 선택한 주차의 회고가 없습니다. </v-alert>
+        </div>
     </v-container>
 </template>
 
