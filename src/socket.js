@@ -6,8 +6,8 @@ export const eventEmitter = new EventEmitter();
 
 export function getSocket() {
     if (!socket) {
-        // const url = process.env.NODE_ENV === 'production' ? 'https://hesil.site/node-api' : 'http://localhost:7070';
-        const url = 'https://hesil.site/node-api';
+        const url = process.env.NODE_ENV === 'production' ? 'https://hesil.site/node-api' : 'http://localhost:7070';
+        // const url = 'https://hesil.site/node-api';
         console.log('Connecting to socket at URL:', url);
 
         socket = io(url, {
