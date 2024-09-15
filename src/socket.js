@@ -6,7 +6,9 @@ export const eventEmitter = new EventEmitter();
 
 export function getSocket() {
     if (!socket) {
-        socket = io('http://localhost:7070', {
+        const url = process.env.NODE_ENV === 'production' ? 'https://hesil.site/node-api' : 'http://localhost:7070';
+
+        socket = io(url, {
             path: '/socket.io',
             transports: ['polling', 'websocket'],
             withCredentials: true,
