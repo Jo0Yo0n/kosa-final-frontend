@@ -11,7 +11,7 @@ axiosInstance.interceptors.request.use(
 
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
-            console.log(accessToken);
+            //console.log(accessToken);
         }
         console.log(config);
         return config;
@@ -37,7 +37,7 @@ axiosInstance.interceptors.response.use(
             if (error.response && error.response.status === 401) {
                 instance.resultHeader = '저장 실패';
                 instance.resultContent = error.response.data.message || '인증 에러가 발생하였습니다.';
-                store.dispatch('member/logout'); // 로그아웃 처리
+                //store.dispatch('member/logout'); // 로그아웃 처리
                 console.error('인증 에러:', instance.resultContent);
             } else {
                 instance.resultHeader = '저장 실패';
