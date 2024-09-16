@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '@/axiosInstance';
 import { connectSocket, disconnectSocket } from '@/socket.js';
 
 const state = {
@@ -57,7 +57,7 @@ const actions = {
     // },
     async logout({ commit }) {
         try {
-            await axios.delete('/api/users/logout');
+            await axiosInstance.delete('/api/users/logout');
             commit('LOGOUT');
             disconnectSocket(); // 로그아웃 시 소켓 연결 해제
         } catch (error) {

@@ -61,7 +61,7 @@ import ProjectManagement from '@/components/project-detail/ProjectManagement.vue
 
 import { eventEmitter } from '@/socket';
 import { mapState, mapActions } from 'vuex';
-
+import axiosInstance from '@/axiosInstance';
 
 export default {
     name: 'ProjectDetailPage',
@@ -118,7 +118,7 @@ export default {
         eventEmitter.off('alarm', this.handleAlarm);
     },
     methods: {
-    ...mapActions('project', ['fetchApplicationStatus']),
+        ...mapActions('project', ['fetchApplicationStatus']),
 
         handleAlarm(message) {
             switch (message.type) {
@@ -134,7 +134,6 @@ export default {
                     console.log('알 수 없는 알람 타입:', message.type);
             }
         },
-
 
         async fetchProjectData() {
             if (this.isFetching) {
@@ -167,7 +166,7 @@ export default {
         },
         async fetchProjectRecruitment() {
             try {
-                const response = await this.$axios.get(`/api/projects/${this.$route.params.projectId}/applications`);
+                const response = await axiosInstance.get(`/api/projects/${this.$route.params.projectId}/applications`);
                 console.log(`😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋`);
                 console.log(response.data);
                 this.project_recruitment = response.data;
