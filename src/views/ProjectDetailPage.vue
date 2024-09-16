@@ -61,7 +61,6 @@ import ProjectManagement from '@/components/project-detail/ProjectManagement.vue
 
 import { eventEmitter } from '@/socket';
 import { mapState, mapActions } from 'vuex';
-import axiosInstance from '@/axiosInstance';
 
 export default {
     name: 'ProjectDetailPage',
@@ -166,7 +165,7 @@ export default {
         },
         async fetchProjectRecruitment() {
             try {
-                const response = await axiosInstance.get(`/api/projects/${this.$route.params.projectId}/applications`);
+                const response = await this.$axios.get(`/api/projects/${this.$route.params.projectId}/applications`);
                 console.log(`😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋`);
                 console.log(response.data);
                 this.project_recruitment = response.data;

@@ -31,7 +31,8 @@ axiosInstance.interceptors.response.use(
 
     (error) => {
         if (error.response && error.response.status === 401) {
-            store.dispatch('member/logout'); // 로그아웃 처리
+            // store.dispatch('member/logout'); // 로그아웃 처리
+            console.error('인증 에러:', error);
         }
         return Promise.reject(error);
     },
