@@ -1,17 +1,44 @@
 import axios from 'axios';
+import store from '@/store';
+import router from '@/router';
 
 const axiosInstance = axios.create({
     withCredentials: true, // 쿠키설정
 });
 
+axiosInstance.interceptors.request.use(
+    (config) => {
+        const accessToken = store.getters['member/getToken'];
+
+        if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
+            console.log(accessToken);
+        }
+        console.log(config);
+        return config;
+    },
+    (error) => {
+        console.log(error);
+        return Promise.reject(error);
+    },
+);
+
 axiosInstance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        const newToken = response.headers['authorization']?.replace('Bearer ', '');
+        if (newToken) {
+            store.commit('member/SET_TOKEN', newToken);
+        }
+        return response;
+    },
+
     (error) => {
         if (error.config && error.config.context) {
             const instance = error.config.context;
             if (error.response && error.response.status === 401) {
                 instance.resultHeader = '저장 실패';
                 instance.resultContent = error.response.data.message || '인증 에러가 발생하였습니다.';
+                store.dispatch('member/logout'); // 로그아웃 처리
                 console.error('인증 에러:', instance.resultContent);
             } else {
                 instance.resultHeader = '저장 실패';

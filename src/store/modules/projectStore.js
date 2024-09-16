@@ -11,6 +11,7 @@
  * 2024-09-01        Yeong-Huns       텍스트 에디터 이미지 처리 (진행중)
  */
 import axios from 'axios';
+import axiosInstance from '@/axiosInstance';
 
 export const projectStore = {
     namespaced: true,
@@ -123,7 +124,7 @@ export const projectStore = {
         },
         async fetchApplicationStatus({ commit }, projectId) {
             try {
-                const response = await axios.get(`/api/projects/${projectId}/applications/status`);
+                const response = await axiosInstance.get(`/api/projects/${projectId}/applications/status`);
                 commit('setHasApplied', response.data.hasApplied);
             } catch (error) {
                 console.error('Error fetching application status:', error);

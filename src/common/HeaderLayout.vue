@@ -68,7 +68,7 @@
             <!--             테스트용
             <v-btn @click="triggerAlarm" class="ml-4">테스트 알람</v-btn>-->
 
-            <div class="login-button-container" v-if="isStatusChecked">
+            <div class="login-button-container">
                 <template v-if="isLogIn">
                     <router-link to="/me">
                         <v-icon class="user-icon">mdi-account</v-icon>
@@ -88,6 +88,7 @@
 import LoginModal from '@/components/login/LoginModal.vue';
 import { mapGetters, mapActions } from 'vuex';
 import { eventEmitter } from '@/socket';
+import axiosInstance from '@/axiosInstance';
 
 export default {
     components: { LoginModal },
@@ -101,10 +102,10 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('member', ['isLogIn', 'isStatusChecked']),
+        ...mapGetters('member', ['isLogIn']),
     },
     methods: {
-        ...mapActions('member', ['checkLoginStatus', 'logout']),
+        ...mapActions('member', ['logout']),
         getSearchResults() {
             if (this.search.trim()) {
                 // 검색어를 쿼리 파라미터로 라우터에 전달하여 searchAllPage로 이동
@@ -118,7 +119,7 @@ export default {
             }
         },
         fetchNotifications() {
-            this.$axios
+            axiosInstance
                 .get('/api/projects/notifications') // 알림 읽음 처리
                 .then((response) => {
                     this.notifications = response.data;
@@ -146,7 +147,6 @@ export default {
         },
     },
     mounted() {
-        this.checkLoginStatus(); // 컴포넌트 마운트 시 로그인 상태 확인
         eventEmitter.on('alarm', this.triggerAlarm);
     },
     beforeDestroy() {

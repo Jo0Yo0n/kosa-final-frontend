@@ -61,6 +61,7 @@
 
 <script>
 import ProjectCardList from '@/components/ProjectCardList.vue';
+import axiosInstance from '@/axiosInstance';
 
 export default {
     name: 'SearchProjectPage',
@@ -93,7 +94,7 @@ export default {
                 });
 
                 // API 요청 시 필터 상태를 파라미터로 전달
-                const response = await this.$axios.get(`/api/search/projects`, {
+                const response = await axiosInstance.get(`/api/search/projects`, {
                     params: {
                         keyword: this.searchQuery,
                         sortby: this.sortOrder,

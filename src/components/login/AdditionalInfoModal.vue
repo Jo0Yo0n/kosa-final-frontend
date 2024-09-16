@@ -13,8 +13,8 @@ import { mapGetters } from 'vuex';
 import TextInputField from '@/components/login/TextInputField.vue';
 import SelectInputField from '@/components/login/SelectInputField.vue';
 import TechStackSelector from '@/components/login/TechStackSelector.vue';
-import axios from 'axios';
 import JobSelector from '@/components/login/JobSelector.vue';
+import axiosInstance from '@/axiosInstance';
 
 export default {
     name: 'AdditionalInfoModal',
@@ -82,7 +82,7 @@ export default {
             }
 
             try {
-                const response = await axios.post('/api/users/check-nickname', { nickname });
+                const response = await axiosInstance.post('/api/users/check-nickname', { nickname });
                 this.nicknameStatus = !response.data;
 
                 console.log(this.nicknameStatus);
@@ -131,7 +131,7 @@ export default {
         },
         async saveUserData() {
             try {
-                const response = await axios.post('/api/users/additional-info', this.additionalInfo);
+                const response = await axiosInstance.post('/api/users/additional-info', this.additionalInfo);
                 alert(response.data);
             } catch (error) {
                 console.error('Error saving user data:', error);

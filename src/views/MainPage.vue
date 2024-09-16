@@ -85,6 +85,7 @@
 <script>
 import ProjectList from '@/components/ProjectCardList.vue';
 import axios from 'axios';
+import axiosInstance from '@/axiosInstance';
 
 export default {
     name: 'MainPage',
@@ -173,7 +174,7 @@ export default {
                 });
         },
         fetchNewProjects() {
-            axios
+            axiosInstance
                 .get('/api/projects/new', {
                     params: {
                         page: 0, // 페이지 번호 (기본값으로 첫 번째 페이지)
@@ -188,7 +189,7 @@ export default {
                 });
         },
         fetchRecentlyCompletedProjects() {
-            axios
+            axiosInstance
                 .get('/api/projects/done', {
                     params: {
                         page: 0, // 페이지 번호 (기본값으로 첫 번째 페이지)

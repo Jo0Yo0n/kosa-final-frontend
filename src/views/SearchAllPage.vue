@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '@/axiosInstance';
 import ProjectCardList from '@/components/ProjectCardList.vue';
 import MemberCardList from '@/components/MemberCardList.vue'; // MemberCard 컴포넌트 경로를 적절히 수정
 
@@ -62,7 +62,7 @@ export default {
     methods: {
         async fetchSearchResults() {
             try {
-                const response = await axios.get('/api/search/all', {
+                const response = await axiosInstance.get('/api/search/all', {
                     params: {
                         keyword: this.query,
                     },
