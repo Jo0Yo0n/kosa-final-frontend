@@ -41,7 +41,8 @@
             </v-row>
         </v-snackbar>
 
-        <router-view></router-view>
+        <!-- projectId가 변경될 때마다 컴포넌트 다시 마운트-->
+        <router-view :key="$route.params.projectId"></router-view>
         <AdditionalInfoModal v-if="isNewUser" @info-submitted="handleInfoSubmitted" />
     </div>
 </template>
