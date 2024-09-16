@@ -6,7 +6,7 @@
         </v-main>
         <div class="chat-button">
             <ChatButton color="#A1887F">mdi-account</ChatButton>
-            <ChatButton color="#8D6E63">mdi-account-multiple</ChatButton>
+            <!--            <ChatButton color="#8D6E63">mdi-account-multiple</ChatButton>-->
         </div>
         <footer-layout />
     </v-app>
@@ -17,6 +17,7 @@ import HeaderLayout from './common/HeaderLayout.vue';
 import FooterLayout from './common/FooterLayout.vue';
 import ContentLayout from './common/ContentLayout.vue';
 import ChatButton from '@/components/chat/ChatButton.vue';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'App',
@@ -37,10 +38,17 @@ export default {
         const accessToken = urlParams.get('accessToken');
 
         if (accessToken) {
-            // accessToken을 localStorage에 저장
-            localStorage.setItem('jwt', accessToken);
-            console.log('AccessToken이 localStorage에 저장되었습니다.');
+            this.login(accessToken);
         }
+        // else {
+        //     const storedToken = localStorage.getItem('jwt');
+        //     if (storedToken) {
+        //         this.login(storedToken); // localStorage에서 토큰을 가져와 Vuex에 저장
+        //     }
+        // }
+    },
+    methods: {
+        ...mapActions('member', ['login']),
     },
 };
 </script>
