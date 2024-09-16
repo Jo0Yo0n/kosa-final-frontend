@@ -1,6 +1,5 @@
 import axios from 'axios';
 import store from '@/store';
-import router from '@/router';
 
 const axiosInstance = axios.create({
     withCredentials: true, // 쿠키설정
