@@ -70,6 +70,7 @@
 
 <script>
 import ProjectRetrospectiveEditor from './ProjectRetrospectiveEditor.vue';
+import axiosInstance from '@/axiosInstance';
 
 export default {
     name: 'ProjectRetrospective',
@@ -192,11 +193,11 @@ export default {
                 };
 
                 if (this.currentRetrospective) {
-                    await this.$axios.put(`/api/projects/${this.project.projectId}/retrospectives/${this.currentRetrospective.retId}`, payload, {
+                    await axiosInstance.put(`/api/projects/${this.project.projectId}/retrospectives/${this.currentRetrospective.retId}`, payload, {
                         withCredentials: true,
                     });
                 } else {
-                    await this.$axios.post(
+                    await axiosInstance.post(
                         `/api/projects/${this.project.projectId}/retrospectives`,
                         {
                             week: this.selectedWeek,
@@ -213,7 +214,7 @@ export default {
         },
         async checkProjectParticipation() {
             try {
-                const response = await this.$axios.get(`/api/projects/${this.project.projectId}/participation`, {
+                const response = await axiosInstance.get(`/api/projects/${this.project.projectId}/participation`, {
                     params: {
                         selectedMemberId: this.selectedMember,
                     },

@@ -12,7 +12,7 @@ Vue.config.productionTip = false;
 Vue.prototype.$axios = axios; // axios를 전역으로 설정
 Vue.prototype.$axiosInstance = axiosInstance;
 // Axios 전역 설정
-Vue.prototype.$axios.defaults.withCredentials = true;
+//Vue.prototype.$axios.defaults.withCredentials = true;
 
 // CSRF 토큰을 쿠키에서 가져와 설정
 // const csrfToken = document.cookie
@@ -33,6 +33,15 @@ init(store)
             vuetify,
             store,
             render: (h) => h(App),
+            beforeCreate() {
+                const token = localStorage.getItem('jwt');
+                if (token) {
+                    console.log('로컬 스토리지에 토큰 있음:', token);
+                    this.$store.commit('member/SET_TOKEN', token);
+                } else {
+                    console.log('로컬 스토리지에 토큰 없음');
+                }
+            },
         }).$mount('#app');
     })
     .catch((Error) => {
