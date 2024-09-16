@@ -103,12 +103,8 @@ export default {
     created() {
         // 컴포넌트가 생성될 때 쿼리 파라미터를 확인
         const urlParams = new URLSearchParams(window.location.search);
-        this.isNewUser = urlParams.get('newUser') === 'true'; // newUser 쿼리 파라미터 체크
 
-        const accessToken = urlParams.get('accessToken');
-        if (accessToken) {
-            this.setJwtCookie(accessToken); // JWT 쿠키로 저장
-        }
+        this.isNewUser = urlParams.get('newUser') === 'true'; // newUser 쿼리 파라미터 체크
     },
     mounted() {
         this.connectSocket(); // 윤빈님꺼
@@ -175,16 +171,6 @@ export default {
                     this.notification.imgUrl = msgObj.fromImgUrl;
                 }
             });
-        },
-        setJwtCookie(token) {
-            const isProd = process.env.NODE_ENV === 'production';
-            if (isProd) {
-                document.cookie = `jwt=${token}; path=/; Secure; SameSite=None; Max-Age=3600;`;
-                console.log('운영 환경에서 JWT 토큰이 쿠키에 저장되었습니다.');
-            } else {
-                document.cookie = `jwt=${token}; path=/; SameSite=Lax; Max-Age=3600;`;
-                console.log('개발 환경에서 JWT 토큰이 쿠키에 저장되었습니다.');
-            }
         },
     },
     computed: {

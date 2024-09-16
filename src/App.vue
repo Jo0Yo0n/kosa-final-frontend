@@ -29,6 +29,19 @@ export default {
     data: () => ({
         //
     }),
+    created() {
+        // 컴포넌트가 생성될 때 쿼리 파라미터를 확인
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 쿼리 파라미터에서 accessToken을 가져옴
+        const accessToken = urlParams.get('accessToken');
+
+        if (accessToken) {
+            // accessToken을 localStorage에 저장
+            localStorage.setItem('jwt', accessToken);
+            console.log('AccessToken이 localStorage에 저장되었습니다.');
+        }
+    },
 };
 </script>
 <style>
