@@ -1,6 +1,6 @@
 // store/modules/notification.js
-// import axiosInstance from '@/axiosInstance';
-import axios from 'axios';
+import axiosInstance from '@/axiosInstance';
+// import axios from 'axios';
 
 const state = {
     requestAlarms: [],
@@ -18,12 +18,23 @@ const mutations = {
     SET_IS_SHAKING(state, isShaking) {
         state.isShaking = isShaking;
     },
+    RESET_NOTIFICATIONS(state) {
+        state.requestAlarms = [];
+        state.applicationResultAlarms = [];
+        state.isShaking = false;
+    },
 };
 
 const actions = {
-    async fetchNotifications({ commit }) {
+    async fetchNotifications({ commit, rootGetters }) {
+        // memberStore.js의 isLogIn을 사용하여 로그인 상태인지 확인
+        if (!rootGetters['member/isLogIn']) {
+            console.log('로그인 상태가 아닙니다. 알림을 가져오지 않습니다.');
+            return;
+        }
+
         try {
-            const response = await axios.get('/api/projects/notifications');
+            const response = await axiosInstance.get('/api/projects/notifications');
             commit('SET_REQUEST_ALARMS', response.data.requestAlarms);
             commit('SET_APPLICATION_RESULT_ALARMS', response.data.applicationResultAlarms);
             commit('SET_IS_SHAKING', false);
@@ -42,6 +53,9 @@ const actions = {
         setInterval(() => {
             dispatch('fetchNotifications');
         }, 30000); // 30초마다 폴링
+    },
+    resetNotifications({ commit }) {
+        commit('RESET_NOTIFICATIONS');
     },
 };
 

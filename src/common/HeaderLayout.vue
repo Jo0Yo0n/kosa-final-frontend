@@ -31,7 +31,7 @@
 
             <div class="d-flex align-center">
                 <!-- 알람 버튼 -->
-                <v-menu offset-y class="notification-menu" max-width="400" :style="{ maxHeight: '200px' }">
+                <v-menu v-if="isLogIn" offset-y class="notification-menu" max-width="400" :style="{ maxHeight: '200px' }">
                     <template v-slot:activator="{ on, attrs }">
                         <v-badge :content="totalNotifications" :value="totalNotifications" color="red" overlap offset-x="25" offset-y="25">
                             <v-btn icon ref="alarmButton" v-bind="attrs" v-on="on" class="alarm-button">
@@ -74,7 +74,7 @@
 import LoginModal from '@/components/login/LoginModal.vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { eventEmitter } from '@/socket';
-// import axiosInstance from '@/axiosInstance';
+import axiosInstance from '@/axiosInstance';
 
 export default {
     components: { LoginModal },
@@ -114,7 +114,7 @@ export default {
         },
         handleNotificationClick(notification) {
             // 알림 읽음 처리
-            this.$axios
+            axiosInstance
                 .put(`/api/projects/notifications/${notification.alarmId}`)
                 .then(() => {
                     // 성공적으로 읽음 처리한 후 알림 목록 새로고침
