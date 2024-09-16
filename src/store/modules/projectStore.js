@@ -122,7 +122,13 @@ export const projectStore = {
         submitAction({ commit }) {
             console.log(`제출버튼 클릭 ${commit}`);
         },
-        async fetchApplicationStatus({ commit }, projectId) {
+        async fetchApplicationStatus({ commit, rootGetters }, projectId) {
+            if (!rootGetters['member/isLogIn']) {
+                console.log('사용자가 로그인하지 않았습니다. 지원 상태를 가져오지 않습니다.');
+                commit('setHasApplied', false);
+                return;
+            }
+
             try {
                 const response = await axiosInstance.get(`/api/projects/${projectId}/applications/status`);
                 commit('setHasApplied', response.data.hasApplied);
