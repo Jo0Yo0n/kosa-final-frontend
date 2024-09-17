@@ -39,13 +39,16 @@ export default {
 
         if (accessToken) {
             this.login(accessToken);
+
+            // accessToken 쿼리스트링만 삭제
+            urlParams.delete('accessToken');
+
+            // 업데이트된 쿼리스트링을 사용하여 새 URL 생성
+            const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+
+            // 쿼리스트링을 제거한 새 URL로 브라우저의 히스토리를 업데이트
+            window.history.replaceState({}, '', newUrl);
         }
-        // else {
-        //     const storedToken = localStorage.getItem('jwt');
-        //     if (storedToken) {
-        //         this.login(storedToken); // localStorage에서 토큰을 가져와 Vuex에 저장
-        //     }
-        // }
     },
     methods: {
         ...mapActions('member', ['login']),
