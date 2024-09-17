@@ -32,10 +32,12 @@
                                 </template>
                                 <span>{{ member.memberNickname }}</span>
                             </v-tooltip>
-
                             <v-btn icon :href="member.memberGithub" target="_blank" color="black" small class="ml-1">
                                 <v-icon>mdi-github</v-icon>
                             </v-btn>
+                        </div>
+                        <div class="d-flex justify-center">
+                            <v-chip small class="mb-1">{{ member.career }}</v-chip>
                         </div>
                         <div class="d-flex justify-center">
                             <v-btn color="brown" dark small class="font-weight-light" style="width: 60%" @click="showModal = true">커피 챗</v-btn>
