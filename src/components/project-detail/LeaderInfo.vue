@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-08-29        JooYoon       최초 생성
+ * 2024-09-14        yunbin        커피 챗 버튼 - 채팅 모달 연결
 -->
 
 <template>
@@ -26,7 +27,7 @@
                         </v-btn>
                     </v-col>
                     <v-col cols="auto">
-                        <v-btn color="brown" dark class="font-weight-light">커피 챗</v-btn>
+                        <v-btn color="brown" dark class="font-weight-light" @click="showModal = true">커피 챗</v-btn>
                     </v-col>
                 </v-row>
                 <v-row class="mt-4" align="start" no-gutters>
@@ -47,10 +48,13 @@
                 </v-row>
             </v-card-text>
         </v-card>
+        <ChatModal v-model="showModal" :member="leader"></ChatModal>
     </div>
 </template>
 
 <script>
+import ChatModal from '@/components/chat/ChatModal.vue';
+
 export default {
     name: 'LeaderInfo',
     props: {
@@ -58,6 +62,12 @@ export default {
             type: Object,
             default: () => ({}),
         },
+    },
+    components: { ChatModal },
+    data() {
+        return {
+            showModal: false,
+        };
     },
 };
 </script>
