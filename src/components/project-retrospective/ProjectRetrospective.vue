@@ -63,7 +63,7 @@
         </div>
 
         <div v-else class="d-flex justify-center">
-            <v-alert> 선택한 주차의 회고가 없습니다. </v-alert>
+            <v-alert> 선택한 주차의 회고가 없습니다.</v-alert>
         </div>
     </v-container>
 </template>
@@ -71,6 +71,7 @@
 <script>
 import ProjectRetrospectiveEditor from './ProjectRetrospectiveEditor.vue';
 import axiosInstance from '@/axiosInstance';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'ProjectRetrospective',
@@ -100,6 +101,8 @@ export default {
         };
     },
     computed: {
+        ...mapGetters('member', ['isLogIn']),
+
         currentWeek() {
             const startDate = new Date(this.project.startedAt);
             const today = new Date();
@@ -213,15 +216,17 @@ export default {
             }
         },
         async checkProjectParticipation() {
-            try {
-                const response = await axiosInstance.get(`/api/projects/${this.project.projectId}/participation`, {
-                    params: {
-                        selectedMemberId: this.selectedMember,
-                    },
-                });
-                this.isParticipating = response.data.isParticipating;
-            } catch (error) {
-                console.error('Error checking project participation: ', error);
+            if (this.isLogIn) {
+                try {
+                    const response = await axiosInstance.get(`/api/projects/${this.project.projectId}/participation`, {
+                        params: {
+                            selectedMemberId: this.selectedMember,
+                        },
+                    });
+                    this.isParticipating = response.data.isParticipating;
+                } catch (error) {
+                    console.error('Error checking project participation: ', error);
+                }
             }
         },
     },

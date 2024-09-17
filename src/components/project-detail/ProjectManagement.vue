@@ -108,7 +108,7 @@ export default {
 </script>
 
 <template>
-    <v-container>
+    <v-container v-if="groupedMembers.length > 0">
         <v-row>
             <v-col cols="12" class="d-flex justify-end mb-3">
                 <common-button @click="startProject">프로젝트 시작</common-button>
@@ -128,6 +128,9 @@ export default {
             </div>
         </v-row>
     </v-container>
+    <div v-else class="mt-5">
+        <v-alert type="info" color="green" text>아직 지원한 멤버가 없어요.</v-alert>
+    </div>
 </template>
 
 <style scoped>

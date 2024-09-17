@@ -19,6 +19,7 @@ import { getSocket } from '../../socket.js';
 import axios from 'axios';
 import moment from 'moment';
 import { mapGetters, mapActions } from 'vuex';
+import axiosInstance from '@/plugins/axios_custom';
 
 export default {
     name: 'ChatModal',
@@ -92,7 +93,7 @@ export default {
                 if (!this.selectedChatRoom || this.selectedChatRoom.room_id.startsWith('temp_room_')) {
                     // 새로운 채팅방을 생성
                     try {
-                        const createRoomResponse = await axios.post('/node-api/private-chat-rooms', {
+                        const createRoomResponse = await axiosInstance.post('/node-api/private-chat-rooms', {
                             participants: [this.currentUser._id, this.member.memberId],
                         });
 
@@ -189,7 +190,7 @@ export default {
         },
         async getChatList() {
             try {
-                const response = await axios.get('/node-api/private-chat-rooms');
+                const response = await axiosInstance.get('/node-api/private-chat-rooms');
 
                 if (response.status === 200) {
                     console.log('getChatList', response.data);

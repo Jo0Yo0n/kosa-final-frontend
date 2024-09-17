@@ -32,9 +32,12 @@ const mutations = {
 };
 
 const actions = {
-    login({ commit }, token) {
+    async login({ commit, dispatch }, token) {
         commit('SET_TOKEN', token); // 로그인 시 토큰 저장 및 상태 변경
         connectSocket();
+
+        // 로그인 시 알림 가져오기
+        await dispatch('notificationStore/fetchNotifications', null, { root: true });
     },
     // async checkLoginStatus({ commit }) {
     //     try {
@@ -55,11 +58,15 @@ const actions = {
     //         disconnectSocket(); // 에러 발생 시에도 소켓 연결 해제
     //     }
     // },
-    async logout({ commit }) {
+    async logout({ commit, dispatch }) {
         try {
             await axiosInstance.delete('/api/users/logout');
             commit('LOGOUT');
             disconnectSocket(); // 로그아웃 시 소켓 연결 해제
+
+            // 로그아웃 시 알림 초기화
+            dispatch('notificationStore/resetNotifications', null, { root: true });
+            console.log('알림 초기화');
         } catch (error) {
             console.error('로그아웃 중 오류 발생:', error);
         }
