@@ -11,6 +11,7 @@
  * 2024-09-08        yunbin       coffee chat 버튼 눌렀을 때 로직 추가
  * 2024-09-09        yunbin       메세지 전송
  * 2024-09-11        yunbin       selectedChatRoom vuex로 변경
+ * 2024-09-14        yunbin       커피챗 버튼으로 채팅 모달 열었을 때 로직 수정
 -->
 <script>
 import ChatCompo from '@/components/chat/ChatCompo.vue';
@@ -159,6 +160,12 @@ export default {
         closeModal() {
             this.isVisible = false;
             this.setSelectedChatRoom(null);
+            this.messages = [];
+            this.chatList = this.chatList.filter((chat) => !chat.room_id.startsWith('temp_room_')); // 임시 방 삭제
+            this.hasFetchedChatList = false;
+            //eventEmitter.off('private message', this.handlePrivateMessage);
+            console.log(this.selectedChatRoom);
+            console.log(this.chatList);
         },
         handleMemberChat() {
             console.log('modal', this.member.memberId);
@@ -242,12 +249,13 @@ export default {
                 this.getChatList().then(() => {
                     this.hasFetchedChatList = true;
                 });
-            } else {
-                // 이미 채팅 목록을 가져왔으면 member에 맞는 채팅방을 선택
-                if (this.member && Object.keys(this.member).length > 0) {
-                    this.handleMemberChat();
-                }
             }
+            //  else {
+            //     // 이미 채팅 목록을 가져왔으면 member에 맞는 채팅방을 선택
+            //     if (this.member && Object.keys(this.member).length > 0) {
+            //         this.handleMemberChat();
+            //     }
+            // }
             this.$emit('input', val);
         },
     },
