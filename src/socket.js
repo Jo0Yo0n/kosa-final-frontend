@@ -8,7 +8,7 @@ export const eventEmitter = new EventEmitter();
 // 소켓 객체를 생성 및 반환하는 함수
 export function getSocket() {
     if (!socket) {
-        const url = process.env.NODE_ENV === 'production' ? 'https://hesil.site/node-api' : 'http://localhost:7070';
+        const url = process.env.NODE_ENV === 'production' ? 'https://hesil.site' : 'http://localhost:7070';
         console.log('소켓연결성공 연결된 URL :', url);
 
         // 스토어에서 액세스 토큰을 가져옴
