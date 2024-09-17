@@ -49,6 +49,8 @@ function registerSocketEvents() {
     // 알람 이벤트 핸들러 등록
     socket.on('alarm', handleAlarm);
 
+    socket.on('private message', handlePrivateChat);
+
     // 소켓 연결 에러 발생 시 처리
     socket.on('connect_error', (error) => {
         console.error('소켓 연결 오류:', error);
@@ -67,6 +69,12 @@ function handleAlarm(data) {
 
     // 이벤트 버스를 통해 알람 이벤트를 전달
     eventEmitter.emit('alarm', message);
+}
+
+function handlePrivateChat(data) {
+    const message = data.message;
+    console.log('프라이빗 채팅 수신:', JSON.stringify(message));
+    eventEmitter.emit('private', message);
 }
 
 // 로그인 상태가 확인되었을 때 소켓을 연결하는 함수
