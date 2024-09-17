@@ -1,5 +1,5 @@
 import axiosInstance from '@/axiosInstance';
-import { disconnectSocket } from '@/socket.js';
+import { disconnectSocket, getSocket } from '@/socket.js';
 
 const state = {
     //isLogIn: !!localStorage.getItem('jwt'),
@@ -34,7 +34,7 @@ const mutations = {
 const actions = {
     async login({ commit, dispatch }, token) {
         commit('SET_TOKEN', token); // 로그인 시 토큰 저장 및 상태 변경
-        //connectSocket();
+        getSocket();
 
         // 로그인 시 알림 가져오기
         await dispatch('notificationStore/fetchNotifications', null, { root: true });
