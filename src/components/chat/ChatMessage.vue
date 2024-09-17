@@ -6,6 +6,7 @@
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-09-04        yunbin       최초 생성
+ * 2024-09-17        yunbin       시간 글씨 크기 및 상대 메세지 글씨색 변경
 -->
 <script>
 import moment from 'moment';
@@ -43,7 +44,7 @@ export default {
                     <img :src="senderImage" alt="profile_img" crossOrigin="anonymous" />
                 </v-avatar>
                 <div class="chat-bubble" :style="{ backgroundColor: isCurrentUser ? '#D7CCC8' : '#8D6E63' }">
-                    <p>{{ message.content }}</p>
+                    <p :class="{ 'text-white': !isCurrentUser }">{{ message.content }}</p>
                 </div>
                 <p class="send-date">{{ formattedTime }}</p>
             </div>
@@ -78,8 +79,11 @@ export default {
     margin: 0;
     color: #333;
 }
+.chat-bubble p.text-white {
+    color: #efebe9;
+}
 .send-date {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: #888;
     margin: 0 8px 2px 8px;
     align-self: flex-end;
