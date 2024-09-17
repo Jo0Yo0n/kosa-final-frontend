@@ -41,16 +41,17 @@
             </v-row>
         </v-snackbar>
 
-        <router-view></router-view>
+        <!-- projectId가 변경될 때마다 컴포넌트 다시 마운트-->
+        <router-view :key="$route.params.projectId"></router-view>
         <AdditionalInfoModal v-if="isNewUser" @info-submitted="handleInfoSubmitted" />
     </div>
 </template>
 
 <script>
 import AdditionalInfoModal from '@/components/login/AdditionalInfoModal.vue';
-import { getSocket } from '../../src/socket.js';
+//import { getSocket } from '../../src/socket.js';
 import { mapGetters } from 'vuex';
-import { eventEmitter } from '@/socket';
+import { eventEmitter, getSocket } from '@/socket';
 
 export default {
     components: { AdditionalInfoModal },
@@ -79,11 +80,15 @@ export default {
         this.isNewUser = urlParams.get('newUser') === 'true'; // newUser 쿼리 파라미터 체크
     },
     mounted() {
-        this.connectSocket();
+        getSocket();
         eventEmitter.on('alarm', this.handleAlarmModal);
+        console.log('알람등록');
+        eventEmitter.on('private', this.handleChatModal);
+        console.log('1대1챗등록');
     },
     beforeDestroy() {
         eventEmitter.off('alarm', this.handleAlarmModal);
+        eventEmitter.off('private', this.handleChatModal);
     },
     methods: {
         handleAlarmModal(message) {
@@ -133,21 +138,18 @@ export default {
             }
             console.log(`Notification ${type} closed.`);
         },
-        connectSocket() {
-            this.socket = getSocket();
-            this.socket.on('private message', (msgObj) => {
-                console.log('Received private message:', msgObj);
-                if (!this.selectedChatRoom || (this.selectedChatRoom.room_id !== msgObj.roomId && msgObj.from !== this.selectedChatRoom.participants[0]._id)) {
-                    this.showNotification = true;
-                    this.notification.nickname = msgObj.fromNickname;
-                    this.notification.message = msgObj.message;
-                    this.notification.imgUrl = msgObj.fromImgUrl;
-                    this.$nextTick(() => {
-                        this.showNotification = true; // 렌더링 강제 업데이트
-                    });
-                    console.log('First notification shown:', this.showNotification);
-                }
-            });
+        handleChatModal(message) {
+            if (!this.selectedChatRoom || (this.selectedChatRoom.room_id !== message.roomId && message.from !== this.selectedChatRoom.participants[0]._id)) {
+                this.showNotification = true;
+                this.notification.nickname = message.fromNickname;
+                this.notification.message = message.message;
+                this.notification.imgUrl = message.fromImgUrl;
+                this.$nextTick(() => {
+                    this.showNotification = true; // 렌더링 강제 업데이트
+                });
+                console.log('1대1 채팅 수신:', message);
+                console.log('First notification shown:', this.showNotification);
+            }
         },
     },
     computed: {

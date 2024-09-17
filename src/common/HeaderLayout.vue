@@ -11,7 +11,7 @@
             <v-btn text class="nav-link font-weight-light" :to="{ name: 'SearchProject' }">프로젝트 검색</v-btn>
 
             <!-- TODO: 로그인 한 경우에만 프로젝트 생성 버튼 랜더링되도록 변경 -->
-            <v-btn v-if="isLogIn" text class="nav-link font-weight-light" exact :to="{ name: 'projectPost' }">프로젝트 생성</v-btn>
+            <v-btn v-if="isLogIn" text class="nav-link font-weight-light" exact :to="{ name: 'projectPost' }">프로젝트 생성 </v-btn>
 
             <v-spacer></v-spacer>
 
@@ -29,56 +29,42 @@
                 @keyup.enter="getSearchResults"
             ></v-text-field>
 
-            <!-- 알람 버튼 -->
-            <v-menu offset-y class="notification-menu" max-width="550" :style="{ maxHeight: '200px' }">
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon ref="alarmButton" v-bind="attrs" v-on="on" class="alarm-button" @click="fetchNotifications">
-                        <v-icon :class="{ 'shake-icon': isShaking }">mdi-bell</v-icon>
-                        <!-- 흔들리는 애니메이션 적용 -->
-                        <span v-if="hasNewNotifications" class="badge"></span>
-                    </v-btn>
-                </template>
-                <v-list class="notification-list">
-                    <v-list-item
-                        v-for="(notification, index) in notifications"
-                        :key="index"
-                        class="notification-item"
-                        :class="{ 'no-border': index === notifications.length - 1 }"
-                        @click="navigateToProject(notification.projectId)"
-                    >
-                        <v-list-item-content>
-                            <v-tooltip v-if="isTruncated(notification.message)" bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <div class="notification-message" v-bind="attrs" v-on="on">
-                                        <span :class="{ 'unread-marker': !notification.isRead, 'read-marker': notification.isRead }"></span>
-                                        <span class="message-text">{{ truncatedMessage(notification.message) }}</span>
-                                    </div>
-                                </template>
-                                <span>{{ notification.message }}</span>
-                            </v-tooltip>
-                            <div v-else class="notification-message">
-                                <span :class="{ 'unread-marker': !notification.isRead, 'read-marker': notification.isRead }"></span>
-                                <span class="message-text">{{ notification.message }}</span>
-                            </div>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
+            <div class="d-flex align-center">
+                <!-- 알람 버튼 -->
+                <v-menu v-if="isLogIn" offset-y class="notification-menu" max-width="400" :style="{ maxHeight: '200px' }">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-badge :content="totalNotifications" :value="totalNotifications" color="red" overlap offset-x="25" offset-y="25">
+                            <v-btn icon ref="alarmButton" v-bind="attrs" v-on="on" class="alarm-button">
+                                <v-icon :class="{ 'shake-icon': isShaking }">mdi-bell</v-icon>
+                            </v-btn>
+                        </v-badge>
+                    </template>
+                    <v-list class="notification-list">
+                        <v-list-item v-for="notification in allNotifications" :key="notification.alarmId" class="notification-item" @click="handleNotificationClick(notification)">
+                            <v-list-item-content>
+                                <v-list-item-title style="font-size: 0.9rem; line-height: 1.2; white-space: normal; word-break: break-word">
+                                    {{ getNotificationMessage(notification) }}
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
 
-            <!--             테스트용
+                <!--             테스트용
             <v-btn @click="triggerAlarm" class="ml-4">테스트 알람</v-btn>-->
 
-            <div class="login-button-container">
-                <template v-if="isLogIn">
-                    <router-link to="/me">
-                        <v-icon class="user-icon">mdi-account</v-icon>
-                    </router-link>
-                    <v-btn text @click="logout" class="login-button font-weight-light">로그아웃</v-btn>
-                </template>
-                <template v-else>
-                    <v-btn text @click="showModal = true" class="login-button font-weight-light">회원가입/로그인</v-btn>
-                </template>
-                <LoginModal v-model="showModal" />
+                <div class="login-button-container">
+                    <template v-if="isLogIn">
+                        <router-link to="/me">
+                            <v-icon class="user-icon">mdi-account</v-icon>
+                        </router-link>
+                        <v-btn text @click="logout" class="login-button font-weight-light">로그아웃</v-btn>
+                    </template>
+                    <template v-else>
+                        <v-btn text @click="showModal = true" class="login-button font-weight-light">회원가입/로그인</v-btn>
+                    </template>
+                    <LoginModal v-model="showModal" />
+                </div>
             </div>
         </v-container>
     </v-app-bar>
@@ -86,7 +72,7 @@
 
 <script>
 import LoginModal from '@/components/login/LoginModal.vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import { eventEmitter } from '@/socket';
 import axiosInstance from '@/axiosInstance';
 
@@ -96,16 +82,17 @@ export default {
         return {
             search: '',
             showModal: false,
-            hasNewNotifications: false, // 새 알림 여부
-            notifications: [],
-            isShaking: false, // 흔들림 여부
         };
     },
     computed: {
+        ...mapState('notification', ['isShaking']),
+        ...mapGetters('notification', ['allNotifications', 'totalNotifications']),
         ...mapGetters('member', ['isLogIn']),
     },
     methods: {
         ...mapActions('member', ['logout']),
+        ...mapActions('notification', ['fetchNotifications', 'triggerAlarm']),
+
         getSearchResults() {
             if (this.search.trim()) {
                 // 검색어를 쿼리 파라미터로 라우터에 전달하여 searchAllPage로 이동
@@ -118,23 +105,33 @@ export default {
                 this.search = '';
             }
         },
-        fetchNotifications() {
+        getNotificationMessage(notification) {
+            if ('requesterNickname' in notification) {
+                return `${notification.requesterNickname}님이 "${notification.projectName}" 프로젝트에 지원했어요!`;
+            } else {
+                return notification.type === 1 ? `"${notification.projectName}" 프로젝트에 승인됐어요!` : `"${notification.projectName}" 프로젝트에 거절됐어요."`;
+            }
+        },
+        handleNotificationClick(notification) {
+            // 알림 읽음 처리
             axiosInstance
-                .get('/api/projects/notifications') // 알림 읽음 처리
-                .then((response) => {
-                    this.notifications = response.data;
-                    this.hasNewNotifications = false;
+                .put(`/api/projects/notifications/${notification.alarmId}`)
+                .then(() => {
+                    // 성공적으로 읽음 처리한 후 알림 목록 새로고침
+                    this.fetchNotifications();
                 })
                 .catch((error) => {
-                    console.error('알림을 가져오는 중 오류 발생:', error);
+                    console.error('알림을 읽음 처리하는 중 오류 발생:', error);
                 });
-        },
-        triggerAlarm() {
-            this.hasNewNotifications = true;
-            this.isShaking = true; // 아이콘 흔들림 시작
-            setTimeout(() => {
-                this.isShaking = false; // 흔들림 멈춤
-            }, 800); // 0.8 초로 변경
+
+            // 알림 클릭 시 해당 프로젝트 페이지로 이동
+            this.$router.push({
+                name: 'ProjectDetail',
+                params: {
+                    projectId: notification.projectId,
+                },
+                query: { _: new Date().getTime() }, // 유니크한 url 생성하여 redundant navigation 방지
+            });
         },
         isTruncated(message) {
             return message.length > 20; // 길이 기준으로 툴팁이 필요한지 확인
@@ -147,7 +144,9 @@ export default {
         },
     },
     mounted() {
+        this.fetchNotifications(); // 컴포넌트 마운트 시 알림 목록 가져오기
         eventEmitter.on('alarm', this.triggerAlarm);
+        this.$store.dispatch('notification/startPolling');
     },
     beforeDestroy() {
         eventEmitter.off('alarm', this.triggerAlarm);
@@ -228,6 +227,7 @@ export default {
 .nav-link.router-link-exact-active {
     color: #ffd700 !important;
 }
+
 .alarm-button {
     position: relative;
     color: white !important;
@@ -243,6 +243,7 @@ export default {
     width: 10px;
     height: 10px;
 }
+
 /*
 .shake-icon {
     animation: bell-shake 1s ease infinite;
@@ -326,6 +327,7 @@ export default {
 .notification-list::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
 .shake-icon {
     animation: bell-shake 0.33s cubic-bezier(0.25, 1, 0.5, 1) infinite; /* 애니메이션 설정 */
     transform-origin: top center;
