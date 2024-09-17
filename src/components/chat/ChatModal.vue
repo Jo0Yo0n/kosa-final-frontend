@@ -94,12 +94,9 @@ export default {
                         if (createRoomResponse.status === 201) {
                             const newRoom = {
                                 room_id: createRoomResponse.data.room_id,
-                                participants: [this.currentUser._id, this.member.memberId],
+                                participants: [{ _id: this.member.memberId, nickname: this.member.memberNickname, img_url: this.member.memberImg }],
                                 messages: [],
                             };
-
-                            // 방 생성 후 selectedChatRoom 업데이트
-                            this.handleRoomSelection(newRoom);
 
                             if (newRoom && this.socket) {
                                 console.log(`방에 참가 중: ${newRoom.room_id}`);
@@ -108,6 +105,10 @@ export default {
 
                             // 방 생성 후 메시지 전송
                             await this.sendMessageToServer(this.message, newRoom.room_id);
+
+                            this.chatList = this.chatList.filter((chat) => !chat.room_id.startsWith('temp_room_'));
+                            this.chatList.unshift(newRoom);
+                            this.handleRoomSelection(newRoom);
                         }
                     } catch (error) {
                         console.error('Error creating chat room:', error);
@@ -156,9 +157,9 @@ export default {
             this.messages = [];
             this.chatList = this.chatList.filter((chat) => !chat.room_id.startsWith('temp_room_')); // 임시 방 삭제
             this.hasFetchedChatList = false;
-            //eventEmitter.off('private message', this.handlePrivateMessage);
             console.log(this.selectedChatRoom);
             console.log(this.chatList);
+            eventEmitter.off('private', this.handlePrivateMessage);
         },
         handleMemberChat() {
             console.log('modal', this.member.memberId);
@@ -216,10 +217,12 @@ export default {
             this.setSelectedChatRoom(chat); // Vuex에 상태 저장
             this.messages = chat.messages;
 
-            // if (chat && this.socket) {
-            //   console.log(`방에 참가 중: ${chat.room_id}`);
-            //   this.socket.emit('join room', chat.room_id);
-            // }
+            this.$nextTick(() => {
+                const chatContainer = this.$el.querySelector('.pa-0 div');
+                if (chatContainer) {
+                    chatContainer.scrollTop = chatContainer.scrollHeight; // 스크롤을 맨 아래로 이동
+                }
+            });
         },
         groupMessagesByDate() {
             return this.messages.reduce((groups, message) => {
@@ -243,7 +246,7 @@ export default {
                     this.hasFetchedChatList = true;
                 });
             }
-            //  else {
+            // else {
             //     // 이미 채팅 목록을 가져왔으면 member에 맞는 채팅방을 선택
             //     if (this.member && Object.keys(this.member).length > 0) {
             //         this.handleMemberChat();
@@ -356,9 +359,9 @@ export default {
 .empty-chat-space {
     height: 670px;
     /*display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #bbb;
-    font-size: 1.5rem;*/
+  justify-content: center;
+  align-items: center;
+  color: #bbb;
+  font-size: 1.5rem;*/
 }
 </style>
