@@ -15,7 +15,7 @@
 <script>
 import ChatCompo from '@/components/chat/ChatCompo.vue';
 import ChatMessage from '@/components/chat/ChatMessage.vue';
-import { getSocket } from '../../socket.js';
+import { eventEmitter, getSocket } from '../../socket.js';
 import axios from 'axios';
 import moment from 'moment';
 import { mapGetters, mapActions } from 'vuex';
@@ -52,39 +52,32 @@ export default {
         }),
         connectSocket() {
             this.socket = getSocket();
+            eventEmitter.on('private', this.handlePrivateMessage);
+        },
+        handlePrivateMessage(msgObj) {
+            console.log('메시지 수신:', msgObj);
 
-            this.socket.on('private message', (msgObj) => {
-                console.log('메시지 수신:', msgObj);
-
-                // 현재 선택된 채팅방의 메시지라면 추가
-                if (this.selectedChatRoom && this.selectedChatRoom.room_id === msgObj.roomId) {
-                    this.messages.push({
+            // 현재 선택된 채팅방의 메시지라면 추가
+            if (this.selectedChatRoom && this.selectedChatRoom.room_id === msgObj.roomId) {
+                this.messages.push({
+                    sender_id: msgObj.from,
+                    content: msgObj.message,
+                    created_at: new Date(),
+                });
+                this.$nextTick(() => {
+                    const chatContainer = this.$el.querySelector('.pa-0 div');
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                });
+            } else {
+                const chatRoomIndex = this.chatList.findIndex((chat) => chat.room_id === msgObj.roomId);
+                if (chatRoomIndex !== -1) {
+                    this.chatList[chatRoomIndex].messages.push({
                         sender_id: msgObj.from,
                         content: msgObj.message,
                         created_at: new Date(),
                     });
-                    this.$nextTick(() => {
-                        const chatContainer = this.$el.querySelector('.pa-0 div');
-                        chatContainer.scrollTop = chatContainer.scrollHeight;
-                    });
-                } else {
-                    const chatRoomIndex = this.chatList.findIndex((chat) => chat.room_id === msgObj.roomId);
-                    if (chatRoomIndex !== -1) {
-                        this.chatList[chatRoomIndex].messages.push({
-                            sender_id: msgObj.from,
-                            content: msgObj.message,
-                            created_at: new Date(),
-                        });
-
-                        // // 마지막 메시지를 기준으로 대화 목록을 정렬
-                        // this.chatList.sort((a, b) => {
-                        //   const lastMessageA = a.messages.length > 0 ? moment(a.messages[a.messages.length - 1].created_at) : moment(0);
-                        //   const lastMessageB = b.messages.length > 0 ? moment(b.messages[b.messages.length - 1].created_at) : moment(0);
-                        //   return lastMessageB - lastMessageA;
-                        // });
-                    }
                 }
-            });
+            }
         },
         // 메세지 보내기
         async sendMessage() {
@@ -253,6 +246,9 @@ export default {
     },
     computed: {
         ...mapGetters('chat', ['selectedChatRoom']),
+    },
+    beforeDestroy() {
+        eventEmitter.off('private', this.handlePrivateMessage); // 컴포넌트가 파괴되기 전에 이벤트 핸들러를 제거
     },
 };
 </script>
