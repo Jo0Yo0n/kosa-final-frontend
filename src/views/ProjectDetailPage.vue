@@ -117,7 +117,7 @@ export default {
         eventEmitter.off('alarm', this.handleAlarm);
     },
     methods: {
-        ...mapActions('project', ['fetchApplicationStatus']),
+        ...mapActions('project', ['fetchApplicationStatus', 'fetchApplicationStatus']),
 
         handleAlarm(message) {
             switch (message.type) {
@@ -128,6 +128,7 @@ export default {
                 case 'approval-message':
                     this.fetchProjectRecruitment();
                     this.fetchProjectDetails();
+                    this.fetchApplicationStatus(this.$route.params.projectId);
                     break;
                 default:
                     console.log('알 수 없는 알람 타입:', message.type);
