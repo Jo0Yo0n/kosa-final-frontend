@@ -11,7 +11,7 @@
 import ProjectManagementCard from '../ProjectManagementCard.vue';
 import CommonButton from '@/components/common/button/CommonButton.vue';
 import axiosInstance from '@/axiosInstance';
-
+//import axiosCustom from '@/plugins/axios_custom';
 export default {
     name: 'ProjectManagement',
     components: {
@@ -65,7 +65,7 @@ export default {
         },
         async startProject() {
             try {
-                const response = await this.axiosInstance.post('/api/projects/start', { projectId: this.$route.params.projectId });
+                const response = await axiosInstance.post('/api/projects/start', { projectId: this.$route.params.projectId });
                 console.log('프로젝트가 시작되었습니다:', response.data);
                 window.location.reload();
             } catch (error) {
