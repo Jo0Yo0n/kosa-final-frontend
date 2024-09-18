@@ -98,9 +98,14 @@ export default {
                                 messages: [],
                             };
 
+                            const inviteRoomInfo = {
+                                room_id: createRoomResponse.data.room_id,
+                                participants: [this.currentUser._id, this.member.memberId],
+                            };
+
                             if (newRoom && this.socket) {
                                 console.log(`방에 참가 중: ${newRoom.room_id}`);
-                                this.socket.emit('join room', newRoom.room_id);
+                                this.socket.emit('join room', inviteRoomInfo);
                             }
 
                             // 방 생성 후 메시지 전송
