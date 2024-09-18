@@ -27,7 +27,7 @@
                                 <!-- 3. 모집 인원보다 참여 인원이 적어야 함 -->
                                 <!-- 4. 로그인한 사용자가 해당 project_member 테이블에 없어야 함 -> projectStore의 hasApplied status로 체크 -->
                                 <v-btn
-                                    v-if="isLogIn && !hasApplied && status === 0 && recruitment.members.length < recruitment.jobCount"
+                                    v-if="isLogIn && !computedHasApplied && recruitment.members.length < recruitment.jobCount"
                                     color="brown"
                                     dark
                                     small
@@ -67,9 +67,6 @@ export default {
         projectId: {
             type: Number,
         },
-        status: {
-            type: Number,
-        },
     },
     data() {
         return {
@@ -83,6 +80,9 @@ export default {
         ...mapGetters('project', ['hasApplied']),
         computedRecruitments() {
             return this.recruitments;
+        },
+        computedHasApplied() {
+            return this.hasApplied;
         },
     },
     methods: {
