@@ -47,7 +47,7 @@
                 <project-retrospective :project="project" />
             </v-tab-item>
             <v-tab-item v-if="this.project.status === 0">
-                <project-management :project_recruitment="project_recruitment" />
+                <project-management :project_recruitment="project_recruitment" @approval-success="fetchProjectDetails" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>

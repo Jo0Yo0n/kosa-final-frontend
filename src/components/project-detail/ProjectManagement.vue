@@ -11,7 +11,7 @@
 import ProjectManagementCard from '../ProjectManagementCard.vue';
 import CommonButton from '@/components/common/button/CommonButton.vue';
 import axiosInstance from '@/axiosInstance';
-
+//import axiosCustom from '@/plugins/axios_custom';
 export default {
     name: 'ProjectManagement',
     components: {
@@ -65,7 +65,7 @@ export default {
         },
         async startProject() {
             try {
-                const response = await this.axiosInstance.post('/api/projects/start', { projectId: this.$route.params.projectId });
+                const response = await axiosInstance.post('/api/projects/start', { projectId: this.$route.params.projectId });
                 console.log('프로젝트가 시작되었습니다:', response.data);
                 window.location.reload();
             } catch (error) {
@@ -92,6 +92,9 @@ export default {
             try {
                 await axiosInstance.put(`/api/projects/applications`, data);
                 console.log('멤버 스테이터스가 업데이트 되었습니다.', data.acceptStatus === 1 ? '승인됨.' : '거절됨.');
+                if (data.acceptStatus === 1) {
+                    this.$emit('approval-success');
+                }
                 this.removeMemberFromList(member);
             } catch (error) {
                 console.error('멤버 스테이터스를 업데이트 하던 중 에러 발생', error);
