@@ -15,7 +15,7 @@
         <v-card flat>
             <v-card-text>
                 <v-row>
-                    <v-col v-for="recruitment in recruitments" :key="recruitment.jobId" cols="2">
+                    <v-col v-for="recruitment in computedRecruitments" :key="recruitment.jobId" cols="2">
                         <v-card outlined class="text-center" rounded elevation="1">
                             <v-card-text style="color: black">
                                 <div class="mb-1" style="font-size: 18px">{{ recruitment.jobName }}</div>
@@ -81,6 +81,9 @@ export default {
     computed: {
         ...mapGetters('member', ['isLogIn']),
         ...mapGetters('project', ['hasApplied']),
+        computedRecruitments() {
+            return this.recruitments;
+        },
     },
     methods: {
         ...mapActions('project', ['fetchApplicationStatus']),
