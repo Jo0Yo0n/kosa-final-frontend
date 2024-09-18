@@ -11,20 +11,27 @@
 <template>
     <v-container>
         <div class="top-project">
-            <v-carousel
-                cycle
-                interval="10000"
-                v-if="popularProjects && popularProjects.length"
-                height="300px"
-                active-class="custom-active-dot"
-                class="custom-carousel"
-                hide-delimiters
-            >
-                <v-carousel-item v-for="project in popularProjects" :key="project.projectId" @click="goToDetailPage(project.projectId)">
-                    <v-row class="fill-height ma-0">
-                        <v-col cols="6" class="pa-0 justify-center">
-                            <v-img :src="project.imgUrl" width="100%" class="carousel-image" contain cover style="object-fit: cover; object-position: center"></v-img>
-                        </v-col>
+          <v-carousel
+              cycle
+              interval="10000"
+              v-if="popularProjects && popularProjects.length"
+              height="300px"
+              active-class="custom-active-dot"
+              class="custom-carousel"
+              hide-delimiters
+          >
+            <v-carousel-item v-for="project in popularProjects" :key="project.projectId" @click="goToDetailPage(project.projectId)">
+              <v-row class="fill-height ma-0">
+                <v-col cols="6" class="pa-0 justify-center">
+                  <v-img
+                      :src="project.imgUrl"
+                      class="carousel-image"
+                      width="100%"
+                      aspect-ratio="1.78"
+                  cover
+                  style="object-fit: cover; object-position: center"
+                  ></v-img>
+                </v-col>
                         <v-col class="pa-7 d-flex flex-column justify-space-between">
                             <div class="project-info d-flex flex-column justify-space-between h-100">
                                 <!-- Project Name with Extra Margin -->
