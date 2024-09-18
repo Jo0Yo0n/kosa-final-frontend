@@ -26,7 +26,6 @@
                 <div class="position-relative ma-10">
                     <div class="date-labels d-flex justify-space-between mb-1">
                         <span class="caption">{{ formatDate(startDate) }}</span>
-                        <span class="caption">{{ formatDate(currentDate) }}</span>
                         <span class="caption">{{ formatDate(endDate) }}</span>
                     </div>
                     <v-progress-linear :value="progressValue" color="brown" height="5"></v-progress-linear>
@@ -77,7 +76,7 @@ export default {
         ...mapState('project', ['hasApplied']),
 
         startDate() {
-            return new Date(this.project.startedAt);
+            return new Date(this.project.updatedAt);
         },
         endDate() {
             return new Date(this.startDate.getTime() + this.project.duration * 7 * 24 * 60 * 60 * 1000);
@@ -86,7 +85,7 @@ export default {
             return new Date();
         },
         progressValue() {
-            if (!this.project.startedAt || !this.project.duration) {
+            if (!this.project.updatedAt || !this.project.duration) {
                 return 0;
             }
 
@@ -198,7 +197,7 @@ export default {
         },
 
         formatDate(date) {
-            return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+            return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' });
         },
     },
 };
