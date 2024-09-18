@@ -92,6 +92,9 @@ export default {
             try {
                 await axiosInstance.put(`/api/projects/applications`, data);
                 console.log('멤버 스테이터스가 업데이트 되었습니다.', data.acceptStatus === 1 ? '승인됨.' : '거절됨.');
+                if (data.acceptStatus === 1) {
+                    this.$emit('approval-success');
+                }
                 this.removeMemberFromList(member);
             } catch (error) {
                 console.error('멤버 스테이터스를 업데이트 하던 중 에러 발생', error);
