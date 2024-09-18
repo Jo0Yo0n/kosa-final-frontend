@@ -22,6 +22,7 @@
                     </v-col>
                     <v-col>
                         <span class="subtitle-1 font-weight-bold" style="color: black">{{ leader.memberNickname }}</span>
+                        <v-chip class="ml-2" small>{{ leader.career }}</v-chip>
                         <v-btn icon :href="leader.memberGithub" target="_blank" color="black" class="ml-2">
                             <v-icon>mdi-github</v-icon>
                         </v-btn>
