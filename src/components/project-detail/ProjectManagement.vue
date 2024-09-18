@@ -108,29 +108,31 @@ export default {
 </script>
 
 <template>
-    <v-container v-if="groupedMembers.length > 0">
+    <v-container>
         <v-row>
             <v-col cols="12" class="d-flex justify-end mb-3">
                 <common-button @click="startProject">프로젝트 시작</common-button>
             </v-col>
         </v-row>
-        <v-row v-for="(group, index) in groupedMembers" :key="index" class="mb-4">
-            <v-col cols="12">
-                <h2>{{ group.jobName }}</h2>
-            </v-col>
-            <v-col v-for="(member, i) in group.members.slice(0, group.showAll ? group.members.length : group.initialDisplayCount)" :key="i" cols="12" sm="6" md="3">
-                <project-management-card :member="member" @approve-member="handleApprove" @reject-member="handleReject" />
-            </v-col>
-            <div class="more-button-container" v-if="group.members.length > group.initialDisplayCount">
-                <v-btn @click="toggleShowAll(index)" class="my-button">
-                    {{ group.showAll ? '접기' : '더보기' }}
-                </v-btn>
-            </div>
-        </v-row>
+        <template v-if="groupedMembers.length > 0">
+            <v-row v-for="(group, index) in groupedMembers" :key="index" class="mb-4">
+                <v-col cols="12">
+                    <h2>{{ group.jobName }}</h2>
+                </v-col>
+                <v-col v-for="(member, i) in group.members.slice(0, group.showAll ? group.members.length : group.initialDisplayCount)" :key="i" cols="12" sm="6" md="3">
+                    <project-management-card :member="member" @approve-member="handleApprove" @reject-member="handleReject" />
+                </v-col>
+                <div class="more-button-container" v-if="group.members.length > group.initialDisplayCount">
+                    <v-btn @click="toggleShowAll(index)" class="my-button">
+                        {{ group.showAll ? '접기' : '더보기' }}
+                    </v-btn>
+                </div>
+            </v-row>
+        </template>
+        <div v-else class="mt-5">
+            <v-alert type="info" color="green" text>아직 지원한 멤버가 없어요.</v-alert>
+        </div>
     </v-container>
-    <div v-else class="mt-5">
-        <v-alert type="info" color="green" text>아직 지원한 멤버가 없어요.</v-alert>
-    </div>
 </template>
 
 <style scoped>
