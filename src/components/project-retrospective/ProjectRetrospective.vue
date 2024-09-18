@@ -104,7 +104,7 @@ export default {
         ...mapGetters('member', ['isLogIn']),
 
         currentWeek() {
-            const startDate = new Date(this.project.startedAt);
+            const startDate = new Date(this.project.updatedAt);
             const today = new Date();
             const diffTime = Math.abs(today - startDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
