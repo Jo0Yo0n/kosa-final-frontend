@@ -102,7 +102,7 @@
       <tech-stack-selector
           v-model="editableProfile.techStacks"
           :custom-stacks="editableProfile.customStacks"
-          :known-tech="knownTech"
+          :techOptions="knownTechOptions"
           :max-tech-stacks="10"
           :min-tech-stacks="1"
           @input="updateTechStacks"
@@ -163,7 +163,7 @@
 
 <script>
 import TechStackSelector from '@/components/login/TechStackSelector.vue';
-import {mapGetters} from "vuex"; // TechStackSelector 컴포넌트 임포트
+import axios from "axios";
 
 export default {
   name: 'MemberProfileCard',
@@ -175,7 +175,7 @@ export default {
       type: Object,
       required: true
     },
-    knownTech: {
+    knownTechOptions: {
       type: Object,
       required: true,
     },
@@ -184,14 +184,7 @@ export default {
     return {
       isEditMode: false,
       editableProfile: { ...this.memberProfile },
-      jobOptions: ['Developer', 'Designer', 'Manager', 'QA'], // 직무 옵션들
-      careerOptions:['신입', '주니어', '시니어'],
-      selectedTech: null,
-      selectedTechImg: null,
     };
-  },
-  computed: {
-    ...mapGetters(['knownTech']),
   },
   methods: {
     enableEdit() {
@@ -202,8 +195,19 @@ export default {
       this.editableProfile = { ...this.memberProfile }; // 취소 시 원래 값으로 복구
     },
     async submitChanges() {
-      this.$emit('update-profile', this.editableProfile);
-      this.isEditMode = false;
+      try {
+        const token = localStorage.getItem('authToken'); // 예시: 인증 토큰을 localStorage에서 가져옴
+        const response = await axios.put('/api/users/me', this.editableProfile, {
+          headers: {
+            Authorization: `Bearer ${token}` // Bearer 토큰 인증 추가
+          }
+        });
+        console.log('Profile updated successfully:', response.data);
+        this.$emit('update-profile', this.editableProfile);
+        this.isEditMode = false;
+      } catch (error) {
+        console.error('Error updating profile:', error);
+      }
     },
     selectImage() {
       this.$refs.imageInput.click(); // 이미지 선택 창 열기

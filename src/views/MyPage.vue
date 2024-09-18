@@ -13,17 +13,29 @@
         <!-- MemberProfileCard에 memberProfile 데이터를 전달 -->
         <MemberProfileCard :memberProfile="memberProfile" />
 
-        <h3>관심 있는 프로젝트</h3>
+      <h3>관심 있는 프로젝트</h3>
+      <div v-if="favoriteProjects.length > 0">
         <ProjectList :projects="favoriteProjects" />
+      </div>
+      <div v-else class="emptyList">관심 있는 프로젝트가 없습니다.</div>
 
-        <h3>내 프로젝트</h3>
+      <h3>내 프로젝트</h3>
+      <div v-if="myProjects.length > 0">
         <ProjectList :projects="myProjects" />
+      </div>
+      <div v-else class="emptyList">내 프로젝트가 없습니다.</div>
 
-        <h3>참여한 프로젝트</h3>
+      <h3>참여한 프로젝트</h3>
+      <div v-if="joinedProjects.length > 0">
         <ProjectList :projects="joinedProjects" />
+      </div>
+      <div v-else class="emptyList">참여한 프로젝트가 없습니다.</div>
 
-        <h3>완료된 프로젝트</h3>
+      <h3>완료된 프로젝트</h3>
+      <div v-if="completedProjects.length > 0">
         <ProjectList :projects="completedProjects" />
+      </div>
+      <div v-else class="emptyList"> 완료된 프로젝트가 없습니다.</div>
     </div>
 </template>
 <script>
@@ -136,6 +148,10 @@ h3 {
     margin-bottom: 30px;
     font-weight: bold;
 }
+.emptyList{
+    margin-left: 20px;
+}
+
 
 @media (max-width: 1200px) {
     .mypage {
@@ -156,9 +172,6 @@ h3 {
         margin-left: 10px;
     }
 
-    .project-section {
-        margin-bottom: 20px;
-    }
 
     v-col {
         margin-bottom: 15px;
@@ -173,10 +186,6 @@ h3 {
     h3 {
         margin-left: 5px;
         margin-top: 20px;
-    }
-
-    .project-section {
-        margin-bottom: 15px;
     }
 
     v-col {
