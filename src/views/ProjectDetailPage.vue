@@ -1,17 +1,6 @@
-<!--
- * fileName       : ProjectDetailPage
- * author         : JooYoon
- * date           : 2024-08-28
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2024-08-28        JooYoon       최초 생성
- * 2024-09-07        Yeong-Huns    v-tab-item 에 v-if 추가
- * 2024-09-13        Yeong-Huns    project 지원시, project 지원자 목록 최신화.
- * 2024-09-14        Yeong-Huns    소켓이벤트 구독처리 .
--->
 <template>
-    <v-container>
+    <v-container v-if="!isFetching">
+        <!-- 로딩이 완료된 후에만 전체 UI 렌더링 -->
         <v-row align="center" justify="center">
             <v-col class="text-center" cols="12">
                 <h1 class="ma-2">{{ project.name }}</h1>
@@ -26,7 +15,6 @@
                 <div class="position-relative ma-10">
                     <div class="date-labels d-flex justify-space-between mb-1">
                         <span class="caption">{{ formatDate(startDate) }}</span>
-                        <span class="caption">{{ formatDate(currentDate) }}</span>
                         <span class="caption">{{ formatDate(endDate) }}</span>
                     </div>
                     <v-progress-linear :value="progressValue" color="brown" height="5"></v-progress-linear>
@@ -36,21 +24,30 @@
 
         <v-tabs v-model="activeTab" class="mt-10">
             <v-tab>정보</v-tab>
-            <v-tab v-if="this.project.status !== 0">회고</v-tab>
-            <v-tab v-if="this.project.status === 0">관리</v-tab>
+            <v-tab v-if="this.project.status !== 0 && !showManagementTab">회고</v-tab>
+            <v-tab v-if="showManagementTab">관리</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="activeTab">
             <v-tab-item>
                 <project-info :project="project" @project-applied-to-parent="fetchProjectRecruitment" />
             </v-tab-item>
-            <v-tab-item v-if="this.project.status !== 0">
+            <v-tab-item v-if="this.project.status !== 0 && !showManagementTab">
                 <project-retrospective :project="project" />
             </v-tab-item>
-            <v-tab-item v-if="this.project.status === 0">
-                <project-management :project_recruitment="project_recruitment" />
+            <v-tab-item v-if="showManagementTab">
+                <project-management :project_recruitment="project_recruitment" @approval-success="fetchProjectDetails" />
             </v-tab-item>
         </v-tabs-items>
+    </v-container>
+
+    <!-- 로딩 스피너 -->
+    <v-container v-else>
+        <v-row align="center" justify="center">
+            <v-col class="text-center" cols="12">
+                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
@@ -58,9 +55,9 @@
 import ProjectInfo from '@/components/project-detail/ProjectInfo.vue';
 import ProjectRetrospective from '@/components/project-retrospective/ProjectRetrospective.vue';
 import ProjectManagement from '@/components/project-detail/ProjectManagement.vue';
-
 import { eventEmitter } from '@/socket';
 import { mapState, mapActions } from 'vuex';
+import axiosInstance from '@/axiosInstance';
 
 export default {
     name: 'ProjectDetailPage',
@@ -70,14 +67,14 @@ export default {
             project: {},
             project_recruitment: [],
             activeTab: 0,
-            isFetching: false,
+            isFetching: true, // 로딩 상태로 초기 설정
+            showManagementTab: false,
         };
     },
     computed: {
         ...mapState('project', ['hasApplied']),
-
         startDate() {
-            return new Date(this.project.startedAt);
+            return new Date(this.project.updatedAt);
         },
         endDate() {
             return new Date(this.startDate.getTime() + this.project.duration * 7 * 24 * 60 * 60 * 1000);
@@ -86,7 +83,7 @@ export default {
             return new Date();
         },
         progressValue() {
-            if (!this.project.startedAt || !this.project.duration) {
+            if (!this.project.updatedAt || !this.project.duration) {
                 return 0;
             }
 
@@ -98,10 +95,6 @@ export default {
             const elapsedDuration = this.currentDate - this.startDate;
             return Math.round((elapsedDuration / totalDuration) * 100);
         },
-    },
-    beforeCreated() {
-        this.isFetching = false; // beforeCreate에서 플래그를 설정하여 초기화를 방지
-        console.log('beforeCreated 실행');
     },
     async mounted() {
         console.log('Mounted 실행');
@@ -123,7 +116,6 @@ export default {
             switch (message.type) {
                 case 'application-message':
                     this.fetchProjectRecruitment();
-
                     break;
                 case 'approval-message':
                     this.fetchProjectRecruitment();
@@ -136,20 +128,22 @@ export default {
         },
 
         async fetchProjectData() {
-            if (this.isFetching) {
-                console.warn('이미 데이터 가져오는 중입니다. 요청을 건너뜁니다.');
-                return; // 이미 요청 중이면 중단
-            }
-            this.isFetching = true; // 요청 시작
             try {
                 console.log('fetchProjectDetails 호출');
                 await this.fetchProjectDetails();
-                console.log('fetchProjectRecruitment 호출');
                 await this.fetchProjectRecruitment();
+
+                // project.leader.memberId를 백엔드로 전송하여 확인
+                const response = await axiosInstance.post('/api/projects/isLeader', {
+                    memberId: this.project.leader.memberId,
+                });
+                if (response.data === true && this.project.status === 0) {
+                    this.showManagementTab = true;
+                }
             } catch (error) {
                 console.error('데이터 가져오는 중 오류 발생:', error);
             } finally {
-                this.isFetching = true; // 요청 완료
+                this.isFetching = false; // 모든 데이터 로드 후 로딩 상태 해제
             }
         },
         async fetchProjectDetails() {
@@ -160,20 +154,14 @@ export default {
                 console.error('Error fetching project details:', error);
                 alert('프로젝트 정보를 불러오는 중 에러가 발생했습니다.');
                 await this.$router.push('/');
-            } finally {
-                console.log('fetchProjectDetails 실행');
             }
         },
         async fetchProjectRecruitment() {
             try {
                 const response = await this.$axios.get(`/api/projects/${this.$route.params.projectId}/applications`);
-                console.log(`😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋😋`);
-                console.log(response.data);
                 this.project_recruitment = response.data;
             } catch (error) {
                 console.error('지원자를 불러오는 과정에서 에러 발생 : ', error);
-            } finally {
-                console.log('fetchProjectRecruitment 실행');
             }
         },
         getStatusColor(status) {
@@ -196,9 +184,8 @@ export default {
                     return '종료';
             }
         },
-
         formatDate(date) {
-            return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+            return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' });
         },
     },
 };
