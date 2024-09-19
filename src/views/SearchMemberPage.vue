@@ -13,7 +13,7 @@
         <!--멤버 검색 타이틀-->
         <v-row>
             <v-col cols="12">
-                <h1 style="font-size: 34px">라떼버 검색</h1>
+                <h1 style="font-size: 34px">라떼버</h1>
             </v-col>
         </v-row>
         <v-row class="align-center">
